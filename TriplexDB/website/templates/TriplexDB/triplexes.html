@@ -1,0 +1,33 @@
+{% extends 'TriplexDB/base.html' %}
+
+{% block content %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">RNA</th>
+      <th scope="col">Promoter</th>
+      <th scope="col">Score</th>
+      <th scope="col">E</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for triplex in result %}
+		<tr>
+			<td>{{ triplex.rna.transcriptgenesymbol }}</td>
+			<td>{{ triplex.dna.promotersymbols }}</td>
+			<td>{{ triplex.triplexalignerscore }}</td>
+			<td>{{ triplex.triplexalignere }}</td>
+		<tr/>
+	{% endfor %}
+    </tbody>
+</table>
+
+<!-- {% for triplex in triplexes %}
+	{{ triplex.rna.transcriptgenesymbol }}
+	{{ triplex.dna.promotersymbols }}
+	{{ triplex.triplexalignerscore }}
+	{{ triplex.triplexalignere }}
+{% endfor %} -->
+
+{% endblock %}

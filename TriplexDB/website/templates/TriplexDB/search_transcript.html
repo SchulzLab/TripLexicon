@@ -1,0 +1,14 @@
+<br/>
+<div class="card p-1 mx-4" style="width: 50rem;">
+	<div class="card-body">
+		<h5 class="card-title">Search for predicted triplexes by RNA transcript ID (Ensembl format)</h5>
+		<br/>
+	    <form method=POST action="{% url 'search_transcript' %}" class="col-xs-3">
+	     	{% csrf_token %}
+	        <input type="search" class="form-control me-2" placeholder="Search RNA transcript ID... (e.g. ENST00000556407, ENST00000424518, ENST00000534336)" name="transcript">
+	        <br/>
+	        <button type="submit" class="btn btn-success" style="color: white; background-color: #0c042e; border-color: white;">Search</button>
+	    </form>
+	    <br/>
+	</div>
+ </div>

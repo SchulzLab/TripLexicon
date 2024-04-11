@@ -1,0 +1,75 @@
+{% extends 'TriplexDB/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+<script src="{% static 'js/multiselect_new.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+	
+	<div class="card p-1 mx-4" style="width: 70rem;">
+		<div class="card-body">
+			<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
+			
+			<div class="container-fluid">
+				<div class="container">
+				  <div class="row h-200">
+					<div class="col-4">
+					  <h4>Start position in chromosome:</h2>
+					</div>
+					<div class="col-4">
+					  <h4>Chromosome:</h2>
+					</div>
+					<div class="col-4">
+					  <h4>End position in chromosome:</h2>
+					</div>
+				  </div>
+			  
+			
+			
+			
+		<div class="row input-group">
+		<form action="#" method="get" class="d-flex" role="search">
+		  
+			<div class="col-4">
+				<input type="text" class="form-control me-2" placeholder="Start position in chromosome" name="start">
+			</div>
+
+			<div class="col-4">
+				<select name="chromosome[]" id="chr" class="chr" multiple>
+				  {%for CHR in chrs%}
+				  <option value="{{CHR}}"> {{CHR}}</option>
+				  {% endfor %}
+				</select>
+			</div>
+
+			<div class="col-4">
+				<input type="text" class="form-control me-2" placeholder="End position in chromosome" name="end">
+			</div>
+		</div>
+
+		<div class="row h-100">
+				<div class="col-2">
+				  <button class="btn d-flex search" style="background-color: #063944; color: #fff; border-color: #063944"
+					type="submit">Search</button>
+				</div>
+		</div>
+
+
+	</form>
+		    
+</div>
+
+     </div>
+
+<script>
+	new MultiSelectTag('chr', {
+	rounded: true,    // default true
+	shadow: true,      // default false
+	placeholder: 'chromosome',  // default Search...
+	id: "chr_input",
+	})
+</script>
+{% endblock %}
