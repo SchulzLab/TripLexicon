@@ -5,22 +5,57 @@
 {% bootstrap_javascript %}
 {% block content %}
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
-<script src="{% static 'js/multiselect_new.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
-	
+<style>
+	/*https://stackoverflow.com/questions/1895476/how-do-i-style-a-select-dropdown-with-only-css*/
+	select {
+  margin: 50px 0px 50px;
+  width: 150px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+select::-ms-expand {
+    display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
+}
+/* Target Internet Explorer 9 to undo the custom arrow */
+@media screen and (min-width:0\0) {
+    select {
+        background: none\9;
+        padding: 5px\9;
+    }
+}
+
+.input_region{
+margin: 50px 25px 50px 25px;
+ width: 300px;
+  padding: 5px 35px 5px 35px;
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+</style>
+
 	<div class="card p-1 mx-4" style="width: 70rem;">
 		<div class="card-body">
 			<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
-			
+			<br> 
 			<div class="container-fluid">
 				<div class="container">
 				  <div class="row h-200">
 					<div class="col-4">
-					  <h4>Start position in chromosome:</h2>
-					</div>
+						<h4>Chromosome:</h2>
+					  </div>
 					<div class="col-4">
-					  <h4>Chromosome:</h2>
+					  <h4>Start position in chromosome:</h2>
 					</div>
 					<div class="col-4">
 					  <h4>End position in chromosome:</h2>
@@ -30,23 +65,27 @@
 			
 			
 			
-		<div class="row input-group">
-		<form action="#" method="get" class="d-flex" role="search">
-		  
-			<div class="col-4">
-				<input type="text" class="form-control me-2" placeholder="Start position in chromosome" name="start">
-			</div>
+		<div class="row input-group ">
+		<form action="{% url 'search_gen_region_results' %}" method="get" class="d-flex" role="search">
 
 			<div class="col-4">
-				<select name="chromosome[]" id="chr" class="chr" multiple>
+				<select name="chromosome" id="chr" class="chr">
 				  {%for CHR in chrs%}
 				  <option value="{{CHR}}"> {{CHR}}</option>
 				  {% endfor %}
 				</select>
 			</div>
+		  
+			<div class="col-4 ">
+				<div class="col-11">
+				<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome" name="start" >
+			</div>
+			</div>
 
-			<div class="col-4">
-				<input type="text" class="form-control me-2" placeholder="End position in chromosome" name="end">
+			<div class="col-4 ">
+				<div class="col-11">
+				<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome" name="end">
+			</div>
 			</div>
 		</div>
 
@@ -64,12 +103,4 @@
 
      </div>
 
-<script>
-	new MultiSelectTag('chr', {
-	rounded: true,    // default true
-	shadow: true,      // default false
-	placeholder: 'chromosome',  // default Search...
-	id: "chr_input",
-	})
-</script>
 {% endblock %}

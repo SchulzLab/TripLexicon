@@ -30,13 +30,13 @@
 		    </tr>
 		  </thead>
 		  <tbody class="table-group-divider">
-		  	{% for triplex in result %}
+		  	{% for rem, triplex in result.items %}
 				<tr>
-					<td>{{ rna_symbol }}</td>
-					<td><strong><i>{{ transcript }}</i></strong></td>
+					<td>{{ triplex.transcriptgenesymbol }}</td>
+					<td><strong><i>{{ triplex.transcriptid }}</i></strong></td>
 					<td>{{ triplex.transcripttriplexstart }}</td>
 					<td>{{ triplex.transcripttriplexend }}</td>
-					<td>{{ triplex.rem_symbol }}</td>
+					<td>{{ rem }}</td>
 					<td>{{ triplex.remtriplexstart }}</td>
 					<td>{{ triplex.remtriplexend }}</td>
 					<td>{{ triplex.transcriptlength }}</td>
@@ -73,8 +73,8 @@
 		  	{% for triplex in result %}
 				<tr>
 					<td><i><strong>{{ rna_symbol }}</strong></i></td>
-					<td>{{ triplex.rna }}</td>
-					<td>{{ triplex.rem_symbol }}</td>
+					<td>{{ triplex.transcriptid }}</td>
+					<td>{{ triplex.remsymbols }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
 					<script>
 						var evalue={{ triplex.triplexalignere }};

@@ -28,4 +28,5 @@ urlpatterns = [
     path('search_rna_home', views.search_rna_home, name="search_rna_home"),
     path('search_rna_results', views.search_rna_results, name="search_rna_results"),
     path('search_gen_region_home', views.search_gen_region_home, name="search_gen_region_home"),
+    path('search_gen_region_results', views.search_gen_region_results, name="search_gen_region_results"),
 ]

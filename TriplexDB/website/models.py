@@ -27,9 +27,9 @@ from django.db import models
 
 
 class rem(models.Model):
-    remid = models.CharField(db_column='REMID', blank=False, null=False, max_length=150)  # Field name made lowercase. This field type is a guess.
+    remid = models.CharField(db_column='REMID', blank=False, primary_key=True, null=False, max_length=150)  # Field name made lowercase. This field type is a guess.
     remgeneids = models.CharField(db_column='REMGeneIDs', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-    remsymbols = models.CharField(db_column='REMSymbols', blank=True, max_length=150, primary_key=True, verbose_name='REM Symbol(s)')  # Field name made lowercase. This field type is a guess.
+    remsymbols = models.CharField(db_column='REMSymbols', blank=True, max_length=150, verbose_name='REM Symbol(s)')  # Field name made lowercase. This field type is a guess.
     remchr = models.CharField(db_column='REMChr', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
     remstart = models.IntegerField(db_column='REMStart', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
     remend = models.IntegerField(db_column='REMEnd', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
