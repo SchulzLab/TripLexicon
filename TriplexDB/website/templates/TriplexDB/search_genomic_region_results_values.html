@@ -29,13 +29,13 @@
 		    </tr>
 		  </thead>
 		  <tbody class="table-group-divider">
-		  	{% for triplexid, triplex in result.items %}
+		  	{% for triplex in result %}
 				<tr>
 					<td>{{ triplex.transcriptgenesymbol }}</td>
-					<td><strong><i>{{ triplex.transcriptid }}</i></strong></td>
+					<td>{{ triplex.rna }}</td>
 					<td>{{ triplex.transcripttriplexstart }}</td>
 					<td>{{ triplex.transcripttriplexend }}</td>
-					<td>{{ triplex.rem }}</td>
+					<td><strong><i>{{ triplex.rem_symbol }}</i></strong></td>
 					<td>{{ triplex.remtriplexstart }}</td>
 					<td>{{ triplex.remtriplexend }}</td>
 					<td>{{ triplex.transcriptlength }}</td>

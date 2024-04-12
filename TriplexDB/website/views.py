@@ -46,9 +46,6 @@ def search_transcript_values(request):
 			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
 							 if triplex['rem'] == rem_instance['remid']][0]
 		
-		
-
-		
 		if triplexes:
 			return render(request,
 				'TriplexDB/search_rna_results_values.html',
@@ -66,28 +63,6 @@ def search_transcript_values(request):
 			{})
 
 
-def search_transcript(request):
-	if request.method == "POST":
-		transcript = request.POST['transcript']
-		result = triplexaligner.objects.filter(rna__transcriptid__exact=transcript).order_by('triplexalignere')
-
-		# class rna_results_table(SingleTableView):
-		# 	model = Triplexaligner
-		# 	table_class = results_table
-		# 	template_name = 'TriplexDB/search_rna_results.html'
-
-		# table = rna_results_table(result)
-
-		return render(request,
-			'TriplexDB/search_rna_results.html',
-			{'transcript':transcript,
-			'result':result,})
-			# 'table':table})
-
-	else:
-		return render(request,
-			'TriplexDB/search_rna_results.html',
-			{})
 
 def search_rna_symbol_values(request):
 	if request.method == "POST":
@@ -115,21 +90,6 @@ def search_rna_symbol_values(request):
 			'TriplexDB/search_rna_results_values.html',
 			{})
 
-def search_rna_symbol(request):
-	if request.method == "POST":
-		rna_symbol = request.POST['rna_symbol']
-		result = triplexaligner.objects.filter(rna__transcriptgenesymbol=rna_symbol).exclude(rem__remsymbols=rna_symbol).order_by('triplexalignere')[:50]
-		#result = Triplexaligner.objects.filter(rna__transcriptgenesymbol=rna_symbol).exclude(promoter__promotersymbols=rna_symbol).order_by('triplexalignere')[:50]
-
-		return render(request,
-			'TriplexDB/search_rna_results.html',
-			{'rna_symbol':rna_symbol,
-			'result':result})
-
-	else:
-		return render(request,
-			'TriplexDB/search_rna_results.html',
-			{})
 
 
 def search_rna_home(request):
@@ -146,17 +106,25 @@ def gen_region_search(chromosome, start, end):
 	rem_regions = BedTool('/Users/christina/Documents/triplex/TriplexDB/website/static/rem_regions.bed')
 	rem_query_intersection = rem_regions.intersect(query_region, wa = True, f = 0.5)
 	rem_query_list = []
-	for rem in rem_query_intersection:
-		rem_query_list.append(rem.name)
-	print(rem_query_list)
+	for rem_instance in rem_query_intersection:
+		rem_query_list.append(rem_instance.name)
+
 	triplexes = triplexaligner.objects.filter(Q(rem__remid__in=rem_query_list))\
 	.values('triplexid','rna', 'transcripttriplexstart', 'transcripttriplexend', 'remtriplexstart', 'rem', 'remtriplexend',\
 				'transcriptlength', 'remlength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-	transcript_ids = [triplex["tid"] for triplex in triplexes]
-	transcript_gene_symbols = rna.objects.filter(transcriptid__in = transcript_ids).distinct().values('transcriptgenesymbol')
+	
+	#query RNA objects
+	transcript_ids = [triplex['rna'] for triplex in triplexes]
+	transcript_gene_symbols = rna.objects.filter(transcriptid__in = transcript_ids).distinct().values('transcriptgenesymbol', 'transcriptid')
+	
+	#query REMs, new rem ids, only the ones having triplexes
+	rem_ids = [triplex["rem"] for triplex in triplexes]
+	rem_result = rem.objects.filter(remid__in = rem_ids).distinct().values('remsymbols', 'remid')
 	for triplex in triplexes:
-		triplex['transcriptgenesymbol'] = transcript_gene_symbols[triplex['rna']]['transcriptgenesymbol']
-	print(triplexes)
+			triplex['transcriptgenesymbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcript_gene_symbols\
+							 if triplex['rna'] == rna_instance['transcriptid']][0]
+			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
+							 if triplex['rem'] == rem_instance['remid']][0]
 	return triplexes
 	
 
@@ -168,7 +136,6 @@ def search_gen_region_results(request):
 		if start and end and chromosome:
 			if int(end)-int(start) < 1000000000:
 				triplexes_in_region = gen_region_search(chromosome, start, end)
-				print(triplexes_in_region)
 				return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region, \
 									 "chr": chromosome, "end": end, "start": start})
 			else:

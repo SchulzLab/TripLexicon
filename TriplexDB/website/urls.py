@@ -20,11 +20,9 @@ from . import views
 
 urlpatterns = [
     path('home', views.home, name = "home"),
-    #path('search_rna_symbol', views.search_rna_symbol, name="search_rna_symbol"),
     path('search_rna_symbol', views.search_rna_symbol_values, name="search_rna_symbol"),
     path('search_promoter', views.search_promoter, name="search_promoter"),
-    path('search_transcript', views.search_transcript, name="search_transcript"),
-    #path('search_transcript', views.search_transcript_values, name="search_transcript"),
+    path('search_transcript', views.search_transcript_values, name="search_transcript"),
     path('search_rna_home', views.search_rna_home, name="search_rna_home"),
     path('search_rna_results', views.search_rna_results, name="search_rna_results"),
     path('search_gen_region_home', views.search_gen_region_home, name="search_gen_region_home"),
