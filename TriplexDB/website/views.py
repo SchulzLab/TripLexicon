@@ -37,7 +37,7 @@ def search_transcript_values(request):
 	if request.method == "POST":
 		transcript = request.POST['transcript']
 		rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')[0]
-		triplexes = triplexaligner.objects.filter(Q(rna__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
+		triplexes = triplexaligner.objects.filter(Q(rna__exact=transcript)).distinct().order_by('triplexalignere')\
 		.values('triplexid','rna', 'transcripttriplexstart', 'transcripttriplexend', 'remtriplexstart', 'rem', 'remtriplexend',\
 			'transcriptlength', 'remlength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
 		rem_id = [triplex["rem"] for triplex in triplexes]
@@ -63,16 +63,18 @@ def search_transcript_values(request):
 			{})
 
 
-
 def search_rna_symbol_values(request):
 	if request.method == "POST":
 		rna_symbol = request.POST['rna_symbol']
-		triplexes = triplexaligner.objects.filter(Q(rna__transcriptgenesymbol__exact=rna_symbol))\
-		.exclude(Q(rem__remsymbols__exact=rna_symbol)).order_by('triplexalignere')[:50]\
+		rems_to_exclude = rem.objects.filter(remsymbols__exact = rna_symbol).values('remid')
+		rems_to_exclude = [rem_instance['remid'] for rem_instance in rems_to_exclude]
+		transcript_ids = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid')
+		transcript_ids = [tid['transcriptid'] for tid in transcript_ids]
+		triplexes = triplexaligner.objects.filter(Q(rna__in=transcript_ids))\
+		.exclude(Q(rem__in=rems_to_exclude)).order_by('triplexalignere')[:50]\
 		.values('triplexalignerscore', 'triplexalignere', 'rem', 'rna')
 		rem_ids = [triplex["rem"] for triplex in triplexes]
 		rem_result = rem.objects.filter(remid__in = rem_ids).distinct().values('remsymbols', 'remid')
-		#print(rem_result)
 		for triplex in triplexes:
 			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
 							 if triplex['rem'] == rem_instance['remid']][0]
