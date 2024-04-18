@@ -220,20 +220,8 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class PollsChoice(models.Model):
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField()
-    question = models.ForeignKey('PollsQuestion', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'polls_choice'
 
 
-class PollsQuestion(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField()
 
-    class Meta:
-        managed = False
-        db_table = 'polls_question'
+
+

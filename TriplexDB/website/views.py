@@ -3,7 +3,6 @@ from .models import rem
 #from .models import DNA
 from .models import rna
 from .models import triplexaligner, rna, rem
-from .forms import rna_form
 from django_tables2 import SingleTableView
 #from .tables import results_table
 from django.db.models import Q
@@ -102,11 +101,14 @@ def search_gen_region_home(request):
             "chr13", "chr14", "chr15","chr16", "chr17", "chr18","chr19", "chr20", "chr21","chrX", "chrY"]
 	return render(request, 'TriplexDB/search_gen_region_home.html', {"chrs": chrs})
 
-def gen_region_search(chromosome, start, end):
+def get_bed(chromosome, start, end):
 	bed_string = chromosome + "\t" + start + "\t" + end + "\n"
 	query_region = BedTool(bed_string, from_string=True)
+	return query_region
+
+def gen_region_search(query_bedtool):
 	rem_regions = BedTool('/Users/christina/Documents/triplex/TriplexDB/website/static/rem_regions.bed')
-	rem_query_intersection = rem_regions.intersect(query_region, wa = True, f = 0.5)
+	rem_query_intersection = rem_regions.intersect(query_bedtool, wa = True, f = 0.5)
 	rem_query_list = []
 	for rem_instance in rem_query_intersection:
 		rem_query_list.append(rem_instance.name)
@@ -128,20 +130,41 @@ def gen_region_search(chromosome, start, end):
 			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
 							 if triplex['rem'] == rem_instance['remid']][0]
 	return triplexes
-	
+
+
+
+
+def gen_region_search_file(uploaded_file):
+	uploaded_regions = uploaded_file.read().decode('utf-8').splitlines()
+	bed_string = ""
+	for interval in uploaded_regions:
+		if "chr" in interval:
+			subset_start = interval.find("chr")
+			#print(interval[subset_start:].strip("\\\n")+"\n")
+			bed_string += interval[subset_start:].strip("\\\n")+"\n"
+	uploaded_regions = BedTool(bed_string, from_string = True)
+	return uploaded_regions
 
 def search_gen_region_results(request):
-	if request.method == 'GET':
+	if request.method =='POST':
+		uploaded_file = request.FILES['bed_file']
+		#uploaded_file_content = do_th_with_file_to_get_content_as_String(uploaded_file)
+		query_regions = gen_region_search_file(uploaded_file)
+		triplexes_in_region = gen_region_search(query_regions)
+		return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region})
+	elif request.method == 'GET':
 		start = request.GET.get('start')
 		end =  request.GET.get('end')
 		chromosome = request.GET.get('chromosome')
 		if start and end and chromosome:
 			if int(end)-int(start) < 1000000000:
-				triplexes_in_region = gen_region_search(chromosome, start, end)
-				return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region, \
-									 "chr": chromosome, "end": end, "start": start})
+				query_region = get_bed(chromosome, start, end)
+				triplexes_in_region = gen_region_search(query_region)
+				return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,\
+																				   'chr':chromosome, 'start': start, 'end':end})
 			else:
 				raise Http404("Queried genomic region too big!")
+			
 		else:
 			raise Http404("Start, end or chromosome missing!")
 	else:
