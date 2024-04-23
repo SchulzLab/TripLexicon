@@ -1,0 +1,47 @@
+{% extends 'TriplexDB/base.html' %}
+
+    <head>
+        <title>Gene detail view</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head>
+
+{% block content %}
+{% if object %}
+   
+    <div class="table-responsive mx-5">
+		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
+		  <thead class="table-dark" style="background-color: red;">
+		    <tr>
+		      <th scope="col">Gene ID</th>
+			  <th scope="col">Gene Symbol</th>
+		      <th scope="col">Transcript ID</th>
+			  <th scope="col">Transcript Chrom</th>
+		      <th scope="col">Transcript Start</th>
+		      <th scope="col">Transcript End</th>
+		      <th scope="col">Transcript Length</th>
+			  <th scope="col">Transcript Biotype</th>
+		    </tr>
+		  </thead>
+		  <tbody class="table-group-divider">
+		  	{% for rna in object %}
+				<tr>
+					<td>{{rna.transcriptgeneid}}</td>
+					<td>{{rna.transcriptgenesymbol}}</td>
+					<td>{{rna.transcriptid}}</td>
+					<td>{{ rna.transcriptchr }}</td>
+					<td>{{ rna.transcriptstart }}</td>
+					<td>{{ rna.transcriptend }}</td>
+					<td>{{ rna.transcriptlength }}</td>
+					<td>{{ rna.transcriptbiotype }}</td>
+				</tr>
+			{% endfor %}
+		    </tbody>
+		</table>
+		</div>
+
+	
+    {% else %}
+    <h3>No hits for this transcript in Triplexicon!</h3>
+    {% endif %}
+
+{% endblock %}	

@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import Http404
 from pybedtools import BedTool
 from django.templatetags.static import static
+from django.views import generic
 
 # Create your views here.
 
@@ -173,3 +174,9 @@ def search_gen_region_results(request):
 
 def home(request):
 	return render(request, 'TriplexDB/home.html', {})
+
+
+def gene_detail(request, pk):
+	rna_result = rna.objects.filter(transcriptgenesymbol__exact = pk).distinct().values()
+	return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result})
+

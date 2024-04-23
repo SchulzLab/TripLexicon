@@ -14,9 +14,9 @@
   font-size: 16px;
   border: 1px solid #CCC;
   height: 34px;
-  -webkit-appearance: none;
+ /* -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
+  appearance: none;*/
 }
 
 select::-ms-expand {
@@ -31,9 +31,9 @@ select::-ms-expand {
 }
 
 .input_region{
-margin: 50px 25px 50px 25px;
+margin: 20px 25px 50px 0;
  width: 300px;
-  padding: 5px 35px 5px 35px;
+ /* padding: 5px 35px 5px 35px;*/
   font-size: 16px;
   border: 1px solid #CCC;
   height: 34px;
@@ -42,25 +42,48 @@ margin: 50px 25px 50px 25px;
   appearance: none;
 }
 
+.col-chrom{
+	flex: 1 0 auto;
+}
+
+.col-pos{
+	flex: 2 0 auto;
+}
+
+.chr{
+margin: 20px 25px 50px 0;
+  /*padding: 5px 35px 5px 35px;*/
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+ /* -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;*/
+}
+
+.col-11{
+	display: flex !important;
+}
+
 </style>
 
 	<div class="card p-1 mx-4" style="width: 70rem;">
 		<div class="card-body">
 			<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
 			<br> 
-			<div class="container-fluid">
+			<!--<div class="container-fluid">
 				<div class="container">
 				  <div class="row h-200">
 					<div class="col-4">
-						<h4>Chromosome:</h2>
+						<h4>Chromosome:</h4>
 					  </div>
 					<div class="col-4">
-					  <h4>Start position in chromosome:</h2>
+					  <h4>Start position in chromosome:</h4>
 					</div>
 					<div class="col-4">
-					  <h4>End position in chromosome:</h2>
+					  <h4>End position in chromosome:</h4>
 					</div>
-				  </div>
+				  </div>-->
 			  
 			
 			
@@ -68,21 +91,27 @@ margin: 50px 25px 50px 25px;
 		<div class="row input-group ">
 		<form action="{% url 'search_gen_region_results' %}" method="get" class="d-flex" role="search">
 
-			<div class="col-4">
-				<select name="chromosome" id="chr" class="chr">
+			<div class="col-chrom">
+				<h4>Chromosome:</h4>
+				<div class="col-11">
+					<select name="chromosome" id="chr" class="chr">
 				  {%for CHR in chrs%}
 				  <option value="{{CHR}}"> {{CHR}}</option>
 				  {% endfor %}
 				</select>
+				</div>
+				
 			</div>
 		  
-			<div class="col-4 ">
+			<div class="col-pos ">
+				<h4>Start position in chromosome:</h4>
 				<div class="col-11">
 				<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome" name="start" >
 			</div>
 			</div>
 
-			<div class="col-4 ">
+			<div class="col-pos ">
+				<h4>End position in chromosome:</h4>
 				<div class="col-11">
 				<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome" name="end">
 			</div>
