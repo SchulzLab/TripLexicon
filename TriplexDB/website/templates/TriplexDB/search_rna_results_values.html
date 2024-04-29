@@ -34,16 +34,15 @@
 				<tr>
 					<td>{{ rna_symbol }}</td>
 					<td><strong><i>{{ transcript }}</i></strong></td>
-					<td>{{ triplex.transcripttriplexstart }}</td>
-					<td>{{ triplex.transcripttriplexend }}</td>
-					<td>{{ triplex.rem_symbol }}</td>
-					<td>{{ triplex.remtriplexstart }}</td>
-					<td>{{ triplex.remtriplexend }}</td>
-					<td>{{ triplex.transcriptlength }}</td>
-					<td>{{ triplex.remlength }}</td>
+					<td>{{ triplex.rnatriplexstart }}</td>
+					<td>{{ triplex.rnatriplexend }}</td>
+					<td>{{ triplex.dnagenesymbol }}</td>
+					<td>{{ triplex.dnatriplexstart }}</td>
+					<td>{{ triplex.dnatriplexend }}</td>
+					<td>{{ triplex.rnalength }}</td>
+					<td>{{ triplex.dnalength }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
 					<td>{{ triplex.triplexalignerbitscore }}</td>
-					<!-- <td>{{ triplex.triplexalignere }}</td> -->
 					
 					<script>
 						var evalue={{ triplex.triplexalignere }};
@@ -57,34 +56,50 @@
 		</div>
 
 	{% elif rna_symbol %}
+	<div class="table-responsive mx-5">
 		<h4>Results for triplexes involving {{ rna_symbol }}</h4>
 		<br/>
-		<table class="table" id="results_table_transcript">
-		  <thead>
+		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna_symbol" style="text-align: left; width: 100%">
+			<thead class="table-dark" style="background-color: red;">
 		    <tr>
-		      <th scope="col">RNA</th>
-		      <th scope="col">Transcript ID</th>
-		      <th scope="col">REM</th>
-		      <th scope="col">Score</th>
-		      <th scope="col">E</th>
+				<th scope="col">RNA</th>
+				<th scope="col">Transcript ID</th>
+				<th scope="col">Transcript Triplex Start</th>
+				<th scope="col">Transcript Triplex End</th>
+				<th scope="col">REM</th>
+				<th scope="col">REM Triplex Start</th>
+				<th scope="col">REM Triplex End</th>
+				<th scope="col">Transcript Length</th>
+				<th scope="col">REM Length</th>
+				<th scope="col">Score</th>
+				<th scope="col">Bit Score</th>
+				<th scope="col">E Value</th>
 		    </tr>
 		  </thead>
-		  <tbody>
+		  <tbody class="table-group-divider">
 		  	{% for triplex in result %}
 				<tr>
-					<td><i><strong>{{ rna_symbol }}</strong></i></td>
-					<td>{{ triplex.rna }}</td>
-					<td>{{ triplex.rem_symbol }}</td>
+					<td>{{ rna_symbol }}</td>
+					<td><strong><i>{{ triplex.transcriptid }}</i></strong></td>
+					<td>{{ triplex.rnatriplexstart }}</td>
+					<td>{{ triplex.rnatriplexend }}</td>
+					<td>{{ triplex.dnagenesymbol }}</td>
+					<td>{{ triplex.dnatriplexstart }}</td>
+					<td>{{ triplex.dnatriplexend }}</td>
+					<td>{{ triplex.rnalength }}</td>
+					<td>{{ triplex.dnalength }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
+					<td>{{ triplex.triplexalignerbitscore }}</td>
 					<script>
 						var evalue={{ triplex.triplexalignere }};
 						var exp=evalue.toExponential();
-						document.write("<td>"+exp+"</td>")
+						document.write("<td>" + exp + "</td>")
 					</script>
 				</tr>
 			{% endfor %}
 		    </tbody>
 		</table>
+	</div>
 	{% endif %}
     {% else %}
     <h3>No hits for this transcript in Triplexicon!</h3>

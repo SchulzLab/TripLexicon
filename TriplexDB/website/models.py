@@ -8,108 +8,6 @@
 from django.db import models
 
 
-# class DNA(models.Model):
-#     promoterid = models.CharField(db_column='PromoterID', primary_key=True, blank=False, null=False, max_length=150)  # Field name made lowercase. This field type is a guess.
-#     promotertranscriptids = models.CharField(db_column='PromoterTranscriptIDs', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-#     promotergeneids = models.CharField(db_column='PromoterGeneIDs', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-#     promotersymbols = models.CharField(db_column='PromoterSymbols', blank=True, null=True, max_length=150, verbose_name='Promoter Symbol(s)')  # Field name made lowercase. This field type is a guess.
-#     promoterchr = models.CharField(db_column='PromoterChr', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-#     promoterstart = models.IntegerField(db_column='PromoterStart', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-#     promoterend = models.IntegerField(db_column='PromoterEnd', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-#     promoterlength = models.IntegerField(db_column='PromoterLength', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-
-#     def __str__(self):
-#         return self.promotersymbols + ' : ' + self.promotertranscriptids 
-
-#     class Meta:
-#         managed = False
-#         db_table = 'DNA'
-
-
-class rem(models.Model):
-    remid = models.CharField(db_column='REMID', blank=False, primary_key=True, null=False, max_length=150)  # Field name made lowercase. This field type is a guess.
-    remgeneids = models.CharField(db_column='REMGeneIDs', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-    remsymbols = models.CharField(db_column='REMSymbols', blank=True, max_length=150, verbose_name='REM Symbol(s)')  # Field name made lowercase. This field type is a guess.
-    remchr = models.CharField(db_column='REMChr', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-    remstart = models.IntegerField(db_column='REMStart', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    remend = models.IntegerField(db_column='REMEnd', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    remlength = models.IntegerField(db_column='REMLength', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-
-    def __str__(self):
-        return self.remid + ' : ' + self.remsymbols 
-
-    class Meta:
-        managed = False
-        db_table = 'rem'
-
-
-class rna(models.Model):
-    transcriptid = models.CharField(db_column='TranscriptID', primary_key=True, blank=False, null=False, max_length=150)  # Field name made lowercase. This field type is a guess.
-    transcriptgeneid = models.CharField(db_column='TranscriptGeneID', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-    transcriptgenesymbol = models.CharField(db_column='TranscriptGeneSymbol', blank=True, null=True, max_length=150, verbose_name='RNA Symbol')  # Field name made lowercase. This field type is a guess.
-    transcriptchr = models.CharField(db_column='TranscriptChr', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-    transcriptstart = models.IntegerField(db_column='TranscriptStart', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    transcriptend = models.IntegerField(db_column='TranscriptEnd', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    transcriptlength = models.IntegerField(db_column='TranscriptLength', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    transcriptbiotype = models.CharField(db_column='TranscriptBiotype', blank=True, null=True, max_length=150)  # Field name made lowercase. This field type is a guess.
-
-    def __str__(self):
-        return self.transcriptgenesymbol + ' : ' + self.transcriptid 
-
-
-    class Meta:
-        managed = False
-        db_table = 'rna'
-
-# class Triplexaligner(models.Model):
-#     triplexid = models.CharField(db_column='TriplexID', primary_key=True, blank=False, null=False, max_length=150)
-#     rna = models.ForeignKey(RNA, blank=False, null=True, on_delete=models.SET_NULL, db_column='TranscriptID')  # Field name made lowercase.
-#     promoter = models.ForeignKey(DNA, blank=False, null=True, on_delete=models.SET_NULL, db_column='PromoterID')  # Field name made lowercase.
-#     transcripttriplexstart = models.IntegerField(db_column='TranscriptTriplexStart', blank=True, null=True)  # Field name made lowercase.
-#     transcripttriplexend = models.IntegerField(db_column='TranscriptTriplexEnd', blank=True, null=True)  # Field name made lowercase.
-#     promotertriplexstart = models.IntegerField(db_column='PromoterTriplexStart', blank=True, null=True)  # Field name made lowercase.
-#     promotertriplexend = models.IntegerField(db_column='PromoterTriplexEnd', blank=True, null=True)  # Field name made lowercase.
-#     transcriptlength = models.IntegerField(db_column='TranscriptLength', blank=True, null=True)  # Field name made lowercase.
-#     promoterlength = models.IntegerField(db_column='PromoterLength', blank=True, null=True)  # Field name made lowercase.
-#     triplexalignerscore = models.FloatField(db_column='TriplexAlignerScore', blank=True, null=True, max_length=150, verbose_name='TriplexAligner Score')  # Field name made lowercase.
-#     lambda_field = models.FloatField(db_column='Lambda', blank=True, null=True, max_length=150)  # Field name made lowercase. Field renamed because it was a Python reserved word.
-#     k = models.FloatField(db_column='K', blank=True, null=True, max_length=150)  # Field name made lowercase.
-#     triplexalignerbitscore = models.FloatField(db_column='TriplexAlignerBitScore', blank=True, null=True, max_length=150)  # Field name made lowercase.
-#     triplexalignere = models.FloatField(db_column='TriplexAlignerE', blank=True, null=True, max_length=150, verbose_name='TriplexAligner E')  # Field name made lowercase.
-#     triplexalignercode = models.CharField(db_column='Code', blank=True, null=True, max_length=10, verbose_name='Code')
-
-#     class Meta:
-#         managed = False
-#         db_table = 'TriplexAligner'
-
-
-class triplexaligner(models.Model):
-    triplexid = models.CharField(db_column='TriplexID', primary_key=True, blank=False, null=False, max_length=150)
-    rna = models.ForeignKey(rna, blank=False, null=True, on_delete=models.SET_NULL, db_column='TranscriptID',\
-     related_name = 'rna_triplexid')  # Field name made lowercase.
-    rem = models.ForeignKey(rem, blank=False, null=True, on_delete=models.SET_NULL, db_column='REMID',\
-     related_name = 'rem_triplexid')  # Field name made lowercase.
-    transcripttriplexstart = models.IntegerField(db_column='TranscriptTriplexStart', blank=True, null=True)  # Field name made lowercase.
-    transcripttriplexend = models.IntegerField(db_column='TranscriptTriplexEnd', blank=True, null=True)  # Field name made lowercase.
-    remtriplexstart = models.IntegerField(db_column='REMTriplexStart', blank=True, null=True)  # Field name made lowercase.
-    remtriplexend = models.IntegerField(db_column='REMTriplexEnd', blank=True, null=True)  # Field name made lowercase.
-    transcriptlength = models.IntegerField(db_column='TranscriptLength', blank=True, null=True)  # Field name made lowercase.
-    remlength = models.IntegerField(db_column='REMLength', blank=True, null=True)  # Field name made lowercase.
-    triplexalignerscore = models.FloatField(db_column='TriplexAlignerScore', blank=True, null=True, max_length=150, verbose_name='TriplexAligner Score')  # Field name made lowercase.
-    lambda_field = models.FloatField(db_column='Lambda', blank=True, null=True, max_length=150)  # Field name made lowercase. Field renamed because it was a Python reserved word.
-    k = models.FloatField(db_column='K', blank=True, null=True, max_length=150)  # Field name made lowercase.
-    triplexalignerbitscore = models.FloatField(db_column='TriplexAlignerBitScore', blank=True, null=True, max_length=150)  # Field name made lowercase.
-    triplexalignere = models.FloatField(db_column='TriplexAlignerE', blank=True, null=True, max_length=150, verbose_name='TriplexAligner E')  # Field name made lowercase.
-    triplexalignercode = models.CharField(db_column='Code', blank=True, null=True, max_length=10, verbose_name='Code')
-
-    def __str__(self):
-        return self.triplexid 
-
-    class Meta:
-        managed = False
-        db_table = 'triplexaligner'
-
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -220,8 +118,157 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+class Dna(models.Model):
+    dnaid = models.TextField(db_column='DNAID', primary_key=True, blank=True, null=False)   
+    featureid = models.TextField(db_column='FeatureID', blank=True, null=True)   
+    type = models.TextField(db_column='Type', blank=True, null=True)   
+    geneid = models.TextField(db_column='GeneID', blank=True, null=True)   
+    genesymbol = models.TextField(db_column='GeneSymbol', blank=True, null=True)   
+    chr = models.TextField(db_column='Chr', blank=True, null=True)   
+    start = models.TextField(db_column='Start', blank=True, null=True)   
+    end = models.TextField(db_column='End', blank=True, null=True)   
+    length = models.TextField(db_column='Length', blank=True, null=True)   
+
+    class Meta:
+        managed = False
+        db_table = 'dna'
 
 
+class Rna(models.Model):
+    rnaid = models.TextField(db_column='RNAID', primary_key=True, blank=True, null=False)   
+    transcriptid = models.TextField(db_column='TranscriptID', blank=True, null=True)   
+    transcriptgeneid = models.TextField(db_column='TranscriptGeneID', blank=True, null=True)   
+    transcriptgenesymbol = models.TextField(db_column='TranscriptGeneSymbol', blank=True, null=True)   
+    transcriptchr = models.TextField(db_column='TranscriptChr', blank=True, null=True)   
+    transcriptstart = models.IntegerField(db_column='TranscriptStart', blank=True, null=True)   
+    transcriptend = models.IntegerField(db_column='TranscriptEnd', blank=True, null=True)   
+    transcriptlength = models.IntegerField(db_column='TranscriptLength', blank=True, null=True)   
+    transcriptbiotype = models.TextField(db_column='TranscriptBiotype', blank=True, null=True)   
+    transcripttriplexcount = models.IntegerField(db_column='TranscriptTriplexCount', blank=True, null=True)   
+
+    class Meta:
+        managed = False
+        db_table = 'rna'
+
+class Triplexaligner(models.Model):
+    rnaid = models.ForeignKey(Rna, on_delete=models.SET_NULL, db_column='RNAID', blank=True, null=True,\
+     related_name = 'triplex_rnaid') 
+    dnaid = models.ForeignKey(Dna, on_delete=models.SET_NULL, db_column='DNAID', blank=True, null=True,\
+     related_name = 'triplex_dnaid') 
+    rnatriplexstart = models.FloatField(db_column='RNATriplexStart', blank=True, null=True)  
+    rnatriplexend = models.FloatField(db_column='RNATriplexEnd', blank=True, null=True)  
+    dnatriplexstart = models.FloatField(db_column='DNATriplexStart', blank=True, null=True)  
+    dnatriplexend = models.FloatField(db_column='DNATriplexEnd', blank=True, null=True) 
+    rnalength = models.IntegerField(db_column='RNALength', blank=True, null=True)  
+    dnalength = models.IntegerField(db_column='DNALength', blank=True, null=True)  
+    triplexalignerscore = models.FloatField(db_column='TriplexAlignerScore', blank=True, null=True)  
+    code = models.TextField(db_column='Code', blank=True, null=True)  
+    lambda_field = models.FloatField(db_column='Lambda', blank=True, null=True) 
+    k = models.FloatField(db_column='K', blank=True, null=True)  
+    triplexalignerbitscore = models.FloatField(db_column='TriplexAlignerBitScore', blank=True, null=True)  
+    triplexalignere = models.FloatField(db_column='TriplexAlignerE', blank=True, null=True)  
+    triplexid = models.TextField(db_column='TriplexID', blank=True, null=True)  
+    genometriplexchr = models.TextField(db_column='GenomeTriplexChr', blank=True, null=True)  
+    genomednastart = models.IntegerField(db_column='GenomeDNAStart', blank=True, null=True)  
+    genometriplexstart = models.FloatField(db_column='GenomeTriplexStart', blank=True, null=True)  
+    genometriplexend = models.FloatField(db_column='GenomeTriplexEnd', blank=True, null=True)  
+
+    class Meta:
+        managed = False
+        db_table = 'triplexaligner'
+
+
+
+
+
+
+
+
+
+
+
+
+########## SILK MODELS #########################################################################################################
+
+
+class SilkProfile(models.Model):
+    name = models.CharField(max_length=300)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField(blank=True, null=True)
+    time_taken = models.FloatField(blank=True, null=True)
+    file_path = models.CharField(max_length=300)
+    line_num = models.IntegerField(blank=True, null=True)
+    end_line_num = models.IntegerField(blank=True, null=True)
+    func_name = models.CharField(max_length=300)
+    exception_raised = models.BooleanField()
+    dynamic = models.BooleanField()
+    request = models.ForeignKey('SilkRequest', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'silk_profile'
+
+
+class SilkProfileQueries(models.Model):
+    profile = models.ForeignKey(SilkProfile, models.DO_NOTHING)
+    sqlquery = models.ForeignKey('SilkSqlquery', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'silk_profile_queries'
+        unique_together = (('profile', 'sqlquery'),)
+
+
+class SilkRequest(models.Model):
+    id = models.CharField(primary_key=True, max_length=36)
+    path = models.CharField(max_length=190)
+    query_params = models.TextField()
+    raw_body = models.TextField()
+    body = models.TextField()
+    method = models.CharField(max_length=10)
+    start_time = models.DateTimeField()
+    view_name = models.CharField(max_length=190, blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    time_taken = models.FloatField(blank=True, null=True)
+    encoded_headers = models.TextField()
+    meta_time = models.FloatField(blank=True, null=True)
+    meta_num_queries = models.IntegerField(blank=True, null=True)
+    meta_time_spent_queries = models.FloatField(blank=True, null=True)
+    pyprofile = models.TextField()
+    num_sql_queries = models.IntegerField()
+    prof_file = models.CharField(max_length=300)
+
+    class Meta:
+        managed = False
+        db_table = 'silk_request'
+
+
+class SilkResponse(models.Model):
+    status_code = models.IntegerField()
+    raw_body = models.TextField()
+    body = models.TextField()
+    encoded_headers = models.TextField()
+    request = models.OneToOneField(SilkRequest, models.DO_NOTHING)
+    id = models.CharField(primary_key=True, max_length=36)
+
+    class Meta:
+        managed = False
+        db_table = 'silk_response'
+
+
+class SilkSqlquery(models.Model):
+    query = models.TextField()
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    time_taken = models.FloatField(blank=True, null=True)
+    traceback = models.TextField()
+    request = models.ForeignKey(SilkRequest, models.DO_NOTHING, blank=True, null=True)
+    identifier = models.IntegerField()
+    analysis = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'silk_sqlquery'
 
 
 

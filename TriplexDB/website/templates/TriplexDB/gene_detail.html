@@ -1,4 +1,5 @@
 {% extends 'TriplexDB/base.html' %}
+{% load static %} 
 
     <head>
         <title>Gene detail view</title>
@@ -20,6 +21,7 @@
 		      <th scope="col">Transcript End</th>
 		      <th scope="col">Transcript Length</th>
 			  <th scope="col">Transcript Biotype</th>
+			  <th scope="col">Transcript Triplexcount</th>
 		    </tr>
 		  </thead>
 		  <tbody class="table-group-divider">
@@ -33,12 +35,16 @@
 					<td>{{ rna.transcriptend }}</td>
 					<td>{{ rna.transcriptlength }}</td>
 					<td>{{ rna.transcriptbiotype }}</td>
+					<td>{{ rna.transcripttriplexcount }}</td>
 				</tr>
 			{% endfor %}
 		    </tbody>
 		</table>
 		</div>
-
+	<div>
+		<img src="{% static plot_path %}" width="1200" 
+		height="500">
+	</div>
 	
     {% else %}
     <h3>No hits for this transcript in Triplexicon!</h3>

@@ -34,14 +34,14 @@
 		  	{% for triplex in result %}
 				<tr>
 					<td><a href="{% url 'gene_detail' triplex.transcriptgenesymbol %}">{{triplex.transcriptgenesymbol}}</a></td>
-					<td>{{ triplex.rna }}</td>
-					<td>{{ triplex.transcripttriplexstart }}</td>
-					<td>{{ triplex.transcripttriplexend }}</td>
-					<td><strong><i>{{ triplex.rem_symbol }}</i></strong></td>
-					<td>{{ triplex.remtriplexstart }}</td>
-					<td>{{ triplex.remtriplexend }}</td>
-					<td>{{ triplex.transcriptlength }}</td>
-					<td>{{ triplex.remlength }}</td>
+					<td>{{ triplex.transcriptid }}</td>
+					<td>{{ triplex.rnatriplexstart }}</td>
+					<td>{{ triplex.rnatriplexend }}</td>
+					<td><strong><i>{{ triplex.dnagenesymbol }}</i></strong></td>
+					<td>{{ triplex.dnatriplexstart }}</td>
+					<td>{{ triplex.dnatriplexend }}</td>
+					<td>{{ triplex.rnalength }}</td>
+					<td>{{ triplex.dnalength }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
 					<td>{{ triplex.triplexalignerbitscore }}</td>
 					

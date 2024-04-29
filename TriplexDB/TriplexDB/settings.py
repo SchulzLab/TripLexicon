@@ -81,8 +81,7 @@ WSGI_APPLICATION = 'TriplexDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': '/Users/christina/Documents/triplex/TriplexDB_transcripts_vs_REMs.db',
-        #'NAME': '/mnt/d/TriplexDB/TriplexDB_2.db',
+	    'NAME': '/Users/christina/Documents/triplex/TripLexicon_lncRNAs.db',
     }
 }
 

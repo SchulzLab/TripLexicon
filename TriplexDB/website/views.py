@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from .models import rem
-#from .models import DNA
-from .models import rna
-from .models import triplexaligner, rna, rem
+from .models import Dna as dna
+from .models import Rna as rna
+from .models import Triplexaligner as triplexaligner
 from django_tables2 import SingleTableView
 #from .tables import results_table
 from django.db.models import Q
@@ -16,7 +15,7 @@ from django.views import generic
 def search_promoter(request):
 	if request.method == "POST":
 		searched = request.POST['searched']
-		result = triplexaligner.objects.filter(rem__remsymbols=searched).order_by('triplexalignere')
+		result = triplexaligner.objects.filter(dnaid__genesymbol=searched).order_by('triplexalignere')
 		#result = Triplexaligner.objects.filter(promoter__promotersymbols=searched).order_by('triplexalignere')
 
 		return render(request,
@@ -36,15 +35,18 @@ def search_rna_results(request):
 def search_transcript_values(request):
 	if request.method == "POST":
 		transcript = request.POST['transcript']
-		rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')[0]
-		triplexes = triplexaligner.objects.filter(Q(rna__exact=transcript)).distinct().order_by('triplexalignere')\
-		.values('triplexid','rna', 'transcripttriplexstart', 'transcripttriplexend', 'remtriplexstart', 'rem', 'remtriplexend',\
-			'transcriptlength', 'remlength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-		rem_id = [triplex["rem"] for triplex in triplexes]
-		rem_result = rem.objects.filter(remid__in = rem_id).values('remsymbols', 'remid')
-		for triplex in triplexes:
-			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
-							 if triplex['rem'] == rem_instance['remid']][0]
+		rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
+		if rna_result:
+			rna_result = rna_result[0]
+		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
+		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		dna_id = [triplex['dnaid'] for triplex in triplexes]
+		dna_result = dna.objects.filter(dnaid__in = dna_id).values('genesymbol', 'dnaid')
+		if triplexes:
+			for triplex in triplexes:
+				triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
+								if triplex['dnaid'] == dna_instance['dnaid']][0]
 		
 		if triplexes:
 			return render(request,
@@ -66,25 +68,27 @@ def search_transcript_values(request):
 def search_rna_symbol_values(request):
 	if request.method == "POST":
 		rna_symbol = request.POST['rna_symbol']
-		rems_to_exclude = rem.objects.filter(remsymbols__exact = rna_symbol).values('remid')
-		rems_to_exclude = [rem_instance['remid'] for rem_instance in rems_to_exclude]
-		transcript_ids = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid')
-		transcript_ids = [tid['transcriptid'] for tid in transcript_ids]
-		triplexes = triplexaligner.objects.filter(Q(rna__in=transcript_ids))\
-		.exclude(Q(rem__in=rems_to_exclude)).order_by('triplexalignere')[:50]\
-		.values('triplexalignerscore', 'triplexalignere', 'rem', 'rna')
-		rem_ids = [triplex["rem"] for triplex in triplexes]
-		rem_result = rem.objects.filter(remid__in = rem_ids).distinct().values('remsymbols', 'remid')
+		dnas_to_exclude = dna.objects.filter(genesymbol__exact = rna_symbol).values('dnaid')
+		dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+		transcripts = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
+		transcript_ids = [tid['transcriptid'] for tid in transcripts]
+		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__in=transcript_ids))\
+		.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
+		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		dna_ids = [triplex['dnaid'] for triplex in triplexes]
+		dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
 		for triplex in triplexes:
-			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
-							 if triplex['rem'] == rem_instance['remid']][0]
+			triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
+							 if triplex['dnaid'] == dna_instance['dnaid']][0]
+			triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
+							 if triplex['rnaid'] == rna_instance['rnaid']][0]
 			
 		
 		return render(request,
 			'TriplexDB/search_rna_results_values.html',
 			{'result':triplexes,
 			'rna_symbol': rna_symbol,
-			#'rem_symbol': rem_result['remsymbols'],
 			})
 
 	else:
@@ -108,28 +112,31 @@ def get_bed(chromosome, start, end):
 	return query_region
 
 def gen_region_search(query_bedtool):
-	rem_regions = BedTool('/Users/christina/Documents/triplex/TriplexDB/website/static/rem_regions.bed')
-	rem_query_intersection = rem_regions.intersect(query_bedtool, wa = True, f = 0.5)
-	rem_query_list = []
-	for rem_instance in rem_query_intersection:
-		rem_query_list.append(rem_instance.name)
+	dna_regions = BedTool('/Users/christina/Documents/triplex/TriplexDB/website/static/dna_regions.bed')
+	dna_query_intersection = dna_regions.intersect(query_bedtool, wa = True, f = 0.5)
+	dna_query_list = []
+	for dna_instance in dna_query_intersection:
+		print(dna_instance.name)
+		dna_query_list.append(dna_instance.name)
 
-	triplexes = triplexaligner.objects.filter(Q(rem__remid__in=rem_query_list))\
-	.values('triplexid','rna', 'transcripttriplexstart', 'transcripttriplexend', 'remtriplexstart', 'rem', 'remtriplexend',\
-				'transcriptlength', 'remlength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+	triplexes = triplexaligner.objects.filter(Q(dnaid__in=dna_query_list))\
+	.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
 	
 	#query RNA objects
-	transcript_ids = [triplex['rna'] for triplex in triplexes]
-	transcript_gene_symbols = rna.objects.filter(transcriptid__in = transcript_ids).distinct().values('transcriptgenesymbol', 'transcriptid')
+	rna_ids = [triplex['rnaid'] for triplex in triplexes]
+	transcript_gene_symbols = rna.objects.filter(rnaid__in = rna_ids).distinct().values('transcriptgenesymbol', 'transcriptid', 'rnaid')
 	
 	#query REMs, new rem ids, only the ones having triplexes
-	rem_ids = [triplex["rem"] for triplex in triplexes]
-	rem_result = rem.objects.filter(remid__in = rem_ids).distinct().values('remsymbols', 'remid')
+	dna_ids = [triplex['dnaid'] for triplex in triplexes]
+	dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
 	for triplex in triplexes:
 			triplex['transcriptgenesymbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcript_gene_symbols\
-							 if triplex['rna'] == rna_instance['transcriptid']][0]
-			triplex['rem_symbol'] = [rem_instance['remsymbols'] for rem_instance in rem_result\
-							 if triplex['rem'] == rem_instance['remid']][0]
+							 if triplex['rnaid'] == rna_instance['rnaid']][0]
+			triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcript_gene_symbols\
+							 if triplex['rnaid'] == rna_instance['rnaid']][0]
+			triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
+							 if triplex['dnaid'] == dna_instance['dnaid']][0]
 	return triplexes
 
 
@@ -177,6 +184,8 @@ def home(request):
 
 
 def gene_detail(request, pk):
-	rna_result = rna.objects.filter(transcriptgenesymbol__exact = pk).distinct().values()
-	return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result})
+	rna_result = rna.objects.filter(transcriptgenesymbol__exact = pk).distinct().order_by('transcripttriplexcount').values()
+	high_triplex_rna = rna_result[0]['transcriptid']
+	plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
+	return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result, 'plot_path': plot_path})
 
