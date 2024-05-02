@@ -13,7 +13,7 @@
 		<h4>Results for triplexes involving {{ transcript }}</h4>
 		<br/>
 		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
-		  <thead class="table-dark" style="background-color: red;">
+			<thead class="table-dark" style="background-color: red;">
 		    <tr>
 		      <th scope="col">RNA</th>
 		      <th scope="col">Transcript ID</th>
@@ -43,7 +43,6 @@
 					<td>{{ triplex.dnalength }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
 					<td>{{ triplex.triplexalignerbitscore }}</td>
-					
 					<script>
 						var evalue={{ triplex.triplexalignere }};
 						var exp=evalue.toExponential();
@@ -59,7 +58,7 @@
 	<div class="table-responsive mx-5">
 		<h4>Results for triplexes involving {{ rna_symbol }}</h4>
 		<br/>
-		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna_symbol" style="text-align: left; width: 100%">
+		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
 			<thead class="table-dark" style="background-color: red;">
 		    <tr>
 				<th scope="col">RNA</th>
@@ -100,9 +99,10 @@
 		    </tbody>
 		</table>
 	</div>
-	{% endif %}
+	
     {% else %}
     <h3>No hits for this transcript in Triplexicon!</h3>
     {% endif %}
+	{% endif %}
 
 {% endblock %}	

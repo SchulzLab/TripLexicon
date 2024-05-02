@@ -11,21 +11,34 @@ from django.templatetags.static import static
 from django.views import generic
 
 # Create your views here.
+def search_dna_home(request):
+	return render(request, 'TriplexDB/search_dna_home.html', {})
 
-def search_promoter(request):
+
+def search_dna(request):
 	if request.method == "POST":
-		searched = request.POST['searched']
-		result = triplexaligner.objects.filter(dnaid__genesymbol=searched).order_by('triplexalignere')
-		#result = Triplexaligner.objects.filter(promoter__promotersymbols=searched).order_by('triplexalignere')
+		dna_symbol = request.POST['dna_symbol']
+	triplexes = triplexaligner.objects.filter(dnaid__genesymbol=dna_symbol).distinct().order_by('triplexalignere')\
+	.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+		'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+	rnaids = [triplex['rnaid'] for triplex in triplexes]
+	transcripts = rna.objects.filter(rnaid__in=rnaids).values('transcriptid', 'rnaid', 'transcriptgenesymbol')
+	if triplexes:
+		for triplex in triplexes:
+			triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
+							if triplex['rnaid'] == rna_instance['rnaid']][0]
+			triplex['rna_symbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcripts\
+							if triplex['rnaid'] == rna_instance['rnaid']][0]
 
+		
 		return render(request,
-			'TriplexDB/search_promoter.html',
-			{'searched':searched,
-			'result':result})
+			'TriplexDB/search_dna_results_values.html',
+			{'result':triplexes,
+			'dna_symbol': dna_symbol})
 
 	else:
 		return render(request,
-			'TriplexDB/search_promoter.html',
+			'TriplexDB/search_dna_results_values.html',
 			{})
 
 def search_rna_results(request):
