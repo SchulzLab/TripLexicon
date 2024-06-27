@@ -1,0 +1,71 @@
+{% extends 'TriplexDB/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+	html, body {padding:0; margin:0; height:100%;}
+	footer{position: absolute; bottom: 0; left: 0; right: 0;}
+	.img-fluid {
+            width: 200px; /* Set a specific width for better text wrapping */
+            height: auto;
+            float: right;
+            margin-left: 20px;
+            margin-bottom: 20px; /* Add some bottom margin to clear the text */
+        }
+</style>	
+
+	<div class="container mt-5">
+		<div class="row">
+		  <div class="col-12" style="text-align: center;">
+			<h4><p class="text-xl-start" style="margin-left: 30px;">Welcome to TripLexicon, the database of RNA:DNA:DNA triple helix formation powered by TriplexAligner!</p></h4>
+		  </div>
+		</div>
+	  
+		<div class="row">
+		  <div class="col-12" style="text-align: justify;">
+	
+	<p style="display:inline-block;">
+<img class='img-fluid' src="{% static 'images/Triplex_schematic_homepage.svg' %}" style="width: 50%; height: auto;" alt='Triplex_schem' align="right"/>
+TripLexicon is a database holding predicted human gene regulatory RNA:DNA:DNA triplexes.
+ The predictions are between GENCODE v45/Ensembl release 112-annotated lncRNAs and a variety of gene regulatory elements.
+ In the current version, TripLexicon holds triplexes predicted to form between GRCh38.p14 promoter regions (transcription start site +2500/-500 base pairs),
+ and gene-linked regulatory elements from EpiRegio, which were output from TriplexAligner.</br>
+RNA:DNA:DNA triplexes are a form of RNA-DNA interaction which have been described in several gene regulatory processes. 
+In a triplex, the single-stranded RNA binds within the major groove of the double-stranded DNA through Hoogsteen base pairing, 
+while the DNA conformation remains intact (unlike in the formation of R-loops, another type of RNA-DNA interaction).
+ Hoogsteen base pairing, and therefore triplex formation, are sequence-specific.
+ This has led to the development of methods which attempt to predict whether triplex formation is likely to take place between input RNA and DNA sequences.</br>
+The triplex prediction method TriplexAligner was developed using triplexRNA- and triplexDNA-sequencing data generated from cells in culture. 
+The approach was shown to outperform previously published methods (Triplexator, LongTarget) in the accurate recall of RNA-DNA interactions detected in RADICL-sequencing and Red-C data.
+ By using TriplexAligner to predict triplex formation between human lncRNAs and gene regulatory elements, we have assembled TripLexicon, 
+a database of predicted gene regulatory RNA:DNA:DNA triplexes.
+</p>
+ 	</div>
+		</div>
+		<div class="row">
+                  <div class="col-12" style="text-align: center;">
+                        <h4><p class="text-xl-start" style="margin-left: 30px;">Explore the triplexicon queries
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12" style="text-align: justify;">
+                        <ul>
+				<li><strong>RNA Query:</strong> explore predicted triplexes by RNA gene or transcripts
+				</li>
+
+				<li><strong>Target Query:</strong> explore predicted triplexes by DNA target genes
+                                </li>
+
+				<li><strong>Region Query:</strong> explore predicted triplexes by genomic regions in which DNA target elements reside 
+                                </li>
+			</ul>
+                  </div>
+		</div>
+	</div>
+{% endblock %}
+
+<footer>
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>
