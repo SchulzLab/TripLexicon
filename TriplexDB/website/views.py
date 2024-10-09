@@ -24,7 +24,9 @@ def search_dna_home(request):
 def search_dna_mouse(request):
 	if request.method == 'GET':
 		species = request.GET.get('species')
-		dna_symbol = request.GET.get('dna_symbol').capitalize()
+		dna_symbol = request.GET.get('dna_symbol')
+		if not dna_symbol[0].isdigit() and 'Rik' not in dna_symbol:
+			dna_symbol = dna_symbol.capitalize()
 		if species == 'Human':
 			mouse = False
 			dna_symbol = dna_symbol.upper()
@@ -120,20 +122,40 @@ def search_transcript_values(request):
 
 
 def search_rna_symbol_values(request):
-	if request.method == "POST":
-		rna_symbol = request.POST['rna_symbol'].upper()
-		dnas_to_exclude = dna.objects.filter(genesymbol__exact = rna_symbol).values('dnaid')
-		dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
-		transcripts = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
-		transcript_ids = [tid['transcriptid'] for tid in transcripts]
-		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__in=transcript_ids))\
-		.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
-		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
-			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-		nr_triplexes = len(triplexes)
-		dna_ids = [triplex['dnaid'] for triplex in triplexes]
-		dnas_targeted_by_trans = len(set(dna_ids))
-		dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
+	if request.method == 'GET':
+		species = request.GET.get('species')
+		rna_symbol = request.GET.get('rna_symbol')
+		if species == 'Mouse':
+			mouse = True
+			if not rna_symbol[0].isdigit() and 'Rik' not in rna_symbol:
+				rna_symbol = request.POST['rna_symbol'].capitalize()
+			dnas_to_exclude = dna.objects.using('mouse').filter(genesymbol__exact = rna_symbol).values('dnaid')
+			dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+			transcripts = rna.objects.using('mouse').filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
+			transcript_ids = [tid['transcriptid'] for tid in transcripts]
+			triplexes = triplexaligner.objects.using('mouse').filter(Q(rnaid__transcriptid__in=transcript_ids))\
+			.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = len(triplexes)
+			dna_ids = [triplex['dnaid'] for triplex in triplexes]
+			dnas_targeted_by_trans = len(set(dna_ids))
+			dna_result = dna.objects.using('mouse').filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
+		elif species == 'Human':
+			mouse = False
+			rna_symbol = rna_symbol.upper()
+			dnas_to_exclude = dna.objects.filter(genesymbol__exact = rna_symbol).values('dnaid')
+			dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+			transcripts = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
+			transcript_ids = [tid['transcriptid'] for tid in transcripts]
+			triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__in=transcript_ids))\
+			.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = len(triplexes)
+			dna_ids = [triplex['dnaid'] for triplex in triplexes]
+			dnas_targeted_by_trans = len(set(dna_ids))
+			dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
 		if triplexes:
 			for triplex in triplexes:
 				triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
@@ -148,6 +170,7 @@ def search_rna_symbol_values(request):
 				'nr_triplexes': nr_triplexes,
 				'nr_targets':dnas_targeted_by_trans,
 				'rna_symbol': rna_symbol,
+				'mouse': mouse,
 				})
 		else:
 			return render(request,
@@ -282,7 +305,7 @@ def gene_detail_search(request):
 		try:
 			species = request.GET.get('species')
 			gene_symbol = request.GET.get('gene_symbol')
-			if not gene_symbol[0].isdigit():
+			if not gene_symbol[0].isdigit() and 'Rik' not in gene_symbol:
 				gene_symbol = gene_symbol.capitalize()
 			if gene_symbol.startswith('ENS'):
 				gene_symbol = gene_symbol.upper()
@@ -331,34 +354,3 @@ def transcript_detail(request, pk):
 																})
 
 
-"""def gene_detail_search(request):
-	if request.method =='POST':
-		try:
-			gene_symbol = request.POST['gene_symbol'].capitalize()
-			if gene_symbol.startswith('ENS'):
-				gene_symbol = gene_symbol.upper()
-			rna_result = rna.objects.using('mouse').filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
-			if len(rna_result) > 0:
-				mouse = True
-			else:
-				gene_symbol = gene_symbol.upper()
-				rna_result = rna.objects.filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
-				mouse = False
-			nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
-			nr_triplexes = sum(nr_triplexes)
-			if len(rna_result) > 0:
-				high_triplex_rna = rna_result[0]['transcriptid']
-				if mouse == False:
-					plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
-				else:
-					plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
-				return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result,
-														    'plot_path': plot_path,
-															'gene': gene_symbol,
-															'nr_triplexes': nr_triplexes,
-															'mouse': mouse,
-															})
-			else:
-		 		return render(request, 'TriplexDB/gene_detail.html' , {})
-		except:
-			return render(request, 'TriplexDB/gene_detail.html' , {})"""

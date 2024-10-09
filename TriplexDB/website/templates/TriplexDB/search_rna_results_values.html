@@ -72,7 +72,11 @@
 
 	{% elif rna_symbol %}
 	<div class="table-responsive mx-5">
-		<h4>Triplex statistics for RNA Gene {{ rna_symbol }}</h4>
+		{% if mouse %}
+		<h4>Triplex statistics for mouse RNA Gene {{ rna_symbol }}</h4>
+		{% else %}
+		<h4>Triplex statistics for human RNA Gene {{ rna_symbol }}</h4>
+		{% endif %}
 		<br/>
 		<h5>{{ rna_symbol }} transcripts are predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>
                 <br/>
