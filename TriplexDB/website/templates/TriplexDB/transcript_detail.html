@@ -2,7 +2,7 @@
 {% load static %} 
 
     <head>
-        <title>Gene detail view</title>
+        <title>Transcript detail view</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
  <style>
@@ -14,23 +14,13 @@
             display: block;
             margin: 0 auto;
         }
-
-	figure {
-    		display: inline-block; /* Ensure the figure element is as wide as its content */
-	}
-	
-	figcaption{
-	text-align:center;
-	width: 100%;
-	}
     </style>
+
 {% block content %}
 {% if object %}
     <div class="table-responsive mx-5">
-	<h4>Results for predicted triplexes involving transcripts of Gene {{ gene }}</h4>
-	<br/>
-	<h4>RNA Gene {{ gene }} is predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h4>
-	<br/>
+		<h4>Results for predicted triplexes involving transcript {{ transcript }}</h4>
+		<br/>
 		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
 		  <thead class="table-dark" style="background-color: red;">
 		    <tr>
@@ -50,7 +40,7 @@
 				<tr>
 					<td>{{rna.transcriptgeneid}}</td>
 					<td>{{rna.transcriptgenesymbol}}</td>
-					<td><a href="{% url 'transcript_detail' rna.transcriptid %}">{{rna.transcriptid}}</a></td>
+					<td><strong><i>{{rna.transcriptid}}</i></strong></td>
 					<td>{{ rna.transcriptchr }}</td>
 					<td>{{ rna.transcriptstart }}</td>
 					<td>{{ rna.transcriptend }}</td>
@@ -63,16 +53,22 @@
 		</table>
 		</div>
 	<div class="container">
-		<h5>      Triplex forming region prediction for maximally scoring transcript</h5>
-		<figure>
-			<img src="{% static plot_path %}" style="width: 50%; height: auto;">
-			<figcaption style="width: 50%; height: auto;">Predicted triplex forming regions as represented by the summed negative logE values estimated by TriplexAligner
-			 are visualized along the length of the transcript in base pairs. Dark red indicates higher significance.</figcaption>
-		</figure>
-	</div>
-	
+                <h5>  Triplex forming region prediction for transcript {{transcript}}</h5>
+                <figure>
+                        <img src="{% static plot_path %}" style="width: 50%; height: auto;">
+                        <figcaption style="width: 50%; height: auto;">Predicted triplex forming regions as represented by the summed negative logE values estimated by TriplexAligner
+                         are visualized along the length of the transcript in base pairs. Dark red indicates higher significance.</figcaption>
+                </figure>
+        </div>
+
     {% else %}
-    <h3>No hits for this RNA in TripLexicon!</h3>
+    <h3>No hits for this transcript in Triplexicon!</h3>
     {% endif %}
 
-{% endblock %}	
+{% endblock %}
+<footer>
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>
+

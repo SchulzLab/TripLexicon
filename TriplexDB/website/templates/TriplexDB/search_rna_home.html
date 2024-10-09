@@ -2,8 +2,15 @@
 
 {% block content %}
 
+{% include 'TriplexDB/search_rna_symbol_summary.html' %}
+
 {% include 'TriplexDB/search_rna_symbol.html' %}
 
 {% include 'TriplexDB/search_transcript.html' %}
 
 {% endblock %}
+<footer class="footer" id="footer">
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>

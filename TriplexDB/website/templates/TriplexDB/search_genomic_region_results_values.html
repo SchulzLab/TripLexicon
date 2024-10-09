@@ -11,8 +11,15 @@
     <div class="table-responsive mx-5">
 		{% if chr %}
 		<h4>Results for triplexes in the genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
-		{% endif %}
 		<br/>
+		 <h5>{{ nr_triplexes }} different triplexes are predicted to be formed with DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
+		<br/>
+		{% else %}
+		<h4>Results for triplexes in the genomic regions of the provided bed file</h4>
+		<br/>
+		<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with DNA target elements in the regions supplied in the given bed file.</h5>
+		<br/>
+		{% endif %}
 		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
 		  <thead class="table-dark" style="background-color: red;">
 		    <tr>
@@ -20,11 +27,12 @@
 		      <th scope="col">Transcript ID</th>
 		      <th scope="col">Transcript Triplex Start</th>
 		      <th scope="col">Transcript Triplex End</th>
-		      <th scope="col">REM</th>
-		      <th scope="col">REM Triplex Start</th>
-		      <th scope="col">REM Triplex End</th>
+		      <th scope="col">Target Gene</th>
+		      <th scope="col">Target Triplex Chr</th>
+		      <th scope="col">Target Triplex Start</th>
+		      <th scope="col">Target Triplex End</th>
 		      <th scope="col">Transcript Length</th>
-		      <th scope="col">REM Length</th>
+		      <th scope="col">Target Element Length</th>
 		      <th scope="col">Score</th>
 		      <th scope="col">Bit Score</th>
 		      <th scope="col">E Value</th>
@@ -34,12 +42,27 @@
 		  	{% for triplex in result %}
 				<tr>
 					<td><a href="{% url 'gene_detail' triplex.transcriptgenesymbol %}">{{triplex.transcriptgenesymbol}}</a></td>
-					<td>{{ triplex.transcriptid }}</td>
-					<td>{{ triplex.rnatriplexstart }}</td>
-					<td>{{ triplex.rnatriplexend }}</td>
+					<td><a href="{% url 'transcript_detail' triplex.transcriptid %}">{{ triplex.transcriptid }}</a></td>
+					<script>
+						var rnatriplexstart={{ triplex.rnatriplexstart }};
+                                                var rtripstart=Math.round(rnatriplexstart);
+                                                document.write("<td>" + rtripstart + "</td>")
+					</script>
+					<script>
+                                                var rnatriplexend={{ triplex.rnatriplexend }};
+                                                var rtripend=Math.round(rnatriplexend);
+                                                document.write("<td>" + rtripend + "</td>")
+                                        </script>
 					<td><strong><i>{{ triplex.dnagenesymbol }}</i></strong></td>
-					<td>{{ triplex.dnatriplexstart }}</td>
-					<td>{{ triplex.dnatriplexend }}</td>
+					<td>{{ triplex.genometriplexchr }}</td>
+					<script>
+                                                var dnatriplexstart={{ triplex.genometriplexstart }};
+                                                var dtripstart=Math.round(dnatriplexstart);
+                                                document.write("<td>" + dtripstart + "</td>")
+                                                var dnatriplexend={{ triplex.genometriplexend }};
+                                                var dtriplexend=Math.round(dnatriplexend);
+                                                document.write("<td>" + dtriplexend + "</td>")
+                                        </script>					
 					<td>{{ triplex.rnalength }}</td>
 					<td>{{ triplex.dnalength }}</td>
 					<td>{{ triplex.triplexalignerscore }}</td>
@@ -48,7 +71,7 @@
 					
 					<script>
 						var evalue={{ triplex.triplexalignere }};
-						var exp=evalue.toExponential();
+						var exp=evalue.toExponential(fractionDigits=2);
 						document.write("<td>" + exp + "</td>")
 					</script>
 				</tr>
@@ -57,9 +80,13 @@
 		</table>
 		</div>
 
-	
+{% elif to_large %}
+<h3>The defined genomic region is too large, please split the region into smaller parts and submit multiple queries.</h3>	
+
+{% elif incomplete_region %}
+ <h3>The defined genomic region is missing information (chr, start, end).</h3>
     {% else %}
-    <h3>No hits for this transcript in Triplexicon!</h3>
+    <h3>No hits for this genomic region input in TripLexicon!</h3>
     {% endif %}
 
 {% endblock %}	

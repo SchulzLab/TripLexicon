@@ -1,10 +1,16 @@
 {% load bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+<style>
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  }
+</style>
+
 <nav class="navbar navbar-expand-lg" style="background-color: #0c042e;">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}" style="color: white">TripLexicon</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" style="color: white" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -13,29 +19,29 @@
           <a class="nav-link" href="{% url 'home' %}" style="color: white">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'search_rna_home' %}" style="color: white">Search by RNA</a>
+          <a class="nav-link" href="{% url 'search_rna_home' %}" style="color: white">RNA-query</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'search_dna_home' %}" style="color: white">Search by DNA</a>
+          <a class="nav-link" href="{% url 'search_dna_home' %}" style="color: white">Target-query</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'search_gen_region_home' %}" style="color: white">Search by genomic region</a>
-        
+          <a class="nav-link" href="{% url 'search_gen_region_home' %}" style="color: white">Region-query</a>
+        </li>
           <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white">
             More
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="https://triplexicon.readthedocs.io/en/latest/">Documentation</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><a class="dropdown-item" href="https://triplexicon-webserver.readthedocs.io/en/latest/index.html">Documentation</a></li>
           </ul>
         </li>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search TripLexicon" aria-label="Search">
+      <form method=POST class="d-flex" action="{% url 'gene_detail_search' %}">
+        {% csrf_token %}
+        <input type="search" class="form-control me-2" placeholder="Search TripLexicon by gene symbol" name="gene_symbol" id="gene_symbol">
         <button class="btn btn-outline-light" type="submit">Search</button>
       </form>
     </div>
   </div>
 </nav>
+

@@ -1,0 +1,37 @@
+{% extends 'TriplexDB/base.html' %}
+
+<style>
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+</style>
+
+{% block content %}
+<div class="content-wrapper">	
+	<div class="card p-1 mx-4" style="width: 70rem;">
+		<div class="card-body">
+			<h4 class="card-title">Search for predicted triplexes by promoter gene symbol</h4>
+			<br/>
+		    <form method=POST action="{% url 'search_dna' %}" class="col-xs-3">
+		     	{% csrf_token %}
+		        <input type="search" class="form-control me-2" placeholder="Search promoter gene symbol... (e.g. GAPDH, ACTB, RELA)" name="dna_symbol" id="dna_symbol">
+		        <br/>
+		        <button type="submit" class="btn btn-success" style="color: white; background-color: #0c042e; border-color: white;">Search</button>
+		    </form>
+		    <br/>
+		</div>
+
+     </div>
+ </div>
+
+{% endblock %}
+
+<footer class="footer">
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>

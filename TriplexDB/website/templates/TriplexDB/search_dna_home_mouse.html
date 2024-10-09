@@ -1,0 +1,110 @@
+{% extends 'TriplexDB/base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block content %}
+<style>
+/*.content-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}*/
+
+select {
+  margin: 50px 0px 50px;
+  width: 150px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+}
+
+select::-ms-expand {
+    display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
+}
+/* Target Internet Explorer 9 to undo the custom arrow */
+@media screen and (min-width:0\0) {
+    select {
+        background: none\9;
+        padding: 5px\9;
+    }
+}
+
+.species{
+margin: 20px 25px 50px 0;
+  /*padding: 5px 35px 5px 35px;*/
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+}
+
+.col-dna{
+	flex: 4 0 600px;
+}
+
+.input_region{
+margin: 20px 25px 50px 0;
+ width: 600px;
+ /* padding: 5px 35px 5px 35px;*/
+  font-size: 16px;
+  border: 1px solid #CCC;
+  height: 34px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+
+</style>
+
+<div class="card p-1 mx-4" style="width: 70rem;">
+    <div class="card-body">
+        <h4 class="card-title">Search for predicted triplexes by promoter gene symbol</h4>
+        <br/>
+        <div class="input-group">
+        <form action="{% url 'search_dna_mouse' %}" method="get" class="d-flex" role="search">
+            <div class="row">
+                <h5>Select species:</h5>
+                <div class="col">
+                    <select name="species" id="species" class="species">
+                        <option value="Human"> Human </option>
+                        <option value="Mouse"> Mouse </option>
+                    </select>
+                </div>
+                <br/>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="row h-100">
+                <h5>Enter target gene symbol:</h5>
+                <div class="col-dna">
+                <input type="text" class="form-control input_region" placeholder="Search target gene symbol... (e.g. GAPDH, ACTB, RELA)" name="dna_symbol" id="dna_symbol" >
+                </div>
+            </div> 
+        </div>  
+                
+        <div class="input-group">
+            <div class="row h-100">
+                <div class="col-2">
+                <button class="btn d-flex search" style="color: white; background-color: #0c042e; border-color: white;"
+                    type="submit">Search</button>
+                </div>    
+            </div>
+        </div>
+        </form>
+        <br/>
+    </div>
+</div>
+
+
+{% endblock %}
+
+<footer class="footer">
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>

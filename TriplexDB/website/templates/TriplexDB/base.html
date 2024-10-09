@@ -11,13 +11,36 @@
     <!-- Buttons CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   </head>
+<style>
+html, body {
+padding:0; 
+margin:0; 
+height:100%; 
+display: flex; 
+flex-flow: column;
+}
+
+footer{
+position: relative; 
+bottom: 0; 
+left: 0; 
+right: 0;
+}
+
+main {
+    flex: 1;
+    padding: 10px;
+}
+
+</style>
   <body>
-    {% include 'TriplexDB/navbar.html' %}
-    <br/>
+    	{% include 'TriplexDB/navbar.html' %}
+    		<br/>
+	<main>
 	{% block content %}
 
 	{% endblock %}
- 
+ 	</main>	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -59,15 +82,18 @@
     		    'copyHtml5',
         		'excelHtml5',
         		'csvHtml5',
-        		'pdfHtml5'
     		]
 		});
 
 
 	</script>
 
- 	</body>
 
+	<footer>
+	{% block footer %}
+
+	{% endblock %}
+	</footer>	
+ </body>
 </html>
 
-<br/><br/>

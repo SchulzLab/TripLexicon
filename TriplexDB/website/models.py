@@ -125,9 +125,9 @@ class Dna(models.Model):
     geneid = models.TextField(db_column='GeneID', blank=True, null=True)   
     genesymbol = models.TextField(db_column='GeneSymbol', blank=True, null=True)   
     chr = models.TextField(db_column='Chr', blank=True, null=True)   
-    start = models.TextField(db_column='Start', blank=True, null=True)   
-    end = models.TextField(db_column='End', blank=True, null=True)   
-    length = models.TextField(db_column='Length', blank=True, null=True)   
+    start = models.IntegerField(db_column='Start', blank=True, null=True)   
+    end = models.IntegerField(db_column='End', blank=True, null=True)   
+    length = models.IntegerField(db_column='Length', blank=True, null=True)   
 
     class Meta:
         managed = False
@@ -155,10 +155,10 @@ class Triplexaligner(models.Model):
      related_name = 'triplex_rnaid') 
     dnaid = models.ForeignKey(Dna, on_delete=models.SET_NULL, db_column='DNAID', blank=True, null=True,\
      related_name = 'triplex_dnaid') 
-    rnatriplexstart = models.FloatField(db_column='RNATriplexStart', blank=True, null=True)  
-    rnatriplexend = models.FloatField(db_column='RNATriplexEnd', blank=True, null=True)  
-    dnatriplexstart = models.FloatField(db_column='DNATriplexStart', blank=True, null=True)  
-    dnatriplexend = models.FloatField(db_column='DNATriplexEnd', blank=True, null=True) 
+    rnatriplexstart = models.IntegerField(db_column='RNATriplexStart', blank=True, null=True)  
+    rnatriplexend = models.IntegerField(db_column='RNATriplexEnd', blank=True, null=True)  
+    dnatriplexstart = models.IntegerField(db_column='DNATriplexStart', blank=True, null=True)  
+    dnatriplexend = models.IntegerField(db_column='DNATriplexEnd', blank=True, null=True) 
     rnalength = models.IntegerField(db_column='RNALength', blank=True, null=True)  
     dnalength = models.IntegerField(db_column='DNALength', blank=True, null=True)  
     triplexalignerscore = models.FloatField(db_column='TriplexAlignerScore', blank=True, null=True)  

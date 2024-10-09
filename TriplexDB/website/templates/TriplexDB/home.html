@@ -1,7 +1,74 @@
 {% extends 'TriplexDB/base.html' %}
-
+{% load static %}
 {% block content %}
-	
-	<h4><p class="text-xl-start" style="margin-left: 30px;">Welcome to TripLexicon, the database of RNA:DNA:DNA triple helix formation powered by TriplexAligner!</p></h4>
+<style>
+	html, body {padding:0; margin:0; height:100%;}
+	.img-fluid {
+            width: 200px; /* Set a specific width for better text wrapping */
+            height: auto;
+            float: right;
+            margin-left: 20px;
+            margin-bottom: 20px; /* Add some bottom margin to clear the text */
+        }
 
+.nav-link {
+        display: inline-block; /* Ensure each link takes up the full width */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+    }
+
+</style>	
+
+	<div class="container mt-5">
+		<div class="row">
+		  <div class="col-12" style="text-align: center;">
+			<h4><p class="text-xl-start" style="margin-left: 30px;">Welcome to TripLexicon, the database of RNA:DNA:DNA triple helix formation powered by TriplexAligner!</p></h4>
+		  </div>
+		</div>
+	  
+		<div class="row">
+		  <div class="col-12" style="text-align: justify;">
+	
+	<p style="display:inline-block;">
+<img class='img-fluid' src="{% static 'images/Triplex_schematic_homepage.svg' %}" style="width: 50%; height: auto;" alt='Triplex_schem' align="right"/>
+TripLexicon is a database holding predicted gene regulatory RNA:DNA:DNA triplexes. The triplexes were predicted using <a href="https://github.com/SchulzLab/TriplexAligner">TriplexAligner</a>.
+ In its current form, TripLexicon holds predicted triplexes between human lncRNA sequences (as annotated in GENCODE v45/Ensembl release 112)
+ and human gene regulatory elements consisting of promoters (TSS -2500/+500) and regulatory elements from <a href="https://epiregio.de">EpiRegio.</a></p>
+ 	</div>
+		</div>
+		<div class="row">
+                  <div class="col-12" style="text-align: center;">
+                        <h4><p class="text-xl-start" style="margin-left: 30px;">Explore the triplexicon queries
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12" style="text-align: justify;">
+                        <ul>
+				<li>	
+					<a class="nav-link" href="{% url 'search_rna_home' %}"  style="color: black"><u><font color="blue"><strong>RNA Query:</strong></font></u> explore predicted triplexes by RNA gene or transcripts </a>
+					(<a class="nav-link" href="https://triplexicon-webserver.readthedocs.io/en/latest/examples.html#querying-by-rna" style="color: black"><font color="blue">docs</font></a>) 
+				</li>
+
+				<li>
+					<a class="nav-link" href="{% url 'search_dna_home' %}" style="color: black">
+					<u><font color="blue"><strong>Target Query:</strong></font></u> explore predicted triplexes by DNA target genes </a>
+					(<a class="nav-link" href="https://triplexicon-webserver.readthedocs.io/en/latest/examples.html#querying-by-predicted-target-gene" style="color: black"> <font color="blue">docs</font></a>) 
+                                </li>
+
+				<li>
+					<a class="nav-link" href="{% url 'search_gen_region_home' %}" style="color: black">
+					<u><font color="blue"><strong>Region Query:</strong></font></u> explore predicted triplexes by genomic regions in which DNA target elements reside </a>
+					(<a class="nav-link" href="https://triplexicon-webserver.readthedocs.io/en/latest/examples.html#querying-by-a-genomic-region" style="color: black"><font color="blue">docs</font></a>)
+				 </li>
+			</ul>
+                  </div>
+		</div>
+	</div>
 {% endblock %}
+
+<footer>
+{% block footer %}
+{% include 'TriplexDB/footer.html' %}
+{% endblock %}
+</footer>

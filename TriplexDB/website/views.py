@@ -5,37 +5,71 @@ from .models import Triplexaligner as triplexaligner
 from django_tables2 import SingleTableView
 #from .tables import results_table
 from django.db.models import Q
-from django.http import Http404
+#from django.http import Http404
 from pybedtools import BedTool
 from django.templatetags.static import static
 from django.views import generic
+import time
+import logging
+
+#get logger for my app website
+logger = logging.getLogger('website')
+
 
 # Create your views here.
 def search_dna_home(request):
-	return render(request, 'TriplexDB/search_dna_home.html', {})
+	return render(request, 'TriplexDB/search_dna_home_mouse.html', {})
 
+def search_dna_mouse(request):
+	if request.method == 'GET':
+		species = request.GET.get('species')
+		dna_symbol = request.GET.get('dna_symbol').upper()
+		if species == 'Human':
+			mouse = False
+			filter_dna_id = list(dna.objects.filter(genesymbol__exact=dna_symbol).values_list('dnaid', flat=True))
+			triplexes = triplexaligner.objects.filter(Q(dnaid__in=filter_dna_id)).distinct().order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'genometriplexchr',
+				'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = triplexes.count()
+			rnaids = [triplex['rnaid'] for triplex in triplexes]
+			nr_rnas = len(set(rnaids))
+			transcripts = rna.objects.filter(rnaid__in=rnaids).values('transcriptid', 'rnaid', 'transcriptgenesymbol')
 
-def search_dna(request):
-	if request.method == "POST":
-		dna_symbol = request.POST['dna_symbol']
-	triplexes = triplexaligner.objects.filter(dnaid__genesymbol=dna_symbol).distinct().order_by('triplexalignere')\
-	.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
-		'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-	rnaids = [triplex['rnaid'] for triplex in triplexes]
-	transcripts = rna.objects.filter(rnaid__in=rnaids).values('transcriptid', 'rnaid', 'transcriptgenesymbol')
-	if triplexes:
-		for triplex in triplexes:
-			triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
+		elif species == 'Mouse':
+			mouse = True
+			filter_dna_id = list(dna.objects.using('mouse').filter(genesymbol__exact=dna_symbol).values_list('dnaid', flat=True))
+			triplexes = triplexaligner.objects.using('mouse').filter(Q(dnaid__in=filter_dna_id)).distinct().order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'genometriplexchr',
+				'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = triplexes.count()
+			rnaids = [triplex['rnaid'] for triplex in triplexes]
+			nr_rnas = len(set(rnaids))
+			transcripts = rna.objects.using('mouse').filter(rnaid__in=rnaids).values('transcriptid', 'rnaid', 'transcriptgenesymbol')
+			
+
+		if triplexes:
+			for triplex in triplexes:
+				triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
 							if triplex['rnaid'] == rna_instance['rnaid']][0]
-			triplex['rna_symbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcripts\
+				triplex['rna_symbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcripts\
 							if triplex['rnaid'] == rna_instance['rnaid']][0]
-
-		
-		return render(request,
+	
+			return render(request,
 			'TriplexDB/search_dna_results_values.html',
 			{'result':triplexes,
-			'dna_symbol': dna_symbol})
+			'nr_triplexes': nr_triplexes,
+			'nr_rnas': nr_rnas,
+			'dna_symbol': dna_symbol,
+			'mouse': mouse,})
 
+
+
+		else:
+                	return render(request,
+                        'TriplexDB/search_dna_results_values.html',
+                        {})
 	else:
 		return render(request,
 			'TriplexDB/search_dna_results_values.html',
@@ -47,14 +81,16 @@ def search_rna_results(request):
 
 def search_transcript_values(request):
 	if request.method == "POST":
-		transcript = request.POST['transcript']
+		transcript = request.POST['transcript'].upper()
 		rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
 		if rna_result:
 			rna_result = rna_result[0]
 		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
-		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
 			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		nr_triplexes = len(triplexes)
 		dna_id = [triplex['dnaid'] for triplex in triplexes]
+		dnas_targeted_by_trans = len(set(dna_id))
 		dna_result = dna.objects.filter(dnaid__in = dna_id).values('genesymbol', 'dnaid')
 		if triplexes:
 			for triplex in triplexes:
@@ -66,11 +102,14 @@ def search_transcript_values(request):
 				'TriplexDB/search_rna_results_values.html',
 				{'transcript':transcript,
 				'result':triplexes,
+				'nr_triplexes': nr_triplexes,
+				'nr_targets':dnas_targeted_by_trans,
 				'rna_symbol': rna_result['transcriptgenesymbol'],
 				})
-				# 'table':table})
 		else:
-			raise Http404("The given transcript cannot be found")
+			return render(request,
+                        'TriplexDB/search_rna_results_values.html',
+                        {})
 
 	else:
 		return render(request,
@@ -80,29 +119,38 @@ def search_transcript_values(request):
 
 def search_rna_symbol_values(request):
 	if request.method == "POST":
-		rna_symbol = request.POST['rna_symbol']
+		rna_symbol = request.POST['rna_symbol'].upper()
 		dnas_to_exclude = dna.objects.filter(genesymbol__exact = rna_symbol).values('dnaid')
 		dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
 		transcripts = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
 		transcript_ids = [tid['transcriptid'] for tid in transcripts]
 		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__in=transcript_ids))\
 		.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
-		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
 			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		nr_triplexes = len(triplexes)
 		dna_ids = [triplex['dnaid'] for triplex in triplexes]
+		dnas_targeted_by_trans = len(set(dna_ids))
 		dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
-		for triplex in triplexes:
-			triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
+		if triplexes:
+			for triplex in triplexes:
+				triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
 							 if triplex['dnaid'] == dna_instance['dnaid']][0]
-			triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
+				triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
 							 if triplex['rnaid'] == rna_instance['rnaid']][0]
 			
 		
-		return render(request,
-			'TriplexDB/search_rna_results_values.html',
-			{'result':triplexes,
-			'rna_symbol': rna_symbol,
-			})
+			return render(request,
+				'TriplexDB/search_rna_results_values.html',
+				{'result':triplexes,
+				'nr_triplexes': nr_triplexes,
+				'nr_targets':dnas_targeted_by_trans,
+				'rna_symbol': rna_symbol,
+				})
+		else:
+			return render(request,
+                        'TriplexDB/search_rna_results_values.html',
+                        {})
 
 	else:
 		return render(request,
@@ -125,21 +173,22 @@ def get_bed(chromosome, start, end):
 	return query_region
 
 def gen_region_search(query_bedtool):
-	dna_regions = BedTool('/Users/christina/Documents/triplex/TriplexDB/website/static/dna_regions.bed')
-	dna_query_intersection = dna_regions.intersect(query_bedtool, wa = True, f = 0.5)
+	dna_regions = BedTool('website/static/dna_regions.bed')
 	dna_query_list = []
-	for dna_instance in dna_query_intersection:
-		print(dna_instance.name)
-		dna_query_list.append(dna_instance.name)
+	try:
+		dna_query_intersection = dna_regions.intersect(query_bedtool, wa = True, f = 0.5)
+		for dna_instance in dna_query_intersection:
+			dna_query_list.append(dna_instance.name)
+	except:
+		return None
 
 	triplexes = triplexaligner.objects.filter(Q(dnaid__in=dna_query_list))\
-	.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnatriplexstart', 'dnaid', 'dnatriplexend',\
+	.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
 				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-	
 	#query RNA objects
 	rna_ids = [triplex['rnaid'] for triplex in triplexes]
 	transcript_gene_symbols = rna.objects.filter(rnaid__in = rna_ids).distinct().values('transcriptgenesymbol', 'transcriptid', 'rnaid')
-	
+
 	#query REMs, new rem ids, only the ones having triplexes
 	dna_ids = [triplex['dnaid'] for triplex in triplexes]
 	dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
@@ -172,33 +221,122 @@ def search_gen_region_results(request):
 		#uploaded_file_content = do_th_with_file_to_get_content_as_String(uploaded_file)
 		query_regions = gen_region_search_file(uploaded_file)
 		triplexes_in_region = gen_region_search(query_regions)
-		return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region})
+		return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,
+												'nr_triplexes': len(triplexes_in_region)})
 	elif request.method == 'GET':
 		start = request.GET.get('start')
 		end =  request.GET.get('end')
 		chromosome = request.GET.get('chromosome')
 		if start and end and chromosome:
-			if int(end)-int(start) < 1000000000:
-				query_region = get_bed(chromosome, start, end)
-				triplexes_in_region = gen_region_search(query_region)
-				return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,\
-																				   'chr':chromosome, 'start': start, 'end':end})
-			else:
-				raise Http404("Queried genomic region too big!")
-			
+			try:
+				if int(end)-int(start) < 1000000000:
+					query_region = get_bed(chromosome, start, end)
+					triplexes_in_region = gen_region_search(query_region)
+					return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,
+														'nr_triplexes': len(triplexes_in_region),
+														   'chr':chromosome, 'start': start, 'end':end})
+				else:
+					return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'to_large': True})
+			except:
+				return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'to_large': True})
 		else:
-			raise Http404("Start, end or chromosome missing!")
+			return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'incomplete_region': True})
+			#raise Http404("Start, end or chromosome missing!")
 	else:
-		raise Http404("GET method error")
-
+		#raise Http404("GET method error")
+		return render(request, 'TriplexDB/search_genomic_region_results_values.html', {})
 
 def home(request):
 	return render(request, 'TriplexDB/home.html', {})
 
 
 def gene_detail(request, pk):
-	rna_result = rna.objects.filter(transcriptgenesymbol__exact = pk).distinct().order_by('transcripttriplexcount').values()
-	high_triplex_rna = rna_result[0]['transcriptid']
-	plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
-	return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result, 'plot_path': plot_path})
+	try:
+		if pk.startswith('Gm'):
+			rna_result = rna.objects.using('mouse').filter(transcriptgenesymbol__exact = pk).distinct().order_by('transcripttriplexcount').values()[::-1]
+			nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
+			nr_triplexes = sum(nr_triplexes)
+			high_triplex_rna = rna_result[0]['transcriptid']
+			plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
+		else:
+			rna_result = rna.objects.filter(transcriptgenesymbol__exact = pk).distinct().order_by('transcripttriplexcount').values()[::-1]
+			nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
+			nr_triplexes = sum(nr_triplexes)
+			high_triplex_rna = rna_result[0]['transcriptid']
+			plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
+		return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result, 'plot_path': plot_path, 'nr_triplexes': nr_triplexes, 'gene': pk})
+	except:
+		return render(request, 'TriplexDB/gene_detail.html' , {})
 
+
+def gene_detail_search(request):
+	if request.method =='POST':
+		try:
+			gene_symbol = request.POST['gene_symbol'].capitalize()
+			if gene_symbol.startswith('Gm'):
+				rna_result = rna.objects.using('mouse').filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
+				mouse = True
+			else:
+				gene_symbol = gene_symbol.upper()
+				rna_result = rna.objects.filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
+				mouse = False
+			nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
+			nr_triplexes = sum(nr_triplexes)
+			if len(rna_result) > 0:
+				high_triplex_rna = rna_result[0]['transcriptid']
+				if mouse == False:
+					plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
+				else:
+					plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
+				return render(request, 'TriplexDB/gene_detail.html' , {'object': rna_result, 'plot_path': plot_path, 'gene': gene_symbol, 'nr_triplexes': nr_triplexes})
+			else:
+		 		return render(request, 'TriplexDB/gene_detail.html' , {})
+		except:
+			return render(request, 'TriplexDB/gene_detail.html' , {})
+
+
+def transcript_detail(request, pk):
+	if pk.startswith('ENSMU'):
+		rna_result = rna.objects.using('mouse').filter(transcriptid__exact = pk).distinct().order_by('transcripttriplexcount').values()
+		plot_path = 'transcript_plots_mouse/' + pk + '.png'
+	else:
+		rna_result = rna.objects.filter(transcriptid__exact = pk).distinct().order_by('transcripttriplexcount').values()
+		plot_path = 'transcript_plots/' + pk + '.png'
+	return render(request, 'TriplexDB/transcript_detail.html' , {'object': rna_result, 'plot_path': plot_path, 'transcript': pk})
+
+
+
+"""def search_dna(request):
+	if request.method == "POST":
+		dna_symbol = request.POST['dna_symbol'].upper()
+		filter_dna_id = list(dna.objects.filter(genesymbol__exact=dna_symbol).values_list('dnaid', flat=True))
+		triplexes = triplexaligner.objects.filter(Q(dnaid__in=filter_dna_id)).distinct().order_by('triplexalignere')\
+		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'genometriplexchr',
+			'genometriplexstart', 'genometriplexend',
+			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		nr_triplexes = triplexes.count()
+		rnaids = [triplex['rnaid'] for triplex in triplexes]
+		nr_rnas = len(set(rnaids))
+		transcripts = rna.objects.filter(rnaid__in=rnaids).values('transcriptid', 'rnaid', 'transcriptgenesymbol')
+		if triplexes:
+			for triplex in triplexes:
+				triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
+							if triplex['rnaid'] == rna_instance['rnaid']][0]
+				triplex['rna_symbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcripts\
+							if triplex['rnaid'] == rna_instance['rnaid']][0]
+		
+			return render(request,
+			'TriplexDB/search_dna_results_values.html',
+			{'result':triplexes,
+			'nr_triplexes': nr_triplexes,
+			'nr_rnas': nr_rnas,
+			'dna_symbol': dna_symbol})
+
+		else:
+                	return render(request,
+                        'TriplexDB/search_dna_results_values.html',
+                        {})
+	else:
+		return render(request,
+			'TriplexDB/search_dna_results_values.html',
+			{})"""
