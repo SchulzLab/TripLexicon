@@ -1,5 +1,5 @@
 <br/>
-<div class="card p-1 mx-4" style="width: 50rem;">
+<!--<div class="card p-1 mx-4" style="width: 50rem;">
 	<div class="card-body">
 		<h5 class="card-title">Search for predicted triplexes by RNA gene symbol (results will include all annotated transcripts)</h5>
 		<br/>
@@ -11,4 +11,46 @@
 	    </form>
 	
 	</div>
- </div>
+ </div>-->
+
+
+ <div class="card p-1 mx-4" style="width: 70rem;">
+    <div class="card-body">
+        <h5 class="card-title">Search for predicted triplexes by RNA gene symbol (results will include all annotated transcripts)</h5>
+        <br/>
+        <div class="input-group">
+        <form action="{% url 'search_rna_symbol' %}" method="get" class="d-flex" role="search">
+            <div class="row">
+                <h6>Select species:</h6>
+                <div class="col">
+                    <select name="species" id="species" class="species">
+                        <option value="Human"> Human </option>
+                        <option value="Mouse"> Mouse </option>
+                    </select>
+                </div>
+                <br/>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="row h-100">
+                <h6>Enter RNA gene symbol:</h6>
+                <div class="col-dna">
+                <input type="text" class="form-control input_region" placeholder="Search RNA gene symbol... (e.g. MEG3, HOTAIR, MALAT1)" name="rna_symbol" id="rna_symbol" >
+                </div>
+            </div> 
+        </div>  
+                
+        <div class="input-group">
+            <div class="row h-100">
+                <div class="col-2">
+                <button class="btn d-flex search" style="color: white; background-color: #0c042e; border-color: white;"
+                    type="submit">Search</button>
+                </div>    
+            </div>
+        </div>
+        </form>
+        <br/>
+    </div>
+</div>
+

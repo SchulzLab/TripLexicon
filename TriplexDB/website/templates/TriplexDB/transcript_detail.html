@@ -18,8 +18,12 @@
 
 {% block content %}
 {% if object %}
-    <div class="table-responsive mx-5">
-		<h4>Results for predicted triplexes involving transcript {{ transcript }}</h4>
+	<div class="table-responsive mx-5">
+	{% if mouse %}	
+		<h4>Results for predicted triplexes involving mouse transcript {{ transcript }}</h4>
+	{% else %}		
+		<h4>Results for predicted triplexes involving human transcript {{ transcript }}</h4>
+	{% endif %}	
 		<br/>
 		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
 		  <thead class="table-dark" style="background-color: red;">
