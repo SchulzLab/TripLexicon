@@ -84,18 +84,33 @@ def search_rna_results(request):
 
 
 def search_transcript_values(request):
-	if request.method == "POST":
-		transcript = request.POST['transcript'].upper()
-		rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
+	if request.method == 'GET':
+		species = request.GET.get('species')
+		transcript = request.GET.get('transcript').upper()
+		if species == 'Mouse':
+			mouse = True
+			rna_result = rna.objects.using('mouse').filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
+		else:
+			mouse = False
+			rna_result = rna.objects.filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
 		if rna_result:
 			rna_result = rna_result[0]
-		triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
-		.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
-			'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-		nr_triplexes = len(triplexes)
-		dna_id = [triplex['dnaid'] for triplex in triplexes]
-		dnas_targeted_by_trans = len(set(dna_id))
-		dna_result = dna.objects.filter(dnaid__in = dna_id).values('genesymbol', 'dnaid')
+		if mouse:
+			triplexes = triplexaligner.objects.using('mouse').filter(Q(rnaid__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = len(triplexes)
+			dna_id = [triplex['dnaid'] for triplex in triplexes]
+			dnas_targeted_by_trans = len(set(dna_id))
+			dna_result = dna.objects.using('mouse').filter(dnaid__in = dna_id).values('genesymbol', 'dnaid')
+		else:
+			triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript)).distinct().order_by('triplexalignere')\
+			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			nr_triplexes = len(triplexes)
+			dna_id = [triplex['dnaid'] for triplex in triplexes]
+			dnas_targeted_by_trans = len(set(dna_id))
+			dna_result = dna.objects.filter(dnaid__in = dna_id).values('genesymbol', 'dnaid')
 		if triplexes:
 			for triplex in triplexes:
 				triplex['dnagenesymbol'] = [dna_instance['genesymbol'] for dna_instance in dna_result\
@@ -109,6 +124,7 @@ def search_transcript_values(request):
 				'nr_triplexes': nr_triplexes,
 				'nr_targets':dnas_targeted_by_trans,
 				'rna_symbol': rna_result['transcriptgenesymbol'],
+				'mouse': mouse,
 				})
 		else:
 			return render(request,
@@ -128,7 +144,7 @@ def search_rna_symbol_values(request):
 		if species == 'Mouse':
 			mouse = True
 			if not rna_symbol[0].isdigit() and 'Rik' not in rna_symbol:
-				rna_symbol = request.POST['rna_symbol'].capitalize()
+				rna_symbol = rna_symbol.capitalize()
 			dnas_to_exclude = dna.objects.using('mouse').filter(genesymbol__exact = rna_symbol).values('dnaid')
 			dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
 			transcripts = rna.objects.using('mouse').filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')

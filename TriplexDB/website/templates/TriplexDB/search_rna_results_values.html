@@ -10,7 +10,11 @@
 	{% if transcript %}
    
     <div class="table-responsive mx-5">
-		<h4>Triplex statistics for transcript {{ transcript }}</h4>
+		{% if mouse %}
+		<h4>Triplex statistics for mouse transcript {{ transcript }}</h4>
+		{% else %}
+		<h4>Triplex statistics for human transcript {{ transcript }}</h4>
+		{% endif %}
 		<br/>
 		<h5>{{ transcript }} is predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>
 		<br/>
