@@ -14,6 +14,22 @@
 		<h4>Triplex statistics for mouse transcript {{ transcript }}</h4>
 		{% else %}
 		<h4>Triplex statistics for human transcript {{ transcript }}</h4>
+			{% if go_genes %}
+				<div>
+					<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3">
+						{% csrf_token %}
+						<!-- Hidden input field to carry the value -->
+						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
+						<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol}}">
+					
+						<!-- Visible Search button -->
+						<button type="submit" class="btn btn-success" 
+								style="color: white; background-color: #0c042e; border-color: white;">
+							GO enrichment of DNA gene set
+						</button>
+					</form>
+				</div>
+		{% endif %}
 		{% endif %}
 		<br/>
 		<h5>{{ transcript }} is predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>
@@ -80,6 +96,22 @@
 		<h4>Triplex statistics for mouse RNA Gene {{ rna_symbol }}</h4>
 		{% else %}
 		<h4>Triplex statistics for human RNA Gene {{ rna_symbol }}</h4>
+		{% if go_genes %}
+				<div>
+					<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3">
+						{% csrf_token %}
+						<!-- Hidden input field to carry the value -->
+						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
+						<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol}}">
+					
+						<!-- Visible Search button -->
+						<button type="submit" class="btn btn-success" 
+								style="color: white; background-color: #0c042e; border-color: white;">
+							GO enrichment of DNA gene set
+						</button>
+					</form>
+				</div>
+		{% endif %}
 		{% endif %}
 		<br/>
 		<h5>{{ rna_symbol }} transcripts are predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>

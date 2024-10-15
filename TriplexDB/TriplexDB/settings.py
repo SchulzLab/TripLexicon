@@ -9,11 +9,24 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+#Log files and directories
+LOG_DIR = os.path.join(BASE_DIR, 'log')
+LOG_FILE = '/triplexicon.log'
+LOG_PATH = LOG_DIR + LOG_FILE
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
+
+if not os.path.exists(LOG_PATH):
+    f = open(LOG_PATH, 'a').close() #create empty log file
+else:
+    f = open(LOG_PATH,"w").close() #clear log file
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,10 +36,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@=t$__ubmuqx+xyfagx)pbi@-p%0e7b2(r-_g12uc_l^-4y8s6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.169.94', 'triplexicon.uni-frankfurt.de']
 
+CSRF_TRUSTED_ORIGINS = ['https://triplexicon.uni-frankfurt.de']
 
 # Application definition
 
@@ -81,8 +95,16 @@ WSGI_APPLICATION = 'TriplexDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': '/Users/christina/Documents/triplex/TripLexicon_lncRNAs.db',
-    }
+	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_updated.db',
+	    'HOST': '192.168.169.94',
+        'PORT': '8000',
+    },
+    'mouse' : {
+        'ENGINE': 'django.db.backends.sqlite3',
+	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated.db',
+	    'HOST': '192.168.169.94',
+        'PORT': '8000',
+    },
 }
 
 
@@ -126,3 +148,33 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # Keeps Django's default logging settings
+    'handlers': {
+        'console': {  # Log to the console
+            'class': 'logging.StreamHandler',
+        },
+        'file': {  # Log to a file
+            'class': 'logging.FileHandler',
+            'filename': LOG_PATH,  # Path to log file
+        },
+    },
+    'loggers': {
+        'django': {  # Default Django logger
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            'propagate': True,
+        },
+        'website': {  # Custom logger for your app
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,  # Avoid double logging if 'django' logger is also logging
+        },
+    },
+}
+
+#media for uploaded stuff and temporary files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'

@@ -42,13 +42,7 @@ margin: 20px 25px 50px 0;
   appearance: none;
 }
 
-.col-chrom{
-	flex: 1 0 auto;
-}
 
-.col-pos{
-	flex: 2 0 auto;
-}
 
 .chr{
 margin: 20px 25px 50px 0;
@@ -65,51 +59,85 @@ margin: 20px 25px 50px 0;
 	display: flex !important;
 }
 
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Align species select in its own row */
+.mb-3 {
+    margin-bottom: 20px; /* Adds spacing between rows */
+	.form-container {
+    width: 100%;
+}}
+
+/* Adjust column widths and input styling */
+input {
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #CCC;
+    height: 34px;
+}
+
+button.search {
+    height: 36px;
+    font-size: 16px;
+    margin-top: 10px;
+}
 </style>
 
-	<div class="card p-1 mx-4" style="width: 70rem;">
-		<div class="card-body">
-			<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
-			<br> 
-			
-			
-		<div class="row input-group ">
-		<form action="{% url 'search_gen_region_results' %}" method="get" class="d-flex" role="search">
 
-			<div class="col-chrom">
-				<h4>Chromosome:</h4>
-				<div class="col-11">
-					<select name="chromosome" id="chr" class="chr">
-				  {%for CHR in chrs%}
-				  <option value="{{CHR}}"> {{CHR}}</option>
-				  {% endfor %}
+<div class="card p-1 mx-4" style="width: 70rem;">
+	<div class="card-body">
+		<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
+		<br> 
+		
+	<form action="{% url 'search_gen_region_results' %}" method="get" role="search">	
+		<div class="row mb-3">
+			<div class="col-md-12">
+			<h4>Select species:</h4>
+				<select name="species" id="species" class="species">
+					<option value="Human"> Human </option>
+					<option value="Mouse"> Mouse </option>
 				</select>
-				</div>
-			</div>
-		  
-			<div class="col-pos ">
-				<h4>Start position in chromosome:</h4>
-				<div class="col-11">
-				<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome" name="start" >
-			</div>
-			</div>
-
-			<div class="col-pos ">
-				<h4>End position in chromosome:</h4>
-				<div class="col-11">
-				<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome" name="end">
-			</div>
-			</div>
+			<br/>
+		</div>
 		</div>
 
-		<div class="row h-100">
-				<div class="col-2">
-				  <button class="btn d-flex search" style="color: white; background-color: #0c042e; border-color: white;"
-					type="submit">Search</button>
-				</div>
+	
+	<div class="row mb-3">
+		<div class="col-md-3">
+			<h4>Chromosome:</h4>
+				<select name="chromosome" id="chr" class="chr">
+				{%for CHR in chrs%}
+				<option value="{{CHR}}"> {{CHR}}</option>
+				{% endfor %}
+			</select>
+			</div>
+		
+		
+		<div class="col-md-4">
+			<h4>Start position in chromosome:</h4>
+			<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome" name="start" >
 		</div>
-	</form>	    
-</div>
+		
+
+		<div class="col-md-4">
+			<h4>End position in chromosome:</h4>
+			<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome" name="end">
+		</div>
+	</div>
+
+	<div class="row h-100">
+			<div class="col-md-2">
+				<button class="btn d-flex search" style="color: white; background-color: #0c042e; border-color: white;"
+				type="submit">Search</button>
+			</div>
+	</div>
+</form>	    
+
 
 <div class="row h-100 mt-5">
 	<div class="col-md">
@@ -125,6 +153,7 @@ margin: 20px 25px 50px 0;
 	  For an example of a bed file check out this <a href="https://github.com/ChrissiKalk97/Triplexicon/blob/main/TriplexDB/Test_bed_file_for_triplexaligner.bed">link</a>.
 	</div>
   </div>
+
   <div class="row h-100 mt-5">
 	<div class="col-md">
 		<form method="post" enctype="multipart/form-data" action="{% url 'search_gen_region_results' %}" >
@@ -133,7 +162,9 @@ margin: 20px 25px 50px 0;
 			<input type="file" accept=".bed" id="id_bed_file" name="bed_file">
 			<input type="submit" value="Submit File">
 		  </form>
+		</div>
 	</div>
+
 </div>
 </div>
 {% endblock %}

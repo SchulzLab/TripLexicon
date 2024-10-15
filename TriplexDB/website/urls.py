@@ -32,4 +32,7 @@ urlpatterns = [
     path('Gene_detail/<pk>/', views.gene_detail, name = 'gene_detail'),
     path('Gene_detail_search/', views.gene_detail_search, name = 'gene_detail_search'),
     path('transcript_detail/<pk>/', views.transcript_detail, name = 'transcript_detail'),
+    path('delete_temp_plot/', views.delete_temp_plot, name='delete_temp_plot'),
+    path('go_enrichment', views.go_enrichment_results, name='go_enrichment_results'),
+    path('download/csv/', views.download_csv, name='download_csv'),
 ]

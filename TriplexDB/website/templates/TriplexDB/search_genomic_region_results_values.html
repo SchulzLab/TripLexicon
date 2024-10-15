@@ -10,15 +10,27 @@
    
     <div class="table-responsive mx-5">
 		{% if chr %}
-		<h4>Results for triplexes in the genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
-		<br/>
-		 <h5>{{ nr_triplexes }} different triplexes are predicted to be formed with DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
+			{% if mouse %}
+				<h4>Results for triplexes in the mouse genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
+				<br/>
+				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
+			{% else %}
+				<h4>Results for triplexes in the human genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
+				<br/>
+				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
+			{% endif %}
 		<br/>
 		{% else %}
-		<h4>Results for triplexes in the genomic regions of the provided bed file</h4>
-		<br/>
-		<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with DNA target elements in the regions supplied in the given bed file.</h5>
-		<br/>
+			{% if mouse %}	
+				<h4>Results for triplexes in the mouse genomic regions of the provided bed file</h4>
+				<br/>
+				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the regions supplied in the given bed file.</h5>
+			{% else %}
+			<h4>Results for triplexes in the human genomic regions of the provided bed file</h4>
+			<br/>
+			<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the regions supplied in the given bed file.</h5>
+			{% endif %}		
+			<br/>
 		{% endif %}
 		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
 		  <thead class="table-dark" style="background-color: red;">

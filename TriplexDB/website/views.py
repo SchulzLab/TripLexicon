@@ -1,17 +1,19 @@
+import os
 from django.shortcuts import render
 from .models import Dna as dna
 from .models import Rna as rna
 from .models import Triplexaligner as triplexaligner
-from django_tables2 import SingleTableView
-#from .tables import results_table
+from django.http import HttpResponse
 from django.db.models import Q
-#from django.http import Http404
 from pybedtools import BedTool
-from django.templatetags.static import static
-from django.views import generic
-import time
+import uuid
 import logging
-import regex as re
+import pandas as pd
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .GOEnrichment import go_enrichment
+
 
 #get logger for my app website
 logger = logging.getLogger('website')
@@ -178,6 +180,7 @@ def search_rna_symbol_values(request):
 							 if triplex['dnaid'] == dna_instance['dnaid']][0]
 				triplex['transcriptid'] = [rna_instance['transcriptid'] for rna_instance in transcripts\
 							 if triplex['rnaid'] == rna_instance['rnaid']][0]
+			dna_genes = [dna_item['genesymbol'] for dna_item in dna_result]
 			
 		
 			return render(request,
@@ -187,6 +190,7 @@ def search_rna_symbol_values(request):
 				'nr_targets':dnas_targeted_by_trans,
 				'rna_symbol': rna_symbol,
 				'mouse': mouse,
+				'go_genes': dna_genes,
 				})
 		else:
 			return render(request,
@@ -213,8 +217,11 @@ def get_bed(chromosome, start, end):
 	query_region = BedTool(bed_string, from_string=True)
 	return query_region
 
-def gen_region_search(query_bedtool):
-	dna_regions = BedTool('website/static/dna_regions.bed')
+def gen_region_search(query_bedtool, mouse = False):
+	if mouse:
+		dna_regions = BedTool('website/static/dna_mouse_regions.bed')
+	else:
+		dna_regions = BedTool('website/static/dna_regions.bed')
 	dna_query_list = []
 	try:
 		dna_query_intersection = dna_regions.intersect(query_bedtool, wa = True, f = 0.5)
@@ -222,17 +229,29 @@ def gen_region_search(query_bedtool):
 			dna_query_list.append(dna_instance.name)
 	except:
 		return None
+	if mouse:
+		triplexes = triplexaligner.objects.using('mouse').filter(Q(dnaid__in=dna_query_list))\
+		.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+					'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		#query RNA objects
+		rna_ids = [triplex['rnaid'] for triplex in triplexes]
+		transcript_gene_symbols = rna.objects.using('mouse').filter(rnaid__in = rna_ids).distinct().values('transcriptgenesymbol', 'transcriptid', 'rnaid')
 
-	triplexes = triplexaligner.objects.filter(Q(dnaid__in=dna_query_list))\
-	.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
-				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
-	#query RNA objects
-	rna_ids = [triplex['rnaid'] for triplex in triplexes]
-	transcript_gene_symbols = rna.objects.filter(rnaid__in = rna_ids).distinct().values('transcriptgenesymbol', 'transcriptid', 'rnaid')
+		#query REMs, new rem ids, only the ones having triplexes
+		dna_ids = [triplex['dnaid'] for triplex in triplexes]
+		dna_result = dna.objects.using('mouse').filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
+	else:
+		triplexes = triplexaligner.objects.filter(Q(dnaid__in=dna_query_list))\
+		.values('triplexid','rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
+					'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+		#query RNA objects
+		rna_ids = [triplex['rnaid'] for triplex in triplexes]
+		transcript_gene_symbols = rna.objects.filter(rnaid__in = rna_ids).distinct().values('transcriptgenesymbol', 'transcriptid', 'rnaid')
 
-	#query REMs, new rem ids, only the ones having triplexes
-	dna_ids = [triplex['dnaid'] for triplex in triplexes]
-	dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
+		#query REMs, new rem ids, only the ones having triplexes
+		dna_ids = [triplex['dnaid'] for triplex in triplexes]
+		dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
+
 	for triplex in triplexes:
 			triplex['transcriptgenesymbol'] = [rna_instance['transcriptgenesymbol'] for rna_instance in transcript_gene_symbols\
 							 if triplex['rnaid'] == rna_instance['rnaid']][0]
@@ -254,17 +273,27 @@ def gen_region_search_file(uploaded_file):
 			#print(interval[subset_start:].strip("\\\n")+"\n")
 			bed_string += interval[subset_start:].strip("\\\n")+"\n"
 	uploaded_regions = BedTool(bed_string, from_string = True)
+	print(bed_string)
 	return uploaded_regions
 
 def search_gen_region_results(request):
 	if request.method =='POST':
 		uploaded_file = request.FILES['bed_file']
-		#uploaded_file_content = do_th_with_file_to_get_content_as_String(uploaded_file)
-		query_regions = gen_region_search_file(uploaded_file)
-		triplexes_in_region = gen_region_search(query_regions)
-		return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,
-												'nr_triplexes': len(triplexes_in_region)})
+		if uploaded_file:
+			if 'mouse' in uploaded_file.name.lower():
+				mouse = True
+			else:
+				mouse = False
+			query_regions = gen_region_search_file(uploaded_file)
+			triplexes_in_region = gen_region_search(query_regions, mouse)
+			return render(request, 'TriplexDB/search_genomic_region_results_values.html', 
+				 {'result': triplexes_in_region,
+					'nr_triplexes': len(triplexes_in_region),
+					'mouse': mouse,
+					})
+		
 	elif request.method == 'GET':
+		species = request.GET.get('species')
 		start = request.GET.get('start')
 		end =  request.GET.get('end')
 		chromosome = request.GET.get('chromosome')
@@ -272,10 +301,25 @@ def search_gen_region_results(request):
 			try:
 				if int(end)-int(start) < 1000000000:
 					query_region = get_bed(chromosome, start, end)
-					triplexes_in_region = gen_region_search(query_region)
-					return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'result': triplexes_in_region,
-														'nr_triplexes': len(triplexes_in_region),
-														   'chr':chromosome, 'start': start, 'end':end})
+					if species == 'Mouse':
+						mouse = True
+						triplexes_in_region = gen_region_search(query_region, mouse)
+					else:
+						triplexes_in_region = gen_region_search(query_region)
+						mouse = False
+					if triplexes_in_region:
+						return render(request, 'TriplexDB/search_genomic_region_results_values.html', 
+						{'result': triplexes_in_region,
+						'nr_triplexes': len(triplexes_in_region),
+						'chr':chromosome, 
+						'start': start, 
+						'end':end, 
+						'mouse': mouse,
+						})
+					else:
+						#raise Http404("GET method error")
+						return render(request, 'TriplexDB/search_genomic_region_results_values.html', {})
+				
 				else:
 					return render(request, 'TriplexDB/search_genomic_region_results_values.html', {'to_large': True})
 			except:
@@ -370,3 +414,78 @@ def transcript_detail(request, pk):
 																})
 
 
+def go_enrichment_results(request):
+	if request.method == 'POST':
+		go_genes = request.POST['go_genes']
+		rna_symbol = request.POST.get('rna_symbol')
+		go_genes = go_genes.split(',')
+		filename = f"{uuid.uuid4()}"
+		filepath = os.path.join('media','temp_plots', filename)#'media',
+		df, filenames = go_enrichment(go_genes = {'human': list(go_genes)}, out_tag=filepath)
+		gprofiler_table = df['human']
+		request.session['df'] = gprofiler_table.to_json()
+		gprofiler_table = gprofiler_table.drop(['Gene fraction', 'intersections', 'evidences', 'significant', 
+										 'description',  'query'], axis = 1)
+		#headers = list(gprofiler_table.keys())
+		headers = gprofiler_table.columns.to_list()
+		#rows = zip(*gprofiler_table.values())
+		rows = gprofiler_table.to_dict(orient='records')  
+		#table_html = df['human'].to_html(classes="table table-striped", index=False)
+		if len(filenames) > 0:
+			return render(request,
+				'TriplexDB/go_enrichment.html',
+				{
+					'rna_symbol': rna_symbol,
+					'plot_paths': filenames,
+					'headers' : headers,
+					'rows' : rows,
+					#'MEDIA_URL': '/media/',
+				})
+		else:
+			return render(request,
+				'TriplexDB/go_enrichment.html',
+				{
+					'rna_symbol': rna_symbol,
+					#'table_html': table_html,
+					#'MEDIA_URL': '/media/',
+				})
+	else:
+		return render(request,
+			'TriplexDB/go_enrichment.html',
+			{})
+	
+
+@require_POST
+def delete_temp_plot(request):
+    import json
+    data = json.loads(request.body)
+    filename = data.get('filename')
+    
+    if filename:
+        if os.path.exists(filename):
+            os.remove(filename)
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'File not found'})
+    return JsonResponse({'status': 'error', 'message': 'No filename provided'})
+
+def download_csv(request):
+	# Retrieve the DataFrame from the session
+    df_json = request.session.get('df')  # Get the JSON-encoded DataFrame from the session
+    
+    if df_json:
+        # Convert the JSON back into a DataFrame
+        df = pd.read_json(df_json)
+        
+        # Create the HTTP response with CSV content-type
+        response = HttpResponse(content_type='text/csv')
+        
+        # Name the downloaded file
+        response['Content-Disposition'] = 'attachment; filename="full_results.csv"'
+        
+        # Convert the DataFrame to CSV and write it to the response
+        df.to_csv(path_or_buf=response, index=False)
+        
+        return response
+    else:
+        return HttpResponse("No data available for download.", status=400)
