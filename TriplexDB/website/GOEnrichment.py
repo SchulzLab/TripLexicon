@@ -9,7 +9,7 @@ import requests
 import logging
 import http.client as http_client
 
-#, 'KEGG', 'REAC', 'HP', 'WP'
+#, 'KEGG', 'REAC', 'HP', 'WP',
 def go_enrichment(go_genes, title_tag='', out_tag='', max_terms='all', font_s=16, organism='hsapiens', numerate=False,
                   background=None, godf_only=False, cmap='plasma', fig_width=None, fig_height=None, legend_out=None,
                   wanted_sources=['GO:MF', 'GO:BP'], keywords={}, rotation=45,

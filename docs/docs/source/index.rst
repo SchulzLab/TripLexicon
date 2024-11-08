@@ -1,5 +1,5 @@
 =======================================================================
-SNEEP: SNP exploration and functional analysis using epigenetic data
+TripLexicon: the database of RNA:DNA:DNA triple helix formation powered by TriplexAligner
 =======================================================================
 
 
@@ -9,6 +9,5 @@ SNEEP: SNP exploration and functional analysis using epigenetic data
 
 	gettingStarted.rst
 	examples.rst
-	detailsInput.rst
 	references.rst
 

@@ -25,8 +25,9 @@
 
 </style>
 <div class="container">
+    {% if plot_paths %}
     <h4>Go enrichment results for genes forming triplexes with RNAs from gene {{ rna_symbol }}</h4>
-	{% if plot_paths %}
+	
    
     {% for plot_path in plot_paths %}
         <div class="image-container">
@@ -102,16 +103,16 @@
         }
 
         // Call sendDeletionRequests when the page is unloaded
-        window.addEventListener('unload', function(event) {
+        window.addEventListener('beforeunload', function(event) {
             sendDeletionRequests();
         });
 
         // Optionally, call sendDeletionRequests after a timeout
-        setTimeout(sendDeletionRequests, 6000); // 1 hour in milliseconds
+        setTimeout(sendDeletionRequests, 500); // 1 hour in milliseconds
     </script>
 {% else %}
 <div>
-    <h3>No enrichments for DNA gene set forming triplexes with RNA {{rna_symbol}}!</h3>
+    <h3>No enrichments for DNA gene set forming triplexes with RNA {{ rna_symbol }}!</h3>
 </div>
 
 {% endif %}

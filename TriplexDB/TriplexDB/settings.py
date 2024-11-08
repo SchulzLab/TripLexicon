@@ -98,12 +98,18 @@ DATABASES = {
 	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_updated.db',
 	    'HOST': '192.168.169.94',
         'PORT': '8000',
+        'OPTIONS': {
+            'timeout': 2000,  
+        },
     },
     'mouse' : {
         'ENGINE': 'django.db.backends.sqlite3',
 	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated.db',
 	    'HOST': '192.168.169.94',
         'PORT': '8000',
+        'OPTIONS': {
+            'timeout': 2000,
+        },
     },
 }
 

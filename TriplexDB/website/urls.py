@@ -35,4 +35,6 @@ urlpatterns = [
     path('delete_temp_plot/', views.delete_temp_plot, name='delete_temp_plot'),
     path('go_enrichment', views.go_enrichment_results, name='go_enrichment_results'),
     path('download/csv/', views.download_csv, name='download_csv'),
+    #path('loading_view', views.loading_view, name='loading_view'),
+    #path('go_calculation', views.go_calculation, name='go_calculation'),
 ]

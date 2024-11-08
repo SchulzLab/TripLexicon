@@ -1,5 +1,5 @@
 import os
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Dna as dna
 from .models import Rna as rna
 from .models import Triplexaligner as triplexaligner
@@ -31,8 +31,8 @@ def search_dna_mouse(request):
 			dna_symbol = dna_symbol.capitalize()
 		if species == 'Human':
 			mouse = False
-			dna_symbol = dna_symbol.upper()
-			filter_dna_id = list(dna.objects.filter(genesymbol__exact=dna_symbol).values_list('dnaid', flat=True))
+			dna_symbol = dna_symbol.strip().upper()
+			filter_dna_id = list(dna.objects.filter((Q(genesymbol__exact=dna_symbol) | Q(geneid__exact=dna_symbol))).values_list('dnaid', flat=True))
 			triplexes = triplexaligner.objects.filter(Q(dnaid__in=filter_dna_id)).distinct().order_by('triplexalignere')\
 			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'genometriplexchr',
 				'genometriplexstart', 'genometriplexend',
@@ -45,8 +45,8 @@ def search_dna_mouse(request):
 		elif species == 'Mouse':
 			mouse = True
 			if dna_symbol.startswith('Ensmu'):
-				dna_symbol = dna_symbol.upper()
-			filter_dna_id = list(dna.objects.using('mouse').filter(Q(genesymbol__exact=dna_symbol)).values_list('dnaid', flat=True))
+				dna_symbol = dna_symbol.strip().upper()
+			filter_dna_id = list(dna.objects.using('mouse').filter(Q(genesymbol__exact=dna_symbol) | Q(geneid__exact=dna_symbol)).values_list('dnaid', flat=True))
 			triplexes = triplexaligner.objects.using('mouse').filter(Q(dnaid__in=filter_dna_id)).distinct().order_by('triplexalignere')\
 			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'genometriplexchr',
 				'genometriplexstart', 'genometriplexend',
@@ -88,7 +88,7 @@ def search_rna_results(request):
 def search_transcript_values(request):
 	if request.method == 'GET':
 		species = request.GET.get('species')
-		transcript = request.GET.get('transcript').upper()
+		transcript = request.GET.get('transcript').strip().upper()
 		if species == 'Mouse':
 			mouse = True
 			rna_result = rna.objects.using('mouse').filter(transcriptid__exact = transcript).distinct().values('transcriptgenesymbol')
@@ -142,19 +142,20 @@ def search_transcript_values(request):
 def search_rna_symbol_values(request):
 	if request.method == 'GET':
 		species = request.GET.get('species')
-		rna_symbol = request.GET.get('rna_symbol')
+		rna_symbol = request.GET.get('rna_symbol').strip()
 		if species == 'Mouse':
 			mouse = True
 			if not rna_symbol[0].isdigit() and 'Rik' not in rna_symbol:
 				rna_symbol = rna_symbol.capitalize()
-			dnas_to_exclude = dna.objects.using('mouse').filter(genesymbol__exact = rna_symbol).values('dnaid')
-			dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
-			transcripts = rna.objects.using('mouse').filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
+			#dnas_to_exclude = dna.objects.using('mouse').filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
+			#dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+			transcripts = rna.objects.using('mouse').filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('transcriptid', 'rnaid')
 			transcript_ids = [tid['transcriptid'] for tid in transcripts]
 			triplexes = triplexaligner.objects.using('mouse').filter(Q(rnaid__transcriptid__in=transcript_ids))\
-			.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
+			.order_by('triplexalignere')\
 			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
 				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
+			#.exclude(Q(dnaid__in=dnas_to_exclude))
 			nr_triplexes = len(triplexes)
 			dna_ids = [triplex['dnaid'] for triplex in triplexes]
 			dnas_targeted_by_trans = len(set(dna_ids))
@@ -162,15 +163,17 @@ def search_rna_symbol_values(request):
 		elif species == 'Human':
 			mouse = False
 			rna_symbol = rna_symbol.upper()
-			dnas_to_exclude = dna.objects.filter(genesymbol__exact = rna_symbol).values('dnaid')
-			dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
-			transcripts = rna.objects.filter(transcriptgenesymbol__exact=rna_symbol).values('transcriptid', 'rnaid')
+			#dnas_to_exclude = dna.objects.filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
+			#dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+			transcripts = rna.objects.filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('transcriptid', 'rnaid')
 			transcript_ids = [tid['transcriptid'] for tid in transcripts]
 			triplexes = triplexaligner.objects.filter(Q(rnaid__transcriptid__in=transcript_ids))\
-			.exclude(Q(dnaid__in=dnas_to_exclude)).order_by('triplexalignere')\
+			.order_by('triplexalignere')\
 			.values('rnaid', 'rnatriplexstart', 'rnatriplexend', 'dnaid', 'genometriplexchr', 'genometriplexstart', 'genometriplexend',
 				'rnalength', 'dnalength', 'triplexalignerscore', 'triplexalignerbitscore', 'triplexalignere')
 			nr_triplexes = len(triplexes)
+			if nr_triplexes > 4000:
+				triplexes = triplexes[:4000]
 			dna_ids = [triplex['dnaid'] for triplex in triplexes]
 			dnas_targeted_by_trans = len(set(dna_ids))
 			dna_result = dna.objects.filter(dnaid__in = dna_ids).distinct().values('genesymbol', 'dnaid')
@@ -294,8 +297,8 @@ def search_gen_region_results(request):
 		
 	elif request.method == 'GET':
 		species = request.GET.get('species')
-		start = request.GET.get('start')
-		end =  request.GET.get('end')
+		start = request.GET.get('start').strip()
+		end =  request.GET.get('end').strip()
 		chromosome = request.GET.get('chromosome')
 		if start and end and chromosome:
 			try:
@@ -364,17 +367,17 @@ def gene_detail_search(request):
 	if request.method =='GET':
 		try:
 			species = request.GET.get('species')
-			gene_symbol = request.GET.get('gene_symbol')
+			gene_symbol = request.GET.get('gene_symbol').strip()
 			if not gene_symbol[0].isdigit() and 'Rik' not in gene_symbol:
 				gene_symbol = gene_symbol.capitalize()
 			if gene_symbol.startswith('ENS'):
 				gene_symbol = gene_symbol.upper()
 			if species == 'Mouse':
-				rna_result = rna.objects.using('mouse').filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
+				rna_result = rna.objects.using('mouse').filter(Q(transcriptgenesymbol__exact = gene_symbol) | Q(transcriptgeneid__exact=gene_symbol)).distinct().order_by('transcripttriplexcount').values()[::-1]
 				mouse = True
 			else:
 				gene_symbol = gene_symbol.upper()
-				rna_result = rna.objects.filter(transcriptgenesymbol__exact = gene_symbol).distinct().order_by('transcripttriplexcount').values()[::-1]
+				rna_result = rna.objects.filter(Q(transcriptgenesymbol__exact = gene_symbol) | Q(transcriptgeneid__exact=gene_symbol)).distinct().order_by('transcripttriplexcount').values()[::-1]
 				mouse = False
 			nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
 			nr_triplexes = sum(nr_triplexes)
@@ -419,13 +422,16 @@ def go_enrichment_results(request):
 		go_genes = request.POST['go_genes']
 		rna_symbol = request.POST.get('rna_symbol')
 		go_genes = go_genes.split(',')
+		if len(go_genes) > 500:
+			go_genes = go_genes[:500]
 		filename = f"{uuid.uuid4()}"
 		filepath = os.path.join('media','temp_plots', filename)#'media',
 		df, filenames = go_enrichment(go_genes = {'human': list(go_genes)}, out_tag=filepath)
 		gprofiler_table = df['human']
-		request.session['df'] = gprofiler_table.to_json()
+		request.session['gprofiler_df'] = gprofiler_table.to_json()
 		gprofiler_table = gprofiler_table.drop(['Gene fraction', 'intersections', 'evidences', 'significant', 
 										 'description',  'query'], axis = 1)
+		gprofiler_table = gprofiler_table.round({'p_value': 3, 'precision': 3, 'recall': 3})
 		#headers = list(gprofiler_table.keys())
 		headers = gprofiler_table.columns.to_list()
 		#rows = zip(*gprofiler_table.values())
@@ -471,21 +477,87 @@ def delete_temp_plot(request):
 
 def download_csv(request):
 	# Retrieve the DataFrame from the session
-    df_json = request.session.get('df')  # Get the JSON-encoded DataFrame from the session
-    
+    df_json = request.session.get('gprofiler_df')  # Get the JSON-encoded DataFrame from the session
     if df_json:
         # Convert the JSON back into a DataFrame
         df = pd.read_json(df_json)
-        
         # Create the HTTP response with CSV content-type
         response = HttpResponse(content_type='text/csv')
-        
         # Name the downloaded file
-        response['Content-Disposition'] = 'attachment; filename="full_results.csv"'
-        
+        response['Content-Disposition'] = 'attachment; filename="full_GO_results_gprofiler.csv"'
         # Convert the DataFrame to CSV and write it to the response
         df.to_csv(path_or_buf=response, index=False)
-        
         return response
     else:
         return HttpResponse("No data available for download.", status=400)
+
+
+'''def loading_view(request):
+	if request.method == 'POST':
+		go_genes = request.POST['go_genes']
+		rna_symbol = request.POST.get('rna_symbol')
+		if rna_symbol and go_genes:
+            # Save to session
+			request.session['rna_symbol'] = rna_symbol
+			request.session['go_genes'] = go_genes
+            # Redirect to loading view (this will trigger GET request)
+			return render(request, 'TriplexDB/loading.html', {})
+		else:
+            # Return an error if data is missing
+			return render(request,
+			'TriplexDB/go_enrichment.html',
+			{
+				'rna_symbol': 'shitty',
+				#'table_html': table_html,
+				#'MEDIA_URL': '/media/',
+			})
+
+def go_enrichment_results(request):
+	rna_symbol = request.session.get('rna_symbol')
+	filenames = request.session.get('filenames', [])
+	headers = request.session.get('headers', [])
+	rows = request.session.get('rows', [])
+	if len(filenames) > 0:
+		return render(request,
+			'TriplexDB/go_enrichment.html',
+			{
+				'rna_symbol': rna_symbol,
+				'plot_paths': filenames,
+				'headers' : headers,
+				'rows' : rows,
+			})
+	else:
+		return render(request,
+			'TriplexDB/go_enrichment.html',
+			{
+				'rna_symbol': 'no plots',
+			})
+
+def go_calculation(request):
+	rna_symbol = request.session.get('rna_symbol')
+	go_genes = request.session.get('go_genes')
+	if not rna_symbol or not go_genes:
+		return render(request,
+			'TriplexDB/go_enrichment.html',
+			{
+				'rna_symbol': 'no data for calculation',
+			})
+
+	go_genes = go_genes.split(',')
+	filename = f"{uuid.uuid4()}"
+	filepath = os.path.join('media','temp_plots', filename)#'media',
+	df, filenames = go_enrichment(go_genes = {'human': list(go_genes)}, out_tag=filepath)
+	gprofiler_table = df['human']
+	request.session['gprofiler_df'] = gprofiler_table.to_json()
+	gprofiler_table = gprofiler_table.drop(['Gene fraction', 'intersections', 'evidences', 'significant', 
+										'description',  'query'], axis = 1)
+	#headers = list(gprofiler_table.keys())
+	headers = gprofiler_table.columns.to_list()
+	#rows = zip(*gprofiler_table.values())
+	rows = gprofiler_table.to_dict(orient='records')  
+	#table_html = df['human'].to_html(classes="table table-striped", index=False)
+	request.session['filenames'] = filenames
+	request.session['headers'] = headers
+	request.session['rows'] = rows
+	request.session['rna_symbol'] = rna_symbol
+	return JsonResponse({'status': 'completed'})'''

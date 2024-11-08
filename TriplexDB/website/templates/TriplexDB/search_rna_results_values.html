@@ -3,9 +3,52 @@
     <head>
         <title>RNA search results</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		
+		<style>
+			.spinner-border{
+				display:none;
+			}
+			#loading-message {
+            display: none; /* Hide by default */
+        }
+		</style>
     </head>
 
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			//function showSpinner() {
+            // Show the spinner and loading message
+            //document.getElementById('spinner').style.display = 'block';
+            //document.getElementById('loading-message').style.display = 'inline'; // Show loading message
+
+            // Optionally disable the button to prevent multiple clicks
+            //document.getElementById('GO_button').disabled = true; 
+        //}
+		$(document).ready(function() {
+        $('#spinner').hide();
+        $('#loading-message').hide();
+    });
+
+    function showSpinner() {
+        // Show the spinner and loading message when the button is clicked
+        $('#spinner').css('display', 'block');
+		$('#loading-message').css('display', 'inline');
+		$('#spinner').show();
+        $('#loading-message').show();
+
+        // Disable the button to prevent multiple clicks
+        $('#GO_button').prop('disabled', true);
+
+		let form = document.getElementById("submit_form");
+            form.submit();
+
+		return true; 
+    }
+
+		</script>
+
+
 {% if result %}
 	{% if transcript %}
    
@@ -14,22 +57,6 @@
 		<h4>Triplex statistics for mouse transcript {{ transcript }}</h4>
 		{% else %}
 		<h4>Triplex statistics for human transcript {{ transcript }}</h4>
-			{% if go_genes %}
-				<div>
-					<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3">
-						{% csrf_token %}
-						<!-- Hidden input field to carry the value -->
-						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
-						<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol}}">
-					
-						<!-- Visible Search button -->
-						<button type="submit" class="btn btn-success" 
-								style="color: white; background-color: #0c042e; border-color: white;">
-							GO enrichment of DNA gene set
-						</button>
-					</form>
-				</div>
-		{% endif %}
 		{% endif %}
 		<br/>
 		<h5>{{ transcript }} is predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>
@@ -98,19 +125,29 @@
 		<h4>Triplex statistics for human RNA Gene {{ rna_symbol }}</h4>
 		{% if go_genes %}
 				<div>
-					<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3">
+					<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3" id="submit_form">
 						{% csrf_token %}
-						<!-- Hidden input field to carry the value -->
 						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
-						<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol}}">
+						<!-- Hidden input field to carry the value 
+						{% if go_genes|length > 1000 %}
+						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|slice:'0:1000'|join:','  }}">
+						{% else %}
+						<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
+						{% endif %}-->
+						<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol }}">
 					
 						<!-- Visible Search button -->
 						<button type="submit" class="btn btn-success" 
-								style="color: white; background-color: #0c042e; border-color: white;">
+								style="color: white; background-color: #0c042e; border-color: white;" id="GO_button" onclick="showSpinner()">
 							GO enrichment of DNA gene set
 						</button>
+						<div class="spinner-border" role="status" id="spinner">
+							<span class="sr-only"></span>
+						  </div>
+						  <span id="loading-message" class="ml-2">Calculating GO enrichments... This may take a couple of minutes...</span>
 					</form>
 				</div>
+
 		{% endif %}
 		{% endif %}
 		<br/>
@@ -171,6 +208,8 @@
 		    </tbody>
 		</table>
 	</div>
+
+	
 	
     {% else %}
     <h3>No hits for this RNA in TripLexicon!</h3>

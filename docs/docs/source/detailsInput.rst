@@ -1,98 +1,48 @@
 
 =======================================
-Optional parameters
+Querying TripLexicon
 =======================================
 
-In the following we outline all optional parameters which can be used to run SNEEP in more detail. 
+The structure of TripLexicon allows querying of predicted triplexes by the RNA involved, the predicted target gene, or by a given genomic region. More details on these queries are outlined below:
 
-Flag -o: Specify an output folder
+Querying TripLexicon by RNA
 ===================================
-  
-As default the result of our pipeline is stored within the folder SNEEP_output/.  Using the flag -o a user-defined path for the output folder can be given. Notice that if you set this flag, it must be given as first argument. The (potential) content of the output folder is automatic whenn running SNEEP.
 
-Flag -n: Number of threads
-==========================
-  
-To speed up the p-value computation of the binding affinity and the random background analyses the parameter n can be specified. As default the number of threads is set to 1. 
+TripLexicon can be queried by RNA in two different modes. The search input can be either the gene name of the RNAs to be searched, or the transcript ID that is specifically interesting to the user for more precise predictions.
 
-Flag -p: p-value threshold for TF binding affinity
-===================================================
-  
-This flag specifies the p-value threshold for the TF binding affinity. For a TF the binding affinity is computed for all possible shifts that overlap with the SNP. If a shift exceeds the p-value threshold, a absolute maximal differential TF binding score is computed. Per default this parameter is set to 0.05.
-  
-Flag -b and flag -x: Base frequency for TF binding affinity computation
-=========================================================================
-The approach to derive the p-value for the TF binding score allows to include the base frequency of the bases and the transition frequency between to bases of the considered sequences. We computed both frequencies for the human genome and provide them within our GitHub repository (necessaryInputFiles/frequency.txt and necessaryInputFile/transition_matrix.txt). If these frequencies are not specified, we assume as default 0.25.
+Searching for triplexes by RNA gene symbol
+------------------------------------------
+
+To query TripLexicon by an RNA gene symbol, the symbol of interest should be entered in the search field with the header: **Search for predicted triplexes by RNA gene symbol (results will include all annotated transcripts)**. The result will be a table of statistically significant predicted triplexes for every annotated transcript of the RNA gene of interest with genome-wide gene promoters and REMs. The results tables are sorted by the *E* value for the predicted triplex as calculated by TriplexAligner by default, placing the most statistically significant triplexes at the top of the table.
+
+Searching for triplexes by transcript ID
+----------------------------------------
+
+To search TripLexicon by Ensembl transcript ID, the appropriate ID should be provided in the search field denoted by **Search for predicted triplexes by RNA transcript ID (Ensembl format)**. This search will return a results table containing predicted triplexes between the transcript matching the ID provided and predicted target genes. The target genes will be those where any annotated promoter or REM linked to said gene is predicted to be involved in the formation of a statistically significant triplex with the transcript by TriplexAligner. The results tables are sorted by the *E* value for the predicted triplex as calculated by TriplexAligner by default, placing the most statistically significant triplexes at the top of the table.
+
+Querying TripLexicon by predicted target gene
+=============================================
+
+In the case that the user would like to find out which lncRNAs are most likely to target a gene of interest, TripLexicon can be queried by target gene symbol. This is done via the **Target query** tab. The gene symbol of interest can then be provided in the search field. The resulting table will contain all statistically significant predicted triplexes between all annotated human lncRNAs and any promoter of REM annotated to the provided target gene. The results tables are sorted by the *E* value for the predicted triplex as calculated by TriplexAligner by default, placing the most statistically significant triplexes at the top of the table.
+
+Querying TripLexicon by target genomic region
+=============================================
+
+If the user has a genomic region of interest, this can also be used to query TripLexicon for triplexes predicted to be formed in the given region. This query can be carried out in two ways. The first is to use the search fields on the **Region query** tab, where the chromosome of interest can be chosen from a dropdown menu, and start and stop coordinates (in base pairs) can be provided to the search fields. This will query TripLexicon for any statistically significant triplexes predicted to form between any lncRNA and promoter/REMs falling within the search area.
+
+Alternatively, if the user wishes to query TripLexicon for triplexes predicted to form in multiple regions e.g. peaks resulting from ATAC-sequencing/ChIP-sequencing/CUT&RUN etc., then a BED file can be supplied to TripLexicon. Each region in the BED file will be used to query TripLexicon for predicted triplexes between any lncRNA and promoters/REMs falling within the region. To do this, the user should select **Choose file** on the **Region query** tab, which will open the native file explorer for their operating system, where the appropriate BED file can be selected for upload.
+
+The BED file used to query TripLexicon should fulfill the following formatting requirements:
+
+* At least three columns (chromosome, start, stop)
+
+* Tab-separated
+
+* Chromosome numbers should be prefixed with "chr" (i.e. "chr1" rather than "1")
+
+* Start and end positions must be in range of the appropriate chromosome, out of range values will throw an error
+
+* Extra columns (e.g. name, strand, score etc.) can be included, but are not used in the query
 
 
-Flag -c: p-value threshold for absolute maximal differential TF binding score
-===============================================================================
-The p-value threshold for D-max is per default set to 0.01. In our benchmarking analyses outlined in our `paper <sneep paper>`_, best results were observed for p-value thresholds between 0.01 and 0.001.
 
-Flag -k: dbSNP database (dbSNPs_sorted.txt.gz)
-=============================================== 
-To identify TFs which are more often affected than expected by chance in the given input SNP set, SNEEP can perform a statistical assessment to compare the result against proper random controls. To do so, the pipeline randomly samples SNPs from the `dbSNP database <??>`_ and rerun the analysis on these SNPs. 
-In order to sample the SNPs in a fast and efficient manner, we provide a file (in our `Zenodo repository <https://zenodo.org/record/4892591>`_ containing the SNPs of the dbSNP database.  The file is a slightly modified version of the `public available one <ttps://ftp.ncbi.nlm.nih.gov/snp/latest_release/VCF/>`_ (file GCF_000001405.38). In detail, we 
-
--	removed all SNPs overlapping with a protein-coding region (annotation of the `human genome (GRCh38), version 36 (Ensembl 102) <https://www.gencodegenes.org/human/release_36.html>`_), (TODO: remove this sentence when zenodo dir is updated!)
--	removed all information not important for SNEEP,
--	removed mutations longer than 1 bp,
--	and sorted SNPs according to their MAF distribution in ascending order. 
-
-
-Flag -r and -g: Epigenetic interactions
-=============================================== 
-We provide three files (in our `Zenodo repository <??>`_) containing epigenetic interactions associated to target genes:
-
--	interactionsREMs.txt provides regulatory elements (REMs) linked to their target genes. The data was derived with the STITCHIT algorithm, which is a peak-calling free approach to identify gene-specific REMs by analyzing epigenetic signal of diverse human cell types with regard to gene expression of a certain gene. For more information, you can also have a look at our public `EpiRegio database <https://epiregio.de>`_ holding all REMs stored in the interactionsREMs.txt file. 
--	interactionsREM_PRO.txt: Additional to the REMs the promoters (+/- 500 bp around TSS) of the genes are included as regions linked to their target genes. 
--	interactionsREMs_PRO_HiC.txt: This file further includes enhancer-gene links predicted with the ABC algorithm on human heart data from a `published paper from Anene-Nzelu *et al.* <https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.120.046040?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed>`_.
-
-It is also possible to use your own epigenetic interactions file or extend on of ours with for instance cell type specific data. Please stick to our tab-separated format: 
-  
--	chr of the linked region
--	start of the linked region (0-based)
--	end of the linked region (0-based)
--	target gene (ensembl ID, you may also need to add the ensembl ID and the corresponding gene name to the file ensemblID_GeneName.txt)
--	unique identifier of the interaction region not longer than 10 letters/digits (e.g., PRO0000001, HiC0000234, … ), 
--	7 tab-separated dots (or additional information which you wish to keep -> displayed in the result.txt file but not in the summary pdf). 
-
-Further, a file which provides a mapping between ensemblID to gene name must be given. This file comes along with our GitHub repository. 
-  
-Flag -s: Estimated scale parameters for the TFs used
-=====================================================
-
-Our modified Laplace distribution is dependent on two parameters: n, which is two times the length of the TF model and b, which needs to be estimated. 
-For the TF set we provide within our GitHub repository, we also estimated the scale parameter listed in XX. 
-In case a customized TF motif set is used, one also needs to estimate the scale parameter for each TF. Therefore we provide a script XXX (TODO: provide more details here).
-  
-Flag -a: Store Dmax values for all considered shifts
-=====================================================
-If this flag is set, for all shifts that exceed the TF binding affinity p-value threshold the resulting D-max value and the corresponding p-value is stored in <outputDir>/AllDiffBindAffinity.txt
-
-Flag -f: Include open chromatin data
-======================================
-
-To consider only the SNPs which overlap with  cell type specific open chromatin data, a peak file in bed-format can be specified with this flag.
-
-Flag -m: Get all Dmax values
-===============================
-
-If this flag is set all absolute maximal differential TF binding scores are printed (to the console) even if they do not exceed the specified p-value threshold. This flag is useful for estimating the scale parameter
-
-Flag -t, -d and -e: Active TFs of the cell type of interest
-=============================================================
-In order to only consider the TFs which are expressed in your analysed cell type or tissue our computational approach needs three additional information. A file containing the expression value per TF (-t),  a threshold to decide which TFs are active and a mapping between the ensemblID and the TF name, The last file is provided in our GitHub repository for the TF set used within our analyses. 
-
-Flag -j: Number of sampled background SNP sets
-=================================================
-
-With this flag the number of background rounds can be specified, default 0.
-
-Flag -l: Reproducible results for random background analysis
-==============================================================
-In order to reproduce the result of the random background analysis we recommend to specific a seed variable. Default is 1. 
-
-Flag -q:  TF count
-=====================
-This flags allows to exclude TFs from the baclground sampling which do not exceed a TF count (default 0).
