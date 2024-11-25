@@ -104,7 +104,7 @@ DATABASES = {
     },
     'mouse' : {
         'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated.db',
+	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated_enhancers.db',
 	    'HOST': '192.168.169.94',
         'PORT': '8000',
         'OPTIONS': {
