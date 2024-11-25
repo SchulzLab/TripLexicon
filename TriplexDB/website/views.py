@@ -10,10 +10,12 @@ import uuid
 import logging
 import pandas as pd
 
+
+from django.db.models import OuterRef, Subquery
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .GOEnrichment import go_enrichment
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # get logger for my app website
 logger = logging.getLogger("website")
@@ -324,31 +326,42 @@ def search_rna_symbol_values(request):
                     "triplexalignerbitscore",
                     "triplexalignere",
                 )
+                .annotate(
+                dnagenesymbol=Subquery(
+                dna.objects.filter(dnaid=OuterRef("dnaid")).values("genesymbol")[:1]
+                )
+                )
+               .annotate(
+                transcriptid=Subquery(
+                rna.objects.filter(rnaid=OuterRef("rnaid")).values("transcriptid")[:1]
+                )
+                )
             )
 
             nr_triplexes = len(triplexes)
             if nr_triplexes > 20000:
                  triplexes = triplexes[:20000]
-            dna_ids = [triplex["dnaid"] for triplex in triplexes]
-            dnas_targeted_by_trans = len(set(dna_ids))
-            dna_result = (
-                dna.objects.filter(dnaid__in=dna_ids)
-                .values("genesymbol", "dnaid")
-            )
+            #dna_ids = [triplex["dnaid"] for triplex in triplexes]
+            #dnas_targeted_by_trans = len(set(dna_ids))
+            #dna_result = (
+            #    dna.objects.filter(dnaid__in=dna_ids)
+            #    .values("genesymbol", "dnaid")
+            #)
         if triplexes:
-            for triplex in triplexes:
-                triplex["dnagenesymbol"] = [
-                    dna_instance["genesymbol"]
-                    for dna_instance in dna_result
-                    if triplex["dnaid"] == dna_instance["dnaid"]
-                ][0]
-                triplex["transcriptid"] = [
-                    rna_instance["transcriptid"]
-                    for rna_instance in transcripts
-                    if triplex["rnaid"] == rna_instance["rnaid"]
-                ][0]
-            dna_genes = [dna_item["genesymbol"] for dna_item in dna_result]
-
+            #for triplex in triplexes:
+                # triplex["dnagenesymbol"] = [
+                #    dna_instance["genesymbol"]
+                #    for dna_instance in dna_result
+                #    if triplex["dnaid"] == dna_instance["dnaid"]
+                #][0]
+                #triplex["transcriptid"] = [
+                #    rna_instance["transcriptid"]
+                #    for rna_instance in transcripts
+                #    if triplex["rnaid"] == rna_instance["rnaid"]
+                #][0]
+            dna_genes = list(set([triplex["dnagenesymbol"] for triplex in triplexes]))
+            dnaids = set([triplex["dnaid"] for triplex in triplexes])
+            dnas_targeted_by_trans = len(dnaids)
             return render(
                 request,
                 "TriplexDB/search_rna_results_values.html",

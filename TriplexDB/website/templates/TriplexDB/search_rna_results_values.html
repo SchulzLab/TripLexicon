@@ -1,3 +1,4 @@
+
 {% extends 'TriplexDB/base.html' %}
 
     <head>
@@ -6,7 +7,7 @@
 		
 		<style>
 			.spinner-border{
-				display:none;
+				display: none;
 			}
 			#loading-message {
             display: none; /* Hide by default */
@@ -17,14 +18,14 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
-			//function showSpinner() {
+			<!-- function showSpinner() {
             // Show the spinner and loading message
             //document.getElementById('spinner').style.display = 'block';
             //document.getElementById('loading-message').style.display = 'inline'; // Show loading message
 
             // Optionally disable the button to prevent multiple clicks
             //document.getElementById('GO_button').disabled = true; 
-        //}
+        //}-->
 		$(document).ready(function() {
         $('#spinner').hide();
         $('#loading-message').hide();
@@ -45,6 +46,19 @@
 
 		return true; 
     }
+
+
+   window.addEventListener('pageshow', function(event) {
+    // This ensures the code runs when the page is restored from the browser's cache
+        if (event.persisted) {
+            // Enable the button
+            document.getElementById('GO_button').disabled = false;
+
+            // Hide the spinner and loading message
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('loading-message').style.display = 'none';
+          } 
+    });
 
 		</script>
 
@@ -141,10 +155,10 @@
 								style="color: white; background-color: #0c042e; border-color: white;" id="GO_button" onclick="showSpinner()">
 							GO enrichment of DNA gene set
 						</button>
-						<div class="spinner-border" role="status" id="spinner">
+						<div class="spinner-border" role="status" id="spinner" style="display: none;">
 							<span class="sr-only"></span>
 						  </div>
-						  <span id="loading-message" class="ml-2">Calculating GO enrichments... This may take a couple of minutes...</span>
+						  <span id="loading-message" class="ml-2" style="display: none;">Calculating GO enrichments... This may take up to one minute...</span>
 					</form>
 				</div>
 

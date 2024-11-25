@@ -103,12 +103,12 @@
         }
 
         // Call sendDeletionRequests when the page is unloaded
-        window.addEventListener('beforeunload', function(event) {
+        window.addEventListener('unload', function(event) {
             sendDeletionRequests();
         });
 
         // Optionally, call sendDeletionRequests after a timeout
-        setTimeout(sendDeletionRequests, 500); // 1 hour in milliseconds
+        setTimeout(() => sendDeletionRequests(), 500); 
     </script>
 {% else %}
 <div>
