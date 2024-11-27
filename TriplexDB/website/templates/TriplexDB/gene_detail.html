@@ -71,7 +71,7 @@
 		</tbody>
 	</table>
 </div>
-<div class="container">
+<!--<div class="container">
 	<h5> Triplex forming region prediction for maximally scoring transcript</h5>
 	<figure>
 		<img src="{% static plot_path %}" style="width: 50%; height: auto;">
@@ -90,7 +90,28 @@
 			genomic regions.</figcaption>
 	</figure>
 </div>
-{% endif %}
+{% endif %}-->
+
+<div class="container" style="display: flex; justify-content: space-between;">
+	<div style="width: 48%;"> <!-- 48% width for each figure to make space between them -->
+		<h5>Triplex forming region prediction for maximally scoring transcript</h5>
+		<figure>
+			<img src="{% static plot_path %}" style="width: 100%; height: auto;">
+			<figcaption>Predicted triplex forming regions as represented by the summed negative logE values estimated by
+				TriplexAligner are visualized along the length of the transcript in base pairs. Dark red indicates
+				higher significance.</figcaption>
+		</figure>
+	</div>
+	{% if circos_path %}
+	<div style="width: 43%;"> <!-- 48% width for the second figure -->
+		<h5>Circos plot</h5>
+		<figure>
+			<img src="{% static circos_path %}" style="width: 100%; height: auto;">
+			<figcaption>Predicted triplex interacting with DNA targets of different genomic regions.</figcaption>
+		</figure>
+	</div>
+	{% endif %}
+</div>
 
 {% else %}
 <h3>No hits for this RNA in TripLexicon!</h3>

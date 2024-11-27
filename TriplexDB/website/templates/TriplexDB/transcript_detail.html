@@ -1,78 +1,93 @@
 {% extends 'TriplexDB/base.html' %}
-{% load static %} 
+{% load static %}
 
-    <head>
-        <title>Transcript detail view</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    </head>
- <style>
-        .container {
-            text-align: center;
-            width: 100%;
-        }
-        .container img {
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
+<head>
+	<title>Transcript detail view</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<style>
+	.container {
+		text-align: center;
+		width: 100%;
+	}
+
+	.container img {
+		display: block;
+		margin: 0 auto;
+	}
+</style>
 
 {% block content %}
 {% if object %}
-	<div class="table-responsive mx-5">
-	{% if mouse %}	
-		<h4>Results for predicted triplexes involving mouse transcript {{ transcript }}</h4>
-	{% else %}		
-		<h4>Results for predicted triplexes involving human transcript {{ transcript }}</h4>
-	{% endif %}	
-		<br/>
-		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
-		  <thead class="table-dark" style="background-color: red;">
-		    <tr>
-		      <th scope="col">Gene ID</th>
-			  <th scope="col">Gene Symbol</th>
-		      <th scope="col">Transcript ID</th>
-			  <th scope="col">Transcript Chrom</th>
-		      <th scope="col">Transcript Start</th>
-		      <th scope="col">Transcript End</th>
-		      <th scope="col">Transcript Length</th>
-			  <th scope="col">Transcript Biotype</th>
-			  <th scope="col">Transcript Triplexcount</th>
-		    </tr>
-		  </thead>
-		  <tbody class="table-group-divider">
-		  	{% for rna in object %}
-				<tr>
-					<td>{{rna.transcriptgeneid}}</td>
-					<td>{{rna.transcriptgenesymbol}}</td>
-					<td><strong><i>{{rna.transcriptid}}</i></strong></td>
-					<td>{{ rna.transcriptchr }}</td>
-					<td>{{ rna.transcriptstart }}</td>
-					<td>{{ rna.transcriptend }}</td>
-					<td>{{ rna.transcriptlength }}</td>
-					<td>{{ rna.transcriptbiotype }}</td>
-					<td>{{ rna.transcripttriplexcount }}</td>
-				</tr>
+<div class="table-responsive mx-5">
+	{% if mouse %}
+	<h4>Results for predicted triplexes involving mouse transcript {{ transcript }}</h4>
+	{% else %}
+	<h4>Results for predicted triplexes involving human transcript {{ transcript }}</h4>
+	{% endif %}
+	<br />
+	<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna"
+		style="text-align: left; width: 100%">
+		<thead class="table-dark" style="background-color: red;">
+			<tr>
+				<th scope="col">Gene ID</th>
+				<th scope="col">Gene Symbol</th>
+				<th scope="col">Transcript ID</th>
+				<th scope="col">Transcript Chrom</th>
+				<th scope="col">Transcript Start</th>
+				<th scope="col">Transcript End</th>
+				<th scope="col">Transcript Length</th>
+				<th scope="col">Transcript Biotype</th>
+				<th scope="col">Transcript Triplexcount</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for rna in object %}
+			<tr>
+				<td>{{rna.transcriptgeneid}}</td>
+				<td>{{rna.transcriptgenesymbol}}</td>
+				<td><strong><i>{{rna.transcriptid}}</i></strong></td>
+				<td>{{ rna.transcriptchr }}</td>
+				<td>{{ rna.transcriptstart }}</td>
+				<td>{{ rna.transcriptend }}</td>
+				<td>{{ rna.transcriptlength }}</td>
+				<td>{{ rna.transcriptbiotype }}</td>
+				<td>{{ rna.transcripttriplexcount }}</td>
+			</tr>
 			{% endfor %}
-		    </tbody>
-		</table>
-		</div>
-	<div class="container">
-                <h5>  Triplex forming region prediction for transcript {{transcript}}</h5>
-                <figure>
-                        <img src="{% static plot_path %}" style="width: 50%; height: auto;">
-                        <figcaption style="width: 50%; height: auto;">Predicted triplex forming regions as represented by the summed negative logE values estimated by TriplexAligner
-                         are visualized along the length of the transcript in base pairs. Dark red indicates higher significance.</figcaption>
-                </figure>
-        </div>
+		</tbody>
+	</table>
+</div>
 
-    {% else %}
-    <h3>No hits for this transcript in Triplexicon!</h3>
-    {% endif %}
+<div class="container" style="display: flex; justify-content: space-between;">
+	<div style="width: 48%;"> <!-- 48% width for each figure to make space between them -->
+		<h5>Triplex forming region prediction for maximally scoring transcript</h5>
+		<figure>
+			<img src="{% static plot_path %}" style="width: 100%; height: auto;">
+			<figcaption>Predicted triplex forming regions as represented by the summed negative logE values estimated by
+				TriplexAligner are visualized along the length of the transcript in base pairs. Dark red indicates
+				higher significance.</figcaption>
+		</figure>
+	</div>
+	{% if circos_path %}
+	<div style="width: 43%;"> <!-- 48% width for the second figure -->
+		<h5>Circos plot</h5>
+		<figure>
+			<img src="{% static circos_path %}" style="width: 100%; height: auto;">
+			<figcaption>Predicted triplex interacting with DNA targets of different genomic regions.</figcaption>
+		</figure>
+	</div>
+	{% endif %}
+</div>
+
+
+{% else %}
+<h3>No hits for this transcript in Triplexicon!</h3>
+{% endif %}
 
 {% endblock %}
 <footer>
-{% block footer %}
-{% include 'TriplexDB/footer.html' %}
-{% endblock %}
+	{% block footer %}
+	{% include 'TriplexDB/footer.html' %}
+	{% endblock %}
 </footer>
-

@@ -689,8 +689,10 @@ def gene_detail_search(request):
                 high_triplex_rna = rna_result[0]['transcriptid']
                 if mouse == False:
                     plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
+                    circos_path = 'ggCircos_hg38/' + high_triplex_rna + '.png'
                 else:
                     plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
+                    circos_path = None
                 return render(
                     request,
                     'TriplexDB/gene_detail.html',
@@ -700,6 +702,7 @@ def gene_detail_search(request):
                         'gene': gene_symbol,
                         'nr_triplexes': nr_triplexes,
                         'mouse': mouse,
+                        'circos_path': circos_path,
                     },
                 )
             else:
@@ -719,6 +722,7 @@ def transcript_detail(request, pk):
             .values()
         )
         plot_path = 'transcript_plots_mouse/' + pk + '.png'
+        circos_path = None
     else:
         mouse = False
         rna_result = (
@@ -728,6 +732,7 @@ def transcript_detail(request, pk):
             .values()
         )
         plot_path = 'transcript_plots/' + pk + '.png'
+        circos_path = 'ggCircos_hg38/' + pk + '.png'
     return render(
         request,
         'TriplexDB/transcript_detail.html',
@@ -736,6 +741,7 @@ def transcript_detail(request, pk):
             'plot_path': plot_path,
             'transcript': pk,
             'mouse': mouse,
+            'circos_path': circos_path,
         },
     )
 
