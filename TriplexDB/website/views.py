@@ -181,16 +181,21 @@ def search_transcript_values(request):
                     'triplexalignerbitscore',
                     'triplexalignere',
                 )
+                .annotate(
+                dnagenesymbol=Subquery(
+                dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                )
+                )
             )
 
             nr_triplexes = len(triplexes)
             dna_id = [triplex['dnaid'] for triplex in triplexes]
             dnas_targeted_by_trans = len(set(dna_id))
-            dna_result = (
-                dna.objects.using('mouse')
-                .filter(dnaid__in=dna_id)
-                .values('genesymbol', 'dnaid')
-            )
+            # dna_result = (
+            #     dna.objects.using('mouse')
+            #     .filter(dnaid__in=dna_id)
+            #     .values('genesymbol', 'dnaid')
+            # )
         else:
             triplexes = (
                 triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript))
@@ -210,24 +215,28 @@ def search_transcript_values(request):
                     'triplexalignerbitscore',
                     'triplexalignere',
                 )
+                .annotate(
+                dnagenesymbol=Subquery(
+                dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                )
+                )
             )
 
             nr_triplexes = len(triplexes)
             dna_id = [triplex['dnaid'] for triplex in triplexes]
             dnas_targeted_by_trans = len(set(dna_id))
-            dna_result = dna.objects.filter(dnaid__in=dna_id).values(
-                'genesymbol', 'dnaid'
-            )
+            # dna_result = dna.objects.filter(dnaid__in=dna_id).values(
+            #     'genesymbol', 'dnaid'
+            # )
 
         if triplexes:
-            for triplex in triplexes:
-                triplex['dnagenesymbol'] = [
-                    dna_instance['genesymbol']
-                    for dna_instance in dna_result
-                    if triplex['dnaid'] == dna_instance['dnaid']
-                ][0]
+            # for triplex in triplexes:
+            #     triplex['dnagenesymbol'] = [
+            #         dna_instance['genesymbol']
+            #         for dna_instance in dna_result
+            #         if triplex['dnaid'] == dna_instance['dnaid']
+            #     ][0]
 
-        if triplexes:
             return render(
                 request,
                 'TriplexDB/search_rna_results_values.html',
@@ -341,8 +350,8 @@ def search_rna_symbol_values(request):
             )
 
             nr_triplexes = len(triplexes)
-            if nr_triplexes > 20000:
-                 triplexes = triplexes[:20000]
+            if nr_triplexes > 15000:
+                 triplexes = triplexes[:15000]
 
         if triplexes:
             dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
