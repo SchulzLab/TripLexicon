@@ -66,6 +66,29 @@
 	{% else %}
 	<h4>Triplex statistics for human transcript {{ transcript }}</h4>
 	{% endif %}
+
+	{% if go_genes %}
+	<div>
+		<form method=POST action="{% url 'go_enrichment_results' %}" class="col-xs-3" id="submit_form">
+			{% csrf_token %}
+			<input type="hidden" name="go_genes" id="go_genes" value="{{ go_genes|join:','  }}">
+			<input type="hidden" name="rna_symbol" id="rna_symbol" value="{{ rna_symbol }}">
+			<input type="hidden" name="mouse" id="mouse" value="{{ mouse }}">
+			<input type="hidden" name="transcript" id="transcript" value="{{ transcript|default:'' }}">
+			<!-- Visible Search button -->
+			<button type="submit" class="btn btn-success"
+				style="color: white; background-color: #0c042e; border-color: white;" id="GO_button"
+				onclick="showSpinner()">
+				GO enrichment of DNA gene set
+			</button>
+			<div class="spinner-border" role="status" id="spinner" style="display: none;">
+				<span class="sr-only"></span>
+			</div>
+			<span id="loading-message" class="ml-2" style="display: none;">Calculating GO enrichments... This may take
+				up to one minute...</span>
+		</form>
+	</div>
+	{% endif %}
 	<br />
 	<h5>{{ transcript }} is predicted to be involved in the formation of {{ nr_triplexes }} triplexes.</h5>
 	<br />

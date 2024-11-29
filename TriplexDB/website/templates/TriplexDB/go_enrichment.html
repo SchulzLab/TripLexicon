@@ -33,7 +33,19 @@
 </style>
 <div class="container">
     {% if plot_paths %}
-    <h4>Go enrichment results for genes forming triplexes with RNAs from gene {{ rna_symbol }}</h4>
+    {% if transcript %}
+    {% if mouse %}
+    <h4>Go enrichment results for genes forming triplexes with mouse transcript {{ transcript }}</h4>
+    {% else %}
+    <h4>Go enrichment results for genes forming triplexes with human transcript {{ transcript }}</h4>
+    {% endif %}
+    {% else %}
+    {% if mouse %}
+    <h4>Go enrichment results for genes forming triplexes with mouse RNAs from gene {{ rna_symbol }}</h4>
+    {% else %}
+    <h4>Go enrichment results for genes forming triplexes with human RNAs from gene {{ rna_symbol }}</h4>
+    {% endif %}
+    {% endif %}
     <h5>Calculated with the <a href="https://biit.cs.ut.ee/gprofiler/gost">g:Profiler</a> python package (<a
             href="https://doi.org/10.1093/nar/gkad347">Kolberg et al</a>)</h5>
 

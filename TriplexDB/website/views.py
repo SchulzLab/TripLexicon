@@ -187,15 +187,7 @@ def search_transcript_values(request):
                 )
                 )
             )
-
-            nr_triplexes = len(triplexes)
-            dna_id = [triplex['dnaid'] for triplex in triplexes]
-            dnas_targeted_by_trans = len(set(dna_id))
-            # dna_result = (
-            #     dna.objects.using('mouse')
-            #     .filter(dnaid__in=dna_id)
-            #     .values('genesymbol', 'dnaid')
-            # )
+            
         else:
             triplexes = (
                 triplexaligner.objects.filter(Q(rnaid__transcriptid__exact=transcript))
@@ -222,20 +214,12 @@ def search_transcript_values(request):
                 )
             )
 
-            nr_triplexes = len(triplexes)
-            dna_id = [triplex['dnaid'] for triplex in triplexes]
-            dnas_targeted_by_trans = len(set(dna_id))
-            # dna_result = dna.objects.filter(dnaid__in=dna_id).values(
-            #     'genesymbol', 'dnaid'
-            # )
 
         if triplexes:
-            # for triplex in triplexes:
-            #     triplex['dnagenesymbol'] = [
-            #         dna_instance['genesymbol']
-            #         for dna_instance in dna_result
-            #         if triplex['dnaid'] == dna_instance['dnaid']
-            #     ][0]
+            nr_triplexes = len(triplexes)
+            # dna_id = [triplex['dnaid'] for triplex in triplexes]
+            dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
+            dnas_targeted_by_trans = len(set(dna_genes))
 
             return render(
                 request,
@@ -247,6 +231,7 @@ def search_transcript_values(request):
                     'nr_targets': dnas_targeted_by_trans,
                     'rna_symbol': rna_result['transcriptgenesymbol'],
                     'mouse': mouse,
+                    'go_genes': dna_genes,
                 },
             )
         else:
@@ -760,6 +745,7 @@ def go_enrichment_results(request):
         go_genes = request.POST['go_genes']
         rna_symbol = request.POST.get('rna_symbol')
         mouse = request.POST.get('mouse')
+        transcript = request.POST.get('transcript')
         go_genes = go_genes.split(',')
         if len(go_genes) > 1000:
             go_genes = go_genes[:1000]
@@ -805,6 +791,7 @@ def go_enrichment_results(request):
                     'headers': headers,
                     'rows': rows,
                     'mouse': mouse,
+                    'transcript': transcript,
                     #'MEDIA_URL': '/media/',
                 },
             )
