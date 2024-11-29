@@ -629,7 +629,7 @@ def gene_detail(request, pk):
             nr_triplexes = sum(nr_triplexes)
             high_triplex_rna = rna_result[0]['transcriptid']
             plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
-            circos_path = None
+            circos_path = 'ggCircos_mm39/' + high_triplex_rna + '.png'
         else:
             mouse = False
             rna_result = (
@@ -701,7 +701,7 @@ def gene_detail_search(request):
                     circos_path = 'ggCircos_hg38/' + high_triplex_rna + '.png'
                 else:
                     plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
-                    circos_path = None
+                    circos_path = 'ggCircos_mm39/' + high_triplex_rna + '.png'
                 return render(
                     request,
                     'TriplexDB/gene_detail.html',
@@ -731,7 +731,7 @@ def transcript_detail(request, pk):
             .values()
         )
         plot_path = 'transcript_plots_mouse/' + pk + '.png'
-        circos_path = None
+        circos_path = 'ggCircos_mm39/' + pk + '.png'
     else:
         mouse = False
         rna_result = (
@@ -759,21 +759,28 @@ def go_enrichment_results(request):
     if request.method == 'POST':
         go_genes = request.POST['go_genes']
         rna_symbol = request.POST.get('rna_symbol')
-        go_genes = list(set(go_genes.split(',')))
+        mouse = request.POST.get('mouse')
+        go_genes = go_genes.split(',')
         if len(go_genes) > 1000:
             go_genes = go_genes[:1000]
         filename = f'{uuid.uuid4()}'
         filepath = os.path.join('media', 'temp_plots', filename)  #'media',
-        df, filenames = go_enrichment(
-            go_genes={'human': list(go_genes)}, out_tag=filepath
-        )
-        gprofiler_table = df['human']
+        if mouse == 'False':
+            df, filenames = go_enrichment(
+                go_genes={'human': list(go_genes)}, out_tag=filepath
+            )
+            gprofiler_table = df['human']
+        elif mouse == "True":
+            df, filenames = go_enrichment(
+                go_genes={'mouse': list(go_genes)}, 
+                organism="mmusculus",
+                out_tag=filepath
+            )
+            gprofiler_table = df['mouse']
         request.session['gprofiler_df'] = gprofiler_table.to_json()
         gprofiler_table = gprofiler_table.drop(
             [
                 'Gene fraction',
-                'intersections',
-                'evidences',
                 'significant',
                 'description',
                 'query',
@@ -797,6 +804,7 @@ def go_enrichment_results(request):
                     'plot_paths': filenames,
                     'headers': headers,
                     'rows': rows,
+                    'mouse': mouse,
                     #'MEDIA_URL': '/media/',
                 },
             )

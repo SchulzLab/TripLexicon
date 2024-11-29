@@ -26,7 +26,7 @@ def go_enrichment(
     fig_width=None,
     fig_height=None,
     legend_out=None,
-    wanted_sources=["GO:MF", "GO:BP"],
+    wanted_sources=["GO:MF", "GO:BP"], #
     keywords={},
     rotation=45,
     custom_dfs=None,
@@ -55,7 +55,8 @@ def go_enrichment(
                 query_df = gp.profile(
                     organism=organism,
                     query=list(go_genes[cell]),
-                    no_evidences=False,
+                    # no_evidences=False,
+                    sources=wanted_sources, 
                     background=None if not background else list(background[cell]),
                 )
                 # query_df = gp.profile(organism=organism, query=['NR1H4','TRIP12','UBC','FCRL3','PLXNA3','GDNF','VPS11'], no_evidences=False,

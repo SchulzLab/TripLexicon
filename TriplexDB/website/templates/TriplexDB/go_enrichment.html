@@ -1,56 +1,65 @@
 {% extends 'TriplexDB/base.html' %}
 
-    <head>
-        <title>Go enrichment results for genes forming triplexes with RNAs from gene {{ rna_symbol }}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    </head>
+<head>
+    <title>Go enrichment results for genes forming triplexes with RNAs from gene {{ rna_symbol }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
 
 {% block content %}
 <style>
- .image-container {
-            display: flex;              /* Use flexbox for layout */
-            justify-content: flex-end;  /* Align items to the right */
-            width: 60%;                /* Full width for the container */
-            margin-bottom: 20px;  
-      /* Spacing between images */
-        }
+    .image-container {
+        display: flex;
+        /* Use flexbox for layout */
+        justify-content: flex-end;
+        /* Align items to the right */
+        width: 60%;
+        /* Full width for the container */
+        margin-bottom: 20px;
+        /* Spacing between images */
+    }
 
-        .images-wrapper {
-            display: flex;                 /* Use flexbox for layout */
-            justify-content: flex-start;       /* Center the container */
-            max-width: 1200px;            /* Set a maximum width */
-            margin: 0 auto;               /* Center the container horizontally */
-            flex-wrap: wrap;              /* Allow images to wrap to the next line if necessary */
-        }
-
+    .images-wrapper {
+        display: flex;
+        /* Use flexbox for layout */
+        justify-content: flex-start;
+        /* Center the container */
+        max-width: 1200px;
+        /* Set a maximum width */
+        margin: 0 auto;
+        /* Center the container horizontally */
+        flex-wrap: wrap;
+        /* Allow images to wrap to the next line if necessary */
+    }
 </style>
 <div class="container">
     {% if plot_paths %}
     <h4>Go enrichment results for genes forming triplexes with RNAs from gene {{ rna_symbol }}</h4>
-	
-   
-    {% for plot_path in plot_paths %}
-        <div class="image-container">
-            <img src="{{ plot_path }}" alt="Generated Plot"  loading="lazy">
-        </div>
-    {% endfor %}
-    <a href="{% url 'download_csv' %}" class="btn btn-success" 
-    style="color: white; background-color: #0c042e; border-color: white;">Download full results table as CSV</a>
-    <div class="images-wrapper">
-    </br>
-</div>
+    <h5>Calculated with the <a href="https://biit.cs.ut.ee/gprofiler/gost">g:Profiler</a> python package (<a
+            href="https://doi.org/10.1093/nar/gkad347">Kolberg et al</a>)</h5>
 
-<div class="table-responsive mx-5">
-    <table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
-        <thead class="table-dark" style="background-color: red;">
-            <tr>
-                {% for header in headers %}
+    {% for plot_path in plot_paths %}
+    <div class="image-container">
+        <img src="{{ plot_path }}" alt="Generated Plot" loading="lazy">
+    </div>
+    {% endfor %}
+    <a href="{% url 'download_csv' %}" class="btn btn-success"
+        style="color: white; background-color: #0c042e; border-color: white;">Download full results table as CSV</a>
+    <div class="images-wrapper">
+        </br>
+    </div>
+
+    <div class="table-responsive mx-5">
+        <table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna"
+            style="text-align: left; width: 100%">
+            <thead class="table-dark" style="background-color: red;">
+                <tr>
+                    {% for header in headers %}
                     <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            {% for row in rows %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for row in rows %}
                 <tr>
                     <th>{{ row.source }}</th>
                     <th>{{ row.native }}</th>
@@ -63,53 +72,53 @@
                     <th>{{ row.precision }}</th>
                     <th>{{ row.recall }}</th>
                     <th>{{ row.parents }}</th>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 </div>
 
-    <script>
-        // Define the URL for the deletion endpoint
-        const deleteUrl = '/delete_temp_plot/';
-        
-        // Gather all plot paths into an array
-        const plotPaths = [
-            {% for plot_path in plot_paths %}
-            '{{ plot_path }}',
-            {% endfor %}
+<script>
+    // Define the URL for the deletion endpoint
+    const deleteUrl = '/delete_temp_plot/';
+
+    // Gather all plot paths into an array
+    const plotPaths = [
+        {% for plot_path in plot_paths %}
+    '{{ plot_path }}',
+        {% endfor %}
         ];
 
-        // Create a function to send deletion requests
-        function sendDeletionRequests() {
-            plotPaths.forEach(function(plotPath) {
-                const data = JSON.stringify({ 'filename': plotPath });
+    // Create a function to send deletion requests
+    function sendDeletionRequests() {
+        plotPaths.forEach(function (plotPath) {
+            const data = JSON.stringify({ 'filename': plotPath });
 
-                // Use fetch for deletion requests with CSRF token
-                fetch(deleteUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: data
-                }).then(response => {
-                    if (!response.ok) {
-                        console.error('Failed to delete', plotPath);
-                    }
-                });
+            // Use fetch for deletion requests with CSRF token
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: data
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to delete', plotPath);
+                }
             });
-        }
-
-        // Call sendDeletionRequests when the page is unloaded
-        window.addEventListener('unload', function(event) {
-            sendDeletionRequests();
         });
+    }
 
-        // Optionally, call sendDeletionRequests after a timeout
-        setTimeout(() => sendDeletionRequests(), 500); 
-    </script>
+    // Call sendDeletionRequests when the page is unloaded
+    window.addEventListener('unload', function (event) {
+        sendDeletionRequests();
+    });
+
+    // Optionally, call sendDeletionRequests after a timeout
+    setTimeout(() => sendDeletionRequests(), 500); 
+</script>
 {% else %}
 <div>
     <h3>No enrichments for DNA gene set forming triplexes with RNA {{ rna_symbol }}!</h3>
@@ -117,4 +126,4 @@
 
 {% endif %}
 
-{% endblock %}	
+{% endblock %}
