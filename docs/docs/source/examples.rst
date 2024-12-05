@@ -58,6 +58,7 @@ The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages
   :alt: GO enrichment
 
 In order to perform the GO analysis on the DNA gene set with which the RNA gene or transcript forms triplexes, the DNA genes are ordered by their p-value and the top 500 genes are chosen for the GO analysis. The GO analysis might take up to one minute.
+
 .. image:: ../GO_results.png
   :alt: GO results
 
