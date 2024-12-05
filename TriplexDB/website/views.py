@@ -228,7 +228,7 @@ def search_transcript_values(request):
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
             protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
-            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'], reverse=True)[:1000]
+            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])[:1000]
             top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
             # dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
 
@@ -296,9 +296,10 @@ def search_rna_symbol_values(request):
                 .annotate(
                 dnagenesymbol=Subquery(
                 dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
-                )
-                )
-                .annotate(
+                ),
+                genebiotype=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
+                ),
                 transcriptid=Subquery(
                 rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
                 )
@@ -339,9 +340,10 @@ def search_rna_symbol_values(request):
                 .annotate(
                 dnagenesymbol=Subquery(
                 dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
-                )
-                )
-               .annotate(
+                ),
+                genebiotype=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
+                ),
                 transcriptid=Subquery(
                 rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
                 )
@@ -353,9 +355,9 @@ def search_rna_symbol_values(request):
                  triplexes = triplexes[:10000]
 
         if triplexes:
-            dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
-            if len(dna_genes) > 1000:
-                dna_genes = dna_genes[:1000]
+            protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
+            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])[:1000]
+            top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
             return render(
@@ -367,7 +369,7 @@ def search_rna_symbol_values(request):
                     'nr_targets': dnas_targeted_by_trans,
                     'rna_symbol': rna_symbol,
                     'mouse': mouse,
-                    'go_genes': dna_genes,
+                    'go_genes': top_dnagenesymbols,
                 },
             )
         else:
