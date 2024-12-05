@@ -241,7 +241,7 @@ def go_enrichment(
                 )
                 ax.set_yticks([y for y in range(len(sorted_terms))])
                 ax.set_yticklabels(format_terms, fontweight="bold", size=font_s - 8)
-                ax.set_xlabel("-log2 FDR", size=font_s - 4)
+                ax.set_xlabel("-log2 adj. p-value", size=font_s - 4)
                 ax.set_title(
                     source
                     + ": "
@@ -330,4 +330,5 @@ def go_enrichment(
         else:
             print("No enrichment", source)
 
+    df_fetcher['human'] = df_fetcher['human'].rename(columns={"p_value": "adj. p_value"})
     return df_fetcher, path_list
