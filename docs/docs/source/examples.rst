@@ -28,12 +28,12 @@ Upon clicking :kbd:`Search`, the query will begin to run. For example, the user 
 .. image:: ../RNA_summary_search_MEG3.png
   :alt: Summary query by RNA gene MEG3
 
-Once the query has successfully run, the results table should load automatically. At the top of the page, a summary statement should state how many predicted triplexes there are for the RNA gene which was used for the query. In the case of *MEG3*, this reads 1605, as of the current version of TripLexicon. The results table is sorted by the number of predicted triplexes for each transcript. For MEG3 the transcript with the most predicted tripelxes is ENST00000522771. Of the transcript with the most predicted triplexes, a plot of the triplex forming region prediction for the maximally scoring transcript is shown at the bottom of the page. The user may also sort the table by other fields by clicking on the column header, or can search the table for specific terms by using the search bar at the top right of the table. Which columns are shown can also be modified by the user via the :kbd:`Column visibility` dropdown. The results table can be copied to the clipboard, or exported to :kbd:`Excel`, :kbd:`CSV` or :kbd:`PDF` formats using the buttons at the top of the table.
+Once the query has successfully run, the results table should load automatically. At the top of the page, a summary statement should state how many predicted triplexes there are for the RNA gene which was used for the query. In the case of *MEG3*, this reads 1605, as of the current version of TripLexicon. The results table is sorted by the number of predicted triplexes for each transcript. For MEG3 the transcript with the most predicted tripelxes is ENST00000522771. Of the transcript with the most predicted triplexes, a plot of the triplex forming region prediction for the maximally scoring transcript is shown at the bottom of the page together with a circos plot of the DNA regions with which the transcript is predicted to form triplexes. The user may also sort the table by other fields by clicking on the column header, or can search the table for specific terms by using the search bar at the top right of the table. Which columns are shown can also be modified by the user via the :kbd:`Column visibility` dropdown. The results table can be copied to the clipboard, or exported to :kbd:`Excel` or :kbd:`CSV` formats using the buttons at the top of the table.
 
 .. image:: ../RNA_summary_results_MEG3.png
   :alt: Summary query results for RNA gene MEG3
 
-The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page as well.
+The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page togehter with a circos plot of the DNA regions with which the transcript is predicted to form triplexes.
 
 .. image:: ../transcript_detail.png
   :alt: Transcript detail example for ENST00000556407
@@ -53,12 +53,12 @@ The results table is - by default - sorted by the *E* value for the predicted tr
 .. image:: ../RNA_gene_sym_result.png
   :alt: Results for RNA gene MEG3
 
-The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page together with a circos plot of the genomic regions the transcript performs triplex formation with. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section. The button :kbd:`GO enrichment of DNA gene set` performs a GO enrichment analysis with g:Profiler publication (`g:Profiler <https://academic.oup.com/nar/article/51/W1/W207/7152869>`_ and `g:Profiler Webserver <https://biit.cs.ut.ee/gprofiler/gost>`_) and renders dotplots of the erniched terms.
+The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page together with a circos plot of the genomic regions the transcript performs triplex formation with. The gene symbol names are linked to the summary query results page of that RNA gene symbol. The information given with this detail page is described in the previous section. The button :kbd:`GO enrichment of DNA gene set` performs a GO enrichment analysis with g:Profiler publication (`g:Profiler <https://academic.oup.com/nar/article/51/W1/W207/7152869>`_ and `g:Profiler Webserver <https://biit.cs.ut.ee/gprofiler/gost>`_) and renders dotplots of the enriched terms as well as a table of the GO terms found to be significant with accompanying information.
 
 .. image:: ../GO_enrichment.png
   :alt: GO enrichment
 
-In order to perform the GO analysis on the DNA gene set with which the RNA gene or transcript forms triplexes, the DNA genes are ordered by their p-value and the top 500 genes are chosen for the GO analysis. The GO analysis might take up to one minute.
+In order to perform the GO analysis on the DNA gene set with which the RNA gene or transcript forms triplexes, the DNA genes are filtered for protein coding genes and provided to the g:Profiler functionality of the :kbd:`gprofiler-official` python implementation. A buffer will appear until the results page can be rendered which should not exceed the duration of one minute.
 
 .. image:: ../GO_results.png
   :alt: GO results
@@ -78,24 +78,24 @@ Sticking to the example of *MEG3*, but this time the user is only interested in 
 .. image:: ../transcript_search.png
   :alt: Query by transcript ENST00000556407
 
-After clicking :kbd:`Search`, the query will begin to run. Upon completion, the results table for predicted triplexes between *ENST00000556407* and GRCh38 promoters/REMs will be rendered. Again, a summary statement at the top of the results table will summarise how many predicted triplexes there are for the supplied transcript. In the case of *ENST00000556407*, for the current version of TripLexicon, this should read "ENST00000556407 is predicted to be involved in the formation of 6 triplexes". The sorting, column visibility and export options are identical to those described above in the example for **Summary query by RNA gene symbol**. 
+After clicking :kbd:`Search`, the query will begin to run. Upon completion, the results table for predicted triplexes between *ENST00000556407* and GRCh38 promoters/REMs will be rendered. Again, a summary statement at the top of the results table will summarise how many predicted triplexes there are for the supplied transcript. In the case of *ENST00000556407*, for the current version of TripLexicon, this should read "ENST00000556407 is predicted to be involved in the formation of 6 triplexes.". The sorting, column visibility and export options are identical to those described above in the example for **Summary query by RNA gene symbol**. 
 
 .. image:: ../transcript_result.png
   :alt: Query result by transcript ENST00000556407
 
 Querying by predicted target gene
 =================================
-This use case reflects a scenario where the user has a gene of interest (e.g. a differentally expressed gene from RNA-sequencing), and is interested in knowing whether the gene might be be subject to regulation via triplex formation by a lncRNA. Here, the user would navigate to the :kbd:`Target query` tab of TripLexicon.
+This use case reflects a scenario where the user has a gene of interest (e.g. a differentally expressed gene from RNA-sequencing), and is interested in knowing whether the gene might be subject to regulation via triplex formation by a lncRNA. Here, the user would navigate to the :kbd:`Target query` tab of TripLexicon.
 
 .. image:: ../Target_query.png
   :alt: Target Query
 
-There the user can supply their target gene symbol of interest to the search field e.g. "*GAPDH*". Upon clicking :kbd:`Search`, the query will begin to run. As the database of target elements is large, this query can take some time to run.
+There the user can supply their target gene symbol of interest to the search field e.g. "*GAPDH*". Upon clicking :kbd:`Search`, the query will begin to run.
 
 .. image:: ../target_search.png
   :alt: Target Search
 
-Upon completion, the results table for statistically significant triplexes predicted to form between human lncRNAs and promoters/REMs associated with *GAPDH* will render. A statement at the top of the results table will summarise the total number of triplexes predicted to form at gene regulatory elements of *GAPDH*, and for the current version of TripLexicon this should read "Gene GAPDH is predicted to be targeted by different RNAs to form 16 triplexes.". The sorting, column visibility and export options are identical to those described above in the example for **Summary query by RNA gene symbol**. The transcript and RNA gene links render the transcript and gene detail pages, respectively, as described for **Querying by RNA gene symbol**.
+Upon completion, the results table for statistically significant triplexes predicted to form between human lncRNAs and promoters/REMs associated with *GAPDH* will render. A statement at the top of the results table will summarise the total number of triplexes predicted to form at gene regulatory elements of *GAPDH*, and for the current version of TripLexicon this should read "Human gene GAPDH is predicted to be targeted by different RNAs to form 16 triplexes.". The sorting, column visibility and export options are identical to those described above in the example for **Summary query by RNA gene symbol**. The transcript and RNA gene links render the transcript and gene detail pages, respectively, as described for **Querying by RNA gene symbol**.
 
 .. image:: ../target_result.png
   :alt: Target Result
@@ -121,7 +121,7 @@ After selecting/entering the appropriate values, the user can start the query by
 
 Multiple regions
 ----------------
-More often the case might be that the user has many genomic regions in which they would like to search for predicted triplexes. For example, these could be peaks which are the result of other assays, such as ATAC-sequencing, ChIP-sequencing/CUT&RUN, or specific sets of promoters of genes which are differentially expressed in an RNA-sequencing experiment. In this case, rather than querying individual regions, a BED file can be used to query multiple regions simultaneously. The BED file should have a minimum of three columns (chromosome, start, stop), with a "chr" prefix. Extra columns are permitted, but are not used in the query. An example BED file is available from the `TripLexicon GitHub repository <https://github.com/SchulzLab/TripLexicon/blob/main/TriplexDB/Test_bed_file_for_triplexaligner.bed>`_ , and is also shown below in table format.
+More often the user may want to query many genomic regions at once for which they would like to obtain triplex predictions. For example, these could be peaks which are the result of other assays, such as ATAC-sequencing, ChIP-sequencing/CUT&RUN, or specific sets of promoters of genes which are differentially expressed in an RNA-sequencing experiment. In this case, rather than querying individual regions, a BED file can be used to query multiple regions simultaneously. The BED file should have a minimum of three columns (chromosome, start, stop), with a "chr" prefix. Extra columns are permitted, but are not used in the query. An example BED file is available from the `TripLexicon GitHub repository <https://github.com/SchulzLab/TripLexicon/blob/main/TriplexDB/Test_bed_file_for_triplexaligner.bed>`_ , and is also shown below in table format.
 
 
 .. list-table:: Example BED file format
