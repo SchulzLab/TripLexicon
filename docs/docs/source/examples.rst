@@ -10,7 +10,7 @@ Summary query by RNA gene symbol
 ---------------------------
 This example reflects a scenario where the user has an RNA of interest, but might not have in mind which specific transcript of the RNA gene is of interest. In this case, they can query TripLexicon by the RNA gene symbol, and the results will be the predicted triplexes of the respective RNA gene summarized at the transcript level. They will be ordered such that the transcript forming the most predicted triplexes is listed first. This query is supposed to help the user get an overview of the different transcripts belonging to an RNA gene and how often they are involved in predicted triplex forming events.
 
-For this query mode, the user should navigate to the :kbd:`RNA query` tab. 
+For this query mode, the user should navigate to the :kbd:`RNA-query` tab. 
 
 .. image:: ../RNA_query.png
   :alt: RNA query
@@ -42,7 +42,7 @@ Keeping the known triplex-forming lncRNA *MEG3* as our example, the user again n
 The results table is - by default - sorted by the *E* value for the predicted triplexes, as calculated by TriplexAligner. This places the most statistically significant predicted triplexes at the top of the table. In the case of *MEG3*, the most significant predicted interaction is with the gene *MIR770*.  The sorting, column visibility and export options are identical to those described above in the example for **Summary query by RNA gene symbol**. 
 
 
-.. image:: ../RNA_gene_sym_results.png
+.. image:: ../RNA_gene_sym_result.png
   :alt: Results for RNA gene MEG3
 
 The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page as well. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section.
