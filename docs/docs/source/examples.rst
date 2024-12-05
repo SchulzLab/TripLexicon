@@ -4,12 +4,7 @@ Example TripLexicon queries
 
 In this section, we will provide specific examples for each of the possible TripLexicon queries. 
 
-Selection of organism
-=========================
-Before the user starts any of the TripLexicon queries, the organism needs to be chosen. The current options are :kbd:`Human` and :kbd:`Mouse` which can be chosen at the start of each query. The default organism is Human.
 
-.. image:: ../human_mouse_selection.png
-  :alt: Choice of organism
 
 Querying by RNA
 =========================
@@ -22,7 +17,12 @@ For this query mode, the user should navigate to the :kbd:`RNA-query` tab.
 .. image:: ../RNA_query.png
   :alt: RNA query
 
-Here he is presented with 3 query options. In order to run the summary query by RNA gene symbol, the RNA gene of interest needs to be provided to the first input field :kbd:`Search for triplex summary by RNA genesymbol`. Upon clicking :kbd:`Search`, the query will begin to run. For example, the user may be interested in the known triplex-forming lncRNA *MEG3*.
+Here he is presented with 3 query options. In order to run the summary query by RNA gene symbol, the RNA gene of interest needs to be provided to the first input field :kbd:`Search for triplex summary by RNA genesymbol`. Before the user starts any of the TripLexicon queries, the organism needs to be chosen. The current options are :kbd:`Human` and :kbd:`Mouse` which can be chosen at the start of each query. The default organism is Human.
+
+.. image:: ../human_mouse_selection.png
+  :alt: Choice of organism
+
+ Upon clicking :kbd:`Search`, the query will begin to run. For example, the user may be interested in the known triplex-forming lncRNA *MEG3*.
 
 .. image:: ../RNA_summary_search_MEG3.png
   :alt: Summary query by RNA gene MEG3
