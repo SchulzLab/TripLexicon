@@ -522,8 +522,9 @@ def gen_region_search_file(uploaded_file):
 def search_gen_region_results(request):
     if request.method == 'POST':
         uploaded_file = request.FILES['bed_file']
+        species = request.POST.get('species')
         if uploaded_file:
-            if 'mouse' in uploaded_file.name.lower():
+            if species == 'Mouse':
                 mouse = True
             else:
                 mouse = False
