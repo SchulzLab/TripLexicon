@@ -4,6 +4,13 @@ Example TripLexicon queries
 
 In this section, we will provide specific examples for each of the possible TripLexicon queries. 
 
+Selection of organism
+=========================
+Before the user starts any of the TripLexicon queries, the organism needs to be chosen. The current options are :kbd:`Human` and :kbd:`Mouse` which can be chosen at the start of each query. The default organism is Human.
+
+.. image:: ../human_mouse_selection.png
+  :alt: Choice of organism
+
 Querying by RNA
 =========================
 Summary query by RNA gene symbol
