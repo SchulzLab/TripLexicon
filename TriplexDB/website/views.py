@@ -184,6 +184,9 @@ def search_transcript_values(request):
                 .annotate(
                 dnagenesymbol=Subquery(
                 dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                ),
+                genebiotype=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
                 )
                 )
             )
@@ -210,6 +213,9 @@ def search_transcript_values(request):
                 .annotate(
                 dnagenesymbol=Subquery(
                 dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                ),
+                genebiotype=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
                 )
                 )
             )
@@ -221,9 +227,13 @@ def search_transcript_values(request):
                  triplexes = triplexes[:10000]
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
-            dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
-            if len(dna_genes) > 1000:
-                dna_genes = dna_genes[:1000]
+            protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
+            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'], reverse=True)[:1000]
+            top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
+            # dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
+
+            # if len(dna_genes) > 1000:
+            #     dna_genes = dna_genes[:1000]
 
             return render(
                 request,
@@ -235,7 +245,7 @@ def search_transcript_values(request):
                     'nr_targets': dnas_targeted_by_trans,
                     'rna_symbol': rna_result['transcriptgenesymbol'],
                     'mouse': mouse,
-                    'go_genes': dna_genes,
+                    'go_genes': top_dnagenesymbols,
                 },
             )
         else:
