@@ -127,7 +127,8 @@ class Dna(models.Model):
     chr = models.TextField(db_column='Chr', blank=True, null=True)   
     start = models.IntegerField(db_column='Start', blank=True, null=True)   
     end = models.IntegerField(db_column='End', blank=True, null=True)   
-    length = models.IntegerField(db_column='Length', blank=True, null=True)   
+    length = models.IntegerField(db_column='Length', blank=True, null=True)  
+    genebiotype = models.TextField(db_column = 'GeneBiotype',  blank=True, null=True) 
 
     class Meta:
         managed = False
