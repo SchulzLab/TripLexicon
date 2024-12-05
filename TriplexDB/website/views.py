@@ -228,7 +228,7 @@ def search_transcript_values(request):
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
             protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
-            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])[:1000]
+            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])
             top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
             # dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
 
@@ -356,7 +356,7 @@ def search_rna_symbol_values(request):
 
         if triplexes:
             protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
-            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])[:1000]
+            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])
             top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
