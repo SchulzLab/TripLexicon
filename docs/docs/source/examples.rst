@@ -52,11 +52,12 @@ The results table is - by default - sorted by the *E* value for the predicted tr
 .. image:: ../RNA_gene_sym_result.png
   :alt: Results for RNA gene MEG3
 
-The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page together with a circos plot of the genomic regions the transcript performs triplex formation with. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section. The button :kbd:`GO enrichment of DNA gene set` performs a GO enrichment analysis with g:Profiler (REF) and renders dotplots of the erniched terms.
+The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page together with a circos plot of the genomic regions the transcript performs triplex formation with. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section. The button :kbd:`GO enrichment of DNA gene set` performs a GO enrichment analysis with g:Profiler publication (`g:Profiler <https://academic.oup.com/nar/article/51/W1/W207/7152869>`_ and `g:Profiler Webserver <https://biit.cs.ut.ee/gprofiler/gost>`_) and renders dotplots of the erniched terms.
 
 .. image:: ../GO_enrichment.png
   :alt: GO enrichment
 
+In order to perform the GO analysis on the DNA gene set with which the RNA gene or transcript forms triplexes, the DNA genes are ordered by their p-value and the top 500 genes are chosen for the GO analysis. The GO analysis might take up to one minute.
 .. image:: ../GO_results.png
   :alt: GO results
 
