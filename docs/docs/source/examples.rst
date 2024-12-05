@@ -52,9 +52,19 @@ The results table is - by default - sorted by the *E* value for the predicted tr
 .. image:: ../RNA_gene_sym_result.png
   :alt: Results for RNA gene MEG3
 
-The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page as well. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section.
+The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages of the respective transcripts. Upon clicking the transcript ID, the user is redirected to the transcript detail page where information of the particular transcript is provided. A plot of the triplex forming region prediction for the respective transcript is shown on the detail page together with a circos plot of the genomic regions the transcript performs triplex formation with. The gene symbol names are linked to the summary query by RNA gene symbol results page. The information given with this detail page is described in the previous section. The button :kbd:`GO enrichment of DNA gene set` performs a GO enrichment analysis with g:Profiler (REF) and renders dotplots of the erniched terms.
 
-**Screenshots for each stage of the search process (search by RNA tab, search by symbol, results)**
+.. image:: ../GO_enrichment.png
+  :alt: GO enrichment
+
+.. image:: ../GO_results.png
+  :alt: GO results
+
+A table containing the information g:Profiler used to calculate the GO enrichments can be downloaded when clicking on the :kbd:`Download full results table as CSV` button.
+
+.. image:: ../GO_download.png
+  :alt: GO doenload results as CSV
+
 
 Querying by RNA transcript ID
 -----------------------------
