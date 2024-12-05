@@ -217,9 +217,13 @@ def search_transcript_values(request):
 
         if triplexes:
             nr_triplexes = len(triplexes)
-            # dna_id = [triplex['dnaid'] for triplex in triplexes]
+            if nr_triplexes > 10000:
+                 triplexes = triplexes[:10000]
+            dnaids = set([triplex['dnaid'] for triplex in triplexes])
+            dnas_targeted_by_trans = len(dnaids)
             dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
-            dnas_targeted_by_trans = len(set(dna_genes))
+            if len(dna_genes) > 1000:
+                dna_genes = dna_genes[:1000]
 
             return render(
                 request,
@@ -335,11 +339,13 @@ def search_rna_symbol_values(request):
             )
 
             nr_triplexes = len(triplexes)
-            if nr_triplexes > 15000:
-                 triplexes = triplexes[:15000]
+            if nr_triplexes > 10000:
+                 triplexes = triplexes[:10000]
 
         if triplexes:
             dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes]
+            if len(dna_genes) > 1000:
+                dna_genes = dna_genes[:1000]
             dnaids = set([triplex['dnaid'] for triplex in triplexes])
             dnas_targeted_by_trans = len(dnaids)
             return render(
@@ -747,8 +753,8 @@ def go_enrichment_results(request):
         mouse = request.POST.get('mouse')
         transcript = request.POST.get('transcript')
         go_genes = go_genes.split(',')
-        if len(go_genes) > 1000:
-            go_genes = go_genes[:1000]
+        #if len(go_genes) > 500:
+        #    go_genes = go_genes[:500]
         filename = f'{uuid.uuid4()}'
         filepath = os.path.join('media', 'temp_plots', filename)  #'media',
         if mouse == 'False':
@@ -756,6 +762,7 @@ def go_enrichment_results(request):
                 go_genes={'human': list(go_genes)}, out_tag=filepath
             )
             gprofiler_table = df['human']
+            mouse = False
         elif mouse == "True":
             df, filenames = go_enrichment(
                 go_genes={'mouse': list(go_genes)}, 
@@ -801,6 +808,9 @@ def go_enrichment_results(request):
                 'TriplexDB/go_enrichment.html',
                 {
                     'rna_symbol': rna_symbol,
+                    'transcript': transcript,
+                    'plot_paths': None,
+                    'mouse': None,
                     #'table_html': table_html,
                     #'MEDIA_URL': '/media/',
                 },

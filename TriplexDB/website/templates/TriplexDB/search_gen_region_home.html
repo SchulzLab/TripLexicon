@@ -8,169 +8,181 @@
 <style>
 	/*https://stackoverflow.com/questions/1895476/how-do-i-style-a-select-dropdown-with-only-css*/
 	select {
-  margin: 50px 0px 50px;
-  width: 150px;
-  padding: 5px 35px 5px 5px;
-  font-size: 16px;
-  border: 1px solid #CCC;
-  height: 34px;
- /* -webkit-appearance: none;
+		margin: 50px 0px 50px;
+		width: 150px;
+		padding: 5px 35px 5px 5px;
+		font-size: 16px;
+		border: 1px solid #CCC;
+		height: 34px;
+		/* -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;*/
-}
+	}
 
-select::-ms-expand {
-    display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
-}
-/* Target Internet Explorer 9 to undo the custom arrow */
-@media screen and (min-width:0\0) {
-    select {
-        background: none\9;
-        padding: 5px\9;
-    }
-}
+	select::-ms-expand {
+		display: none;
+		/* Remove default arrow in Internet Explorer 10 and 11 */
+	}
 
-.input_region{
-margin: 20px 25px 50px 0;
- width: 300px;
- /* padding: 5px 35px 5px 35px;*/
-  font-size: 16px;
-  border: 1px solid #CCC;
-  height: 34px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
+	/* Target Internet Explorer 9 to undo the custom arrow */
+	@media screen and (min-width:0\0) {
+		select {
+			background: none\9;
+			padding: 5px\9;
+		}
+	}
+
+	.input_region {
+		margin: 20px 25px 50px 0;
+		width: 300px;
+		/* padding: 5px 35px 5px 35px;*/
+		font-size: 16px;
+		border: 1px solid #CCC;
+		height: 34px;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
 
 
 
-.chr{
-margin: 20px 25px 50px 0;
-  /*padding: 5px 35px 5px 35px;*/
-  font-size: 16px;
-  border: 1px solid #CCC;
-  height: 34px;
- /* -webkit-appearance: none;
+	.chr {
+		margin: 20px 25px 50px 0;
+		/*padding: 5px 35px 5px 35px;*/
+		font-size: 16px;
+		border: 1px solid #CCC;
+		height: 34px;
+		/* -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;*/
-}
+	}
 
-.col-11{
-	display: flex !important;
-}
+	.col-11 {
+		display: flex !important;
+	}
 
-.row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
+	.row {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
 
-/* Align species select in its own row */
-.mb-3 {
-    margin-bottom: 20px; /* Adds spacing between rows */
-	.form-container {
-    width: 100%;
-}}
+	/* Align species select in its own row */
+	.mb-3 {
+		margin-bottom: 20px;
 
-/* Adjust column widths and input styling */
-input {
-    margin-top: 10px;
-    padding: 5px;
-    font-size: 16px;
-    border: 1px solid #CCC;
-    height: 34px;
-}
+		/* Adds spacing between rows */
+		.form-container {
+			width: 100%;
+		}
+	}
 
-button.search {
-    height: 36px;
-    font-size: 16px;
-    margin-top: 10px;
-}
+	/* Adjust column widths and input styling */
+	input {
+		margin-top: 10px;
+		padding: 5px;
+		font-size: 16px;
+		border: 1px solid #CCC;
+		height: 34px;
+	}
+
+	button.search {
+		height: 36px;
+		font-size: 16px;
+		margin-top: 10px;
+	}
 </style>
 
 
 <div class="card p-1 mx-4" style="width: 70rem;">
 	<div class="card-body">
 		<h4 class="card-title">Search for predicted triplexes by genomic region:</h4>
-		<br> 
-		
-	<form action="{% url 'search_gen_region_results' %}" method="get" role="search">	
-		<div class="row mb-3">
-			<div class="col-md-12">
-			<h4>Select species:</h4>
-				<select name="species" id="species" class="species">
-					<option value="Human"> Human </option>
-					<option value="Mouse"> Mouse </option>
-				</select>
-			<br/>
-		</div>
-		</div>
+		<br>
 
-	
-	<div class="row mb-3">
-		<div class="col-md-3">
-			<h4>Chromosome:</h4>
-				<select name="chromosome" id="chr" class="chr">
-				{%for CHR in chrs%}
-				<option value="{{CHR}}"> {{CHR}}</option>
-				{% endfor %}
-			</select>
+		<form action="{% url 'search_gen_region_results' %}" method="get" role="search">
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<h4>Select species:</h4>
+					<select name="species" id="species" class="species">
+						<option value="Human"> Human </option>
+						<option value="Mouse"> Mouse </option>
+					</select>
+					<br />
+				</div>
 			</div>
-		
-		
-		<div class="col-md-4">
-			<h4>Start position in chromosome:</h4>
-			<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome" name="start" >
-		</div>
-		
 
-		<div class="col-md-4">
-			<h4>End position in chromosome:</h4>
-			<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome" name="end">
-		</div>
-	</div>
 
-	<div class="row h-100">
-			<div class="col-md-2">
-				<button class="btn d-flex search" style="color: white; background-color: #0c042e; border-color: white;"
-				type="submit">Search</button>
+			<div class="row mb-3">
+				<div class="col-md-3">
+					<h4>Chromosome:</h4>
+					<select name="chromosome" id="chr" class="chr">
+						{%for CHR in chrs%}
+						<option value="{{CHR}}"> {{CHR}}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+
+				<div class="col-md-4">
+					<h4>Start position in chromosome:</h4>
+					<input type="text" class="form-control me-2 input_region" placeholder="Start position in chromosome"
+						name="start">
+				</div>
+
+
+				<div class="col-md-4">
+					<h4>End position in chromosome:</h4>
+					<input type="text" class="form-control me-2 input_region" placeholder="End position in chromosome"
+						name="end">
+				</div>
 			</div>
-	</div>
-</form>	    
+
+			<div class="row h-100">
+				<div class="col-md-2">
+					<button class="btn d-flex search"
+						style="color: white; background-color: #0c042e; border-color: white;"
+						type="submit">Search</button>
+				</div>
+			</div>
+		</form>
 
 
-<div class="row h-100 mt-5">
-	<div class="col-md">
-	  <h4>Or enter a .bed file of genomic regions with the following format:</h4>
-		<ul>
-			<li>Three fields are required, additional fields are allowed but not necessary</li>
-			<li>The fields need to be tab-separated "\t"</li>
-			<li> First field: naming of chromosomes needs to be chr1-22 or chrX or chrY</li>
-			<li>Second field: start position of the genomic region in the chromosome</li>
-			<li>Third field: end position of the genomic region in the chromosome</li>
-			<li><strong>IMPORTANT</strong> The genome version used to predict the triplexes is <span style="color: red">hg38</span>. Make sure your genomic query regions are of the correct assembly version!</li>
-		</ul>
-	  For an example of a bed file check out this <a href="https://github.com/ChrissiKalk97/Triplexicon/blob/main/TriplexDB/Test_bed_file_for_triplexaligner.bed">link</a>.
-	</div>
-  </div>
-
-  <div class="row h-100 mt-5">
-	<div class="col-md">
-		<form method="post" enctype="multipart/form-data" action="{% url 'search_gen_region_results' %}" >
-			{% csrf_token %}
-			<label for="file">Select a file:</label>
-			<input type="file" accept=".bed" id="id_bed_file" name="bed_file">
-			<input type="submit" value="Submit File">
-		  </form>
+		<div class="row h-100 mt-5">
+			<div class="col-md">
+				<h4>Or enter a .bed file of genomic regions with the following format:</h4>
+				<ul>
+					<li>Three fields are required, additional fields are allowed but not necessary</li>
+					<li>The fields need to be tab-separated "\t"</li>
+					<li> First field: naming of chromosomes needs to be chr1-22 or chrX or chrY</li>
+					<li>Second field: start position of the genomic region in the chromosome</li>
+					<li>Third field: end position of the genomic region in the chromosome</li>
+					<li><strong>IMPORTANT</strong> The genome version used to predict the triplexes is <span
+							style="color: red">hg38</span>. Make sure your genomic query regions are of the correct
+						assembly version!</li>
+				</ul>
+				For an example of a bed file check out this <a
+					href="https://github.com/ChrissiKalk97/Triplexicon/blob/main/TriplexDB/Test_bed_file_for_triplexaligner.bed">link</a>.
+			</div>
 		</div>
-	</div>
 
-</div>
+		<div class="row h-100 mt-5">
+			<h5>For mouse regions, please make sure the name of the bed file contains "mouse": </h5>
+			<div class="col-md">
+				<form method="post" enctype="multipart/form-data" action="{% url 'search_gen_region_results' %}">
+					{% csrf_token %}
+					<label for="file">Select a file:</label>
+					<input type="file" accept=".bed" id="id_bed_file" name="bed_file">
+					<input type="submit" value="Submit File">
+				</form>
+			</div>
+		</div>
+
+	</div>
 </div>
 {% endblock %}
 
 <footer>
-{% block footer %}
-{% include 'TriplexDB/footer.html' %}
-{% endblock %}
+	{% block footer %}
+	{% include 'TriplexDB/footer.html' %}
+	{% endblock %}
 </footer>

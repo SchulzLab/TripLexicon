@@ -132,10 +132,15 @@
     setTimeout(() => sendDeletionRequests(), 500); 
 </script>
 {% else %}
+{% if transcript %}
+<div>
+    <h3>No enrichments for DNA gene set forming triplexes transcript {{ transcript }}!</h3>
+</div>
+{% else %}
 <div>
     <h3>No enrichments for DNA gene set forming triplexes with RNA {{ rna_symbol }}!</h3>
 </div>
-
+{% endif %}
 {% endif %}
 
 {% endblock %}
