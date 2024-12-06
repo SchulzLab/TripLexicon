@@ -73,18 +73,19 @@
             <tbody class="table-group-divider">
                 {% for row in rows %}
                 <tr>
-                    <th>{{ row.source }}</th>
-                    <th>{{ row.native }}</th>
-                    <th>{{ row.name }}</th>
-                    <th>{{ row.p_value }}</th>
-                    <th>{{ row.term_size }}</th>
-                    <th>{{ row.query_size }}</th>
-                    <th>{{ row.intersection_size }}</th>
-                    <th>{{ row.effective_domain_size }}</th>
-                    <th>{{ row.precision }}</th>
-                    <th>{{ row.recall }}</th>
-                    <th>{{ row.parents }}</th>
-                    {% endfor %}
+                    <td>{{ row.source }}</td>
+                    <td>{{ row.native }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.adj_p_value }}</td>
+                    <td>{{ row.term_size }}</td>
+                    <td>{{ row.query_size }}</td>
+                    <td>{{ row.intersection_size }}</td>
+                    <td>{{ row.effective_domain_size }}</td>
+                    <td>{{ row.precision }}</td>
+                    <td>{{ row.recall }}</td>
+                    <td>{{ row.parents }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

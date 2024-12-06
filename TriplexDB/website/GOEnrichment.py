@@ -26,7 +26,7 @@ def go_enrichment(
     fig_width=None,
     fig_height=None,
     legend_out=None,
-    wanted_sources=["GO:MF", "GO:BP"], #
+    wanted_sources=["GO:MF", "GO:BP", "REAC", "KEGG", "WP"], #
     keywords={},
     rotation=45,
     custom_dfs=None,
@@ -330,5 +330,5 @@ def go_enrichment(
         else:
             print("No enrichment", source)
 
-    df_fetcher['human'] = df_fetcher['human'].rename(columns={"p_value": "adj. p_value"})
+    df_fetcher['human'] = df_fetcher['human'].rename(columns={"p_value": "adj_p_value"})
     return df_fetcher, path_list

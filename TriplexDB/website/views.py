@@ -794,7 +794,7 @@ def go_enrichment_results(request):
             axis=1,
         )
         gprofiler_table = gprofiler_table.round(
-            {'p_value': 3, 'precision': 3, 'recall': 3}
+            {'adj_p_value': 3, 'precision': 3, 'recall': 3}
         )
         # headers = list(gprofiler_table.keys())
         headers = gprofiler_table.columns.to_list()
