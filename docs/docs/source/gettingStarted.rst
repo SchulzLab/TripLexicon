@@ -2,7 +2,7 @@
 About TripLexicon
 ==================
 
-TripLexicon is a database holding predicted gene regulatory RNA:DNA:DNA triplexes. The triplexes were predicted using `TriplexAligner <https://github.com/SchulzLab/TriplexAligner>`_.
+TripLexicon is a web server which allows users to access and analyse predicted gene regulatory RNA:DNA:DNA triplexes in human and mouse. The triplexes were predicted using `TriplexAligner <https://github.com/SchulzLab/TriplexAligner>`_.
 
 What is an RNA:DNA:DNA triplex?
 ===============================
