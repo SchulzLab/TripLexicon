@@ -52,10 +52,10 @@ Mouse enhancers called from ENCODE ATAC-sequencing data
 
 In the absence of a standardies, gene-linked set of enhancer regions for GRCm39, we used `STARE <https://github.com/SchulzLab/STARE>`_ to generate a set of gene-linked ATAC-sequencing peaks, utilising data from each murine cell type held in the `ENCODE <https://www.encodeproject.org/>`_ project. Each sample was analyzed identically by being aligned to the GRCm39 reference genome, followed by peak calling with MACS3. STARE was used to link union peaks from across each sample to genes, using the adapted activity-by-contact model implemented in the algorithm, in a distance-based manner. Peaks were considered to be linked to genes if an adapted ABC score between the two elements was greater than 0.02.
 
-GENCODE v45 / Ensembl release 112 lncRNAs
+GENCODE v45 / Ensembl release 112 (human) and GENCODE vM35 lncRNAs
 -----------------------------------------
 
-The genomic sequences of the gene regulatory elements described above were used as input to TriplexAligner, along with transcript sequences of lncRNAs annotated in GENCODE v45 (sequences from Ensembl release 112), to produce predicted RNA:DNA:DNA triplexes.
+The genomic sequences of the gene regulatory elements described above were used as input to TriplexAligner, along with transcript sequences of lncRNAs annotated in either GENCODE v45 (human, sequences from Ensembl release 112) or GENCODE vM35 (mouse), to produce predicted RNA:DNA:DNA triplexes.
 
 A graphical summary of TripLexicon/TriplexAligner is shown below:
 
