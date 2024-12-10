@@ -59,6 +59,6 @@ The genomic sequences of the gene regulatory elements described above were used 
 
 A graphical summary of TripLexicon/TriplexAligner is shown below:
 
-.. image:: ../database_schematic.png
+.. image:: ../TripLexicon_schematic_Hs_Mm_combined.png
   :alt: TripLexicon structure
 
