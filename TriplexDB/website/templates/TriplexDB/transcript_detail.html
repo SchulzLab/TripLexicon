@@ -74,7 +74,9 @@
 		<h5>Circos plot</h5>
 		<figure>
 			<img src="{% static circos_path %}" style="width: 100%; height: auto;">
-			<figcaption>Predicted triplex interacting with DNA targets of different genomic regions.</figcaption>
+			<figcaption>Each line represents a predicted {{ transcript }} interaction with a DNA region on the
+				corresponding chromosome.
+				Line thickness scales with the negative logE value of the predicted interaction. </figcaption>
 		</figure>
 	</div>
 	{% endif %}

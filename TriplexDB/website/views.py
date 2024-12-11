@@ -657,6 +657,7 @@ def gene_detail(request, pk):
                 'gene': pk,
                 'mouse': mouse,
                 'circos_path': circos_path,
+                'transcript': high_triplex_rna,
             },
         )
     except:
@@ -716,6 +717,7 @@ def gene_detail_search(request):
                         'nr_triplexes': nr_triplexes,
                         'mouse': mouse,
                         'circos_path': circos_path,
+                        'transcript': high_triplex_rna,
                     },
                 )
             else:
