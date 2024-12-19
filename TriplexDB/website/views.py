@@ -559,7 +559,7 @@ def search_gen_region_results(request):
         chromosome = request.GET.get('chromosome')
         if start and end and chromosome:
             try:
-                if int(end) - int(start) < 1000000000:
+                if int(end) - int(start) < 1000000:
                     query_region = get_bed(chromosome, start, end)
                     if species == 'Mouse':
                         mouse = True
