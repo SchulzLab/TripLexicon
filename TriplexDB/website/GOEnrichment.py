@@ -329,6 +329,8 @@ def go_enrichment(
 
         else:
             print("No enrichment", source)
-
-    df_fetcher['human'] = df_fetcher['human'].rename(columns={"p_value": "adj_p_value"})
+    if organism == "hsapiens":
+        df_fetcher['human'] = df_fetcher['human'].rename(columns={"p_value": "adj_p_value"})
+    else:
+        df_fetcher['mouse'] = df_fetcher['mouse'].rename(columns={"p_value": "adj_p_value"})
     return df_fetcher, path_list
