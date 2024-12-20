@@ -109,7 +109,7 @@ In order to query Triplexicon for target elements located in defined genomic reg
 
 Single region
 -------------
-If the user has an interest in a single region of the genome (e.g. a topologically associating domain identified in Hi-C data), then they can use the dropdown and search fields of the **Region query** tab of TripLexicon to provide the coordinates. For example, if a user was interested in a region of approximately 1 megabase around the gene locus of *ACTB*, they could use the :kbd:`Chromosome` dropdown to select :kbd:`chr7`, and then the :kbd:`Start position in chromosome` and :kbd:`Stop position in chromosome` text fields to input :kbd:`5000000` and :kbd:`6000000`, respectively. Depending on the size of the supplied region, this query might take some time to run.
+If the user has an interest in a single region of the genome (e.g. a topologically associating domain identified in Hi-C data), then they can use the dropdown and search fields of the **Region query** tab of TripLexicon to provide the coordinates. For example, if a user was interested in a region of approximately 1 megabase around the gene locus of *ACTB*, they could use the :kbd:`Chromosome` dropdown to select :kbd:`chr1`, and then the :kbd:`Start position in chromosome` and :kbd:`Stop position in chromosome` text fields to input :kbd:`10` and :kbd:`1000000`, respectively. The maximum size of the supplied region is 1 000 000 bp.
 
 .. image:: ../single_reg_search.png
   :alt: Single region search
