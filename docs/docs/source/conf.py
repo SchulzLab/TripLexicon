@@ -34,3 +34,5 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+
+pdf_documents = [('index', u'TripLexiconDocs', u'TripLexiconDocs', u'Timothy Warwick, Christina Kalk'),]
