@@ -17,7 +17,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
-    'sphinxcontrib.rst2pdf', 
+    'rst2pdf.pdfbuilder', 
 ]
 
 intersphinx_mapping = {
