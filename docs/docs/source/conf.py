@@ -36,3 +36,6 @@ html_theme = 'sphinx_rtd_theme'
 epub_show_urls = 'footnote'
 
 pdf_documents = [('index', u'TripLexiconDocs', u'TripLexiconDocs', u'Timothy Warwick, Christina Kalk'),]
+
+
+sphinx-build -b pdf source build/pdf
