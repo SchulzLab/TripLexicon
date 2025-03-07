@@ -1,99 +1,160 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TripLexicon - Powered by TriplexAligner!</title>
-    <!-- Boostrap 5 css -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">  
-    <!-- Datatables css -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- Buttons CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  </head>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TripLexicon - Powered by TriplexAligner!</title>
+  <!-- Boostrap 5 css -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Datatables css -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <!-- Buttons CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+</head>
 <style>
-html, body {
-padding:0; 
-margin:0; 
-height:100%; 
-display: flex; 
-flex-flow: column;
-}
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+  }
 
-footer{
-position: relative; 
-bottom: 0; 
-left: 0; 
-right: 0;
-}
+  footer {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 
-main {
+  main {
     flex: 1;
     padding: 10px;
-}
-
+  }
 </style>
-  <body>
-    	{% include 'TriplexDB/navbar.html' %}
-    		<br/>
-	<main>
-	{% block content %}
 
-	{% endblock %}
- 	</main>	
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed 
+<body>
+  {% include 'TriplexDB/navbar.html' %}
+  <br />
+  <main>
+    {% block content %}
+
+    {% endblock %}
+  </main>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+    crossorigin="anonymous"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.6.0/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <!-- Datatables -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.js"></script>
-    <!-- Buttons JavaScript -->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    <!-- colVis JavaScript -->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
-    <!-- Table export JavaScript -->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <!-- Datatables -->
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.js"></script>
+  <!-- Buttons JavaScript -->
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+  <!-- colVis JavaScript -->
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+  <!-- Table export JavaScript -->
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
 
-    <!-- Datatables script -->
 
-    <script>
+  <!-- Datatables script -->
 
-		$("#results_table_rna").DataTable({
-                        paging: true,
-			pageLength: 25,
-			// lengthChange: true,
-			autoWidth: false,
-			searching: true,
-			// bInfo: true,
-			// bSort: true,
-			pagingType: 'first_last_numbers',
-			dom: 'Bfrtip',
-			buttons: [
-        		{
-            		extend: 'colvis',
-        		},
-    		    'copyHtml5',
-        		'excelHtml5',
-        		'csvHtml5',
-    		]
-		});
+  <script>
+
+    $("#results_table_rna").DataTable({
+      paging: true,
+      pageLength: 25,
+      // lengthChange: true,
+      autoWidth: false,
+      searching: true,
+      // bInfo: true,
+      // bSort: true,
+      pagingType: 'first_last_numbers',
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'colvis',
+        },
+        'copyHtml5',
+        'excelHtml5',
+        'csvHtml5',
+        {
+          extend: 'csvHtml5', // Reuse CSV but modify it for TSV
+          text: 'TSV', // Change button label to "TSV"
+          fieldSeparator: '\t', // Set tab as delimiter
+          extension: '.tsv', // Save file as .tsv
+          filename: 'data_export', // Custom file name
+          customize: function (csv) {
+            // return csv.replace(/,/g, '\t'); // Ensure tabs instead of commas
+            let rows = csv.split("\n").map(row => row.split("\t"));
+            // Extract headers (first row)
+            let headers = rows[0].map(header => header.replace(/"/g, '').trim());
+
+            // Define desired column order by name
+            let desiredOrder = [
+              "Target Triplex Chr",
+              "Target Triplex Start",
+              "Target Triplex End",
+              "RNA",
+              "Transcript ID",
+              "Target Gene",
+              "Transcript Triplex Start",
+              "Transcript Triplex End",
+              "Transcript Length",
+              "Target Element Length",
+              "Score",
+              "Bit Score",
+              "E Value"
+            ];
+            // Find index positions of the columns in the current CSV order
+            let columnIndexes = desiredOrder.map(colName => headers.indexOf(colName));
+
+            // Reorder all rows based on column names
+            let reorderedRows = rows.map(row =>
+              columnIndexes.map(index => row[index]) // Reorder columns by found indexes
+            );
 
 
-	</script>
+            // Convert array back to TSV string
+            return reorderedRows.map(row => row.join("\t")).join("\n");
+          }
+        }
+      ]
+    });
 
 
-	<footer>
-	{% block footer %}
+  </script>
 
-	{% endblock %}
-	</footer>	
- </body>
+
+  <footer>
+    {% block footer %}
+
+    {% endblock %}
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var toastEl = document.querySelector('.toast');
+      if (toastEl) {
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+        document.querySelector(".toast .close").addEventListener("click", function () {
+          toast.hide();
+        });
+      }
+    });
+  </script>
+</body>
+
 </html>
-
