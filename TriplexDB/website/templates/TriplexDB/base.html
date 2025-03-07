@@ -101,7 +101,7 @@
 
         {
           extend: 'csvHtml5', // Reuse CSV but modify it for TSV
-          text: 'Bed', // Change button label to "TSV"
+          text: 'BED', // Change button label to "TSV"
           fieldSeparator: '\t', // Set tab as delimiter
           extension: '.tsv', // Save file as .tsv
           fieldBoundary: '',
@@ -135,6 +135,22 @@
             let reorderedRows = rows.map(row =>
               columnIndexes.map(index => row[index]) // Reorder columns by found indexes
             );
+
+            reorderedRows[0] = [
+              "#DNA_Target_chrom",
+              "DNA_Target_Start",
+              "DNA_Target_End",
+              "RNA_Name",
+              "Transcript_ID",
+              "Gene_Name",
+              "Transcript_Start",
+              "Transcript_End",
+              "Transcript_Length",
+              "Element_Length",
+              "Score",
+              "Bit_Score",
+              "E_Value"
+            ];
             // Convert array back to TSV string
             return reorderedRows.map(row => row.join("\t")).join("\n");
           }
