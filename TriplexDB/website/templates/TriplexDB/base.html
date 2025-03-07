@@ -86,14 +86,25 @@
         {
           extend: 'colvis',
         },
-        'copyHtml5',
-        'excelHtml5',
-        'csvHtml5',
+        {
+          extend: 'copyHtml5',
+          fieldBoundary: '',
+        },
+        {
+          extend: 'excelHtml5',
+          fieldBoundary: '',
+        },
+        {
+          extend: 'csvHtml5',
+          fieldBoundary: '',
+        },
+
         {
           extend: 'csvHtml5', // Reuse CSV but modify it for TSV
-          text: 'TSV', // Change button label to "TSV"
+          text: 'Bed', // Change button label to "TSV"
           fieldSeparator: '\t', // Set tab as delimiter
           extension: '.tsv', // Save file as .tsv
+          fieldBoundary: '',
           filename: 'data_export', // Custom file name
           customize: function (csv) {
             // return csv.replace(/,/g, '\t'); // Ensure tabs instead of commas
@@ -124,8 +135,6 @@
             let reorderedRows = rows.map(row =>
               columnIndexes.map(index => row[index]) // Reorder columns by found indexes
             );
-
-
             // Convert array back to TSV string
             return reorderedRows.map(row => row.join("\t")).join("\n");
           }
