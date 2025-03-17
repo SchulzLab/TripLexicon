@@ -103,7 +103,7 @@
           extend: 'csvHtml5', // Reuse CSV but modify it for TSV
           text: 'BED', // Change button label to "TSV"
           fieldSeparator: '\t', // Set tab as delimiter
-          extension: '.tsv', // Save file as .tsv
+          extension: '.bed', // Save file as .tsv
           fieldBoundary: '',
           filename: 'data_export', // Custom file name
           customize: function (csv) {
@@ -137,16 +137,16 @@
             );
 
             reorderedRows[0] = [
-              "#DNA_Target_chrom",
-              "DNA_Target_Start",
-              "DNA_Target_End",
+              "#DNA_Target_Triplex_Chr",
+              "DNA_Target_Triplex_Start",
+              "DNA_Target_Triplex_End",
               "RNA_Name",
               "Transcript_ID",
-              "Gene_Name",
-              "Transcript_Start",
-              "Transcript_End",
+              "DNA_Gene_Name",
+              "Transcript_Triplex_Start",
+              "Transcript_Triplex_End",
               "Transcript_Length",
-              "Element_Length",
+              "Target_Element_Length",
               "Score",
               "Bit_Score",
               "E_Value"
