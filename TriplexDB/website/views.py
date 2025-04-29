@@ -533,7 +533,14 @@ def gen_region_search_file(uploaded_file):
 
 def search_gen_region_results(request):
     if request.method == 'POST':
+        MAX_UPLOAD_SIZE = 1 * 1024 * 1024
         uploaded_file = request.FILES['bed_file']
+        if uploaded_file.size > MAX_UPLOAD_SIZE:
+            return render(
+                        request,
+                        'TriplexDB/search_genomic_region_results_values.html',
+                        {'to_large': True},
+                    )
         species = request.POST.get('species')
         if uploaded_file:
             if species == 'Mouse':
