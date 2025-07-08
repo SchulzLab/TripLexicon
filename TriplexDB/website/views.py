@@ -629,7 +629,8 @@ def gene_detail(request, pk):
     try:
         rna_result = (
             rna.objects.using('mouse')
-            .filter(transcriptgenesymbol__exact=pk)
+            .filter(Q(transcriptgenesymbol__exact=pk)
+                    | Q(transcriptgeneid__exact=pk))
             .distinct()
             .order_by('transcripttriplexcount')
             .values()[::-1]
@@ -644,7 +645,8 @@ def gene_detail(request, pk):
         else:
             mouse = False
             rna_result = (
-                rna.objects.filter(transcriptgenesymbol__exact=pk)
+                rna.objects.filter(Q(transcriptgenesymbol__exact=pk)
+                    | Q(transcriptgeneid__exact=pk))
                 .distinct()
                 .order_by('transcripttriplexcount')
                 .values()[::-1]
