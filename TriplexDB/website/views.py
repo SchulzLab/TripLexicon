@@ -140,10 +140,10 @@ def search_rna_results(request):
     return render(request, 'TriplexDB/search_rna_results.html', {})
 
 
-def search_transcript_values(request):
+def search_transcript_values(transcript, species, request):
     if request.method == 'GET':
-        species = request.GET.get('species')
-        transcript = request.GET.get('transcript').strip().upper()
+    #     species = request.GET.get('species')
+    #     transcript = request.GET.get('transcript').strip().upper()
         if species == 'Mouse':
             mouse = True
             rna_result = (
@@ -259,121 +259,124 @@ def search_rna_symbol_values(request):
     if request.method == 'GET':
         species = request.GET.get('species')
         rna_symbol = request.GET.get('rna_symbol').strip()
-        if species == 'Mouse':
-            mouse = True
-            if not rna_symbol[0].isdigit() and 'Rik' not in rna_symbol:
-                rna_symbol = rna_symbol.capitalize()
-            # dnas_to_exclude = dna.objects.using('mouse').filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
-            # dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
-            transcripts = (
-                rna.objects.using('mouse')
-                .filter(
+        if rna_symbol.upper().startswith(('ENST', 'ENSMUST')):
+            return search_transcript_values(rna_symbol, species, request)
+        else:
+            if species == 'Mouse':
+                mouse = True
+                if not rna_symbol[0].isdigit() and 'Rik' not in rna_symbol:
+                    rna_symbol = rna_symbol.capitalize()
+                # dnas_to_exclude = dna.objects.using('mouse').filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
+                # dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+                transcripts = (
+                    rna.objects.using('mouse')
+                    .filter(
+                        Q(transcriptgenesymbol__exact=rna_symbol)
+                        | Q(transcriptgeneid__exact=rna_symbol)
+                    )
+                    .values('transcriptid', 'rnaid')
+                )
+                # transcript_ids = [tid['transcriptid'] for tid in transcripts]
+                rnaids = [rnaid['rnaid'] for rnaid in transcripts]
+                triplexes = (
+                    triplexaligner.objects.using('mouse')
+                    .filter(Q(rnaid__in=rnaids))
+                    .order_by('triplexalignere')
+                    .values(
+                        'rnaid',
+                        'rnatriplexstart',
+                        'rnatriplexend',
+                        'dnaid',
+                        'genometriplexchr',
+                        'genometriplexstart',
+                        'genometriplexend',
+                        'rnalength',
+                        'dnalength',
+                        'triplexalignerscore',
+                        'triplexalignerbitscore',
+                        'triplexalignere',
+                    )
+                    .annotate(
+                    dnagenesymbol=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                    ),
+                    genebiotype=Subquery(
+                        dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
+                    ),
+                    transcriptid=Subquery(
+                    rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
+                    )
+                    )
+                )
+                # .exclude(Q(dnaid__in=dnas_to_exclude))
+
+                nr_triplexes = len(triplexes)
+
+            elif species == 'Human':
+                mouse = False
+                rna_symbol = rna_symbol.upper()
+                # dnas_to_exclude = dna.objects.filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
+                # dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
+                transcripts = rna.objects.filter(
                     Q(transcriptgenesymbol__exact=rna_symbol)
                     | Q(transcriptgeneid__exact=rna_symbol)
+                ).values('transcriptid', 'rnaid')
+                # transcript_ids = [tid['transcriptid'] for tid in transcripts]
+                rnaids = [rnaid['rnaid'] for rnaid in transcripts]
+                triplexes = (
+                    triplexaligner.objects.filter(Q(rnaid__in=rnaids))
+                    .order_by('triplexalignere')
+                    .values(
+                        'rnaid',
+                        'rnatriplexstart',
+                        'rnatriplexend',
+                        'dnaid',
+                        'genometriplexchr',
+                        'genometriplexstart',
+                        'genometriplexend',
+                        'rnalength',
+                        'dnalength',
+                        'triplexalignerscore',
+                        'triplexalignerbitscore',
+                        'triplexalignere',
+                    )
+                    .annotate(
+                    dnagenesymbol=Subquery(
+                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
+                    ),
+                    genebiotype=Subquery(
+                        dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
+                    ),
+                    transcriptid=Subquery(
+                    rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
+                    )
+                    )
                 )
-                .values('transcriptid', 'rnaid')
-            )
-            # transcript_ids = [tid['transcriptid'] for tid in transcripts]
-            rnaids = [rnaid['rnaid'] for rnaid in transcripts]
-            triplexes = (
-                triplexaligner.objects.using('mouse')
-                .filter(Q(rnaid__in=rnaids))
-                .order_by('triplexalignere')
-                .values(
-                    'rnaid',
-                    'rnatriplexstart',
-                    'rnatriplexend',
-                    'dnaid',
-                    'genometriplexchr',
-                    'genometriplexstart',
-                    'genometriplexend',
-                    'rnalength',
-                    'dnalength',
-                    'triplexalignerscore',
-                    'triplexalignerbitscore',
-                    'triplexalignere',
-                )
-                .annotate(
-                dnagenesymbol=Subquery(
-                dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
-                ),
-                genebiotype=Subquery(
-                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
-                ),
-                transcriptid=Subquery(
-                rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
-                )
-                )
-            )
-            # .exclude(Q(dnaid__in=dnas_to_exclude))
 
-            nr_triplexes = len(triplexes)
+                nr_triplexes = len(triplexes)
+                if nr_triplexes > 10000:
+                    triplexes = triplexes[:10000]
 
-        elif species == 'Human':
-            mouse = False
-            rna_symbol = rna_symbol.upper()
-            # dnas_to_exclude = dna.objects.filter(Q(transcriptgenesymbol__exact = rna_symbol) | Q(transcriptgeneid__exact=rna_symbol)).values('dnaid')
-            # dnas_to_exclude = [dna_instance['dnaid'] for dna_instance in dnas_to_exclude]
-            transcripts = rna.objects.filter(
-                Q(transcriptgenesymbol__exact=rna_symbol)
-                | Q(transcriptgeneid__exact=rna_symbol)
-            ).values('transcriptid', 'rnaid')
-            # transcript_ids = [tid['transcriptid'] for tid in transcripts]
-            rnaids = [rnaid['rnaid'] for rnaid in transcripts]
-            triplexes = (
-                triplexaligner.objects.filter(Q(rnaid__in=rnaids))
-                .order_by('triplexalignere')
-                .values(
-                    'rnaid',
-                    'rnatriplexstart',
-                    'rnatriplexend',
-                    'dnaid',
-                    'genometriplexchr',
-                    'genometriplexstart',
-                    'genometriplexend',
-                    'rnalength',
-                    'dnalength',
-                    'triplexalignerscore',
-                    'triplexalignerbitscore',
-                    'triplexalignere',
+            if triplexes:
+                protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
+                toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])
+                top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
+                dnaids = set([triplex['dnaid'] for triplex in triplexes])
+                dnas_targeted_by_trans = len(dnaids)
+                return render(
+                    request,
+                    'TriplexDB/search_rna_results_values.html',
+                    {
+                        'result': triplexes,
+                        'nr_triplexes': nr_triplexes,
+                        'nr_targets': dnas_targeted_by_trans,
+                        'rna_symbol': rna_symbol,
+                        'mouse': mouse,
+                        'go_genes': top_dnagenesymbols,
+                    },
                 )
-                .annotate(
-                dnagenesymbol=Subquery(
-                dna.objects.filter(dnaid=OuterRef('dnaid')).values('genesymbol')[:1]
-                ),
-                genebiotype=Subquery(
-                    dna.objects.filter(dnaid=OuterRef('dnaid')).values('genebiotype')[:1]
-                ),
-                transcriptid=Subquery(
-                rna.objects.filter(rnaid=OuterRef('rnaid')).values('transcriptid')[:1]
-                )
-                )
-            )
-
-            nr_triplexes = len(triplexes)
-            if nr_triplexes > 10000:
-                 triplexes = triplexes[:10000]
-
-        if triplexes:
-            protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
-            toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])
-            top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
-            dnaids = set([triplex['dnaid'] for triplex in triplexes])
-            dnas_targeted_by_trans = len(dnaids)
-            return render(
-                request,
-                'TriplexDB/search_rna_results_values.html',
-                {
-                    'result': triplexes,
-                    'nr_triplexes': nr_triplexes,
-                    'nr_targets': dnas_targeted_by_trans,
-                    'rna_symbol': rna_symbol,
-                    'mouse': mouse,
-                    'go_genes': top_dnagenesymbols,
-                },
-            )
-        else:
-            return render(request, 'TriplexDB/search_rna_results_values.html', {})
+            else:
+                return render(request, 'TriplexDB/search_rna_results_values.html', {})
 
     else:
         return render(request, 'TriplexDB/search_rna_results_values.html', {})
