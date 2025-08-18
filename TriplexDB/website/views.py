@@ -106,17 +106,12 @@ def search_dna_mouse(request):
             )
 
         if triplexes:
+            mapping_rnaid_tid = {entry['rnaid']: entry['transcriptid'] for entry in transcripts}
+            mapping_rnaid_tsymbol = {entry['rnaid']: entry['transcriptgenesymbol'] for entry in transcripts}
             for triplex in triplexes:
-                triplex['transcriptid'] = [
-                    rna_instance['transcriptid']
-                    for rna_instance in transcripts
-                    if triplex['rnaid'] == rna_instance['rnaid']
-                ][0]
-                triplex['rna_symbol'] = [
-                    rna_instance['transcriptgenesymbol']
-                    for rna_instance in transcripts
-                    if triplex['rnaid'] == rna_instance['rnaid']
-                ][0]
+                triplex['transcriptid'] = mapping_rnaid_tid[triplex['rnaid']]
+                triplex['rna_symbol'] = mapping_rnaid_tsymbol[triplex['rnaid']]
+
 
             return render(
                 request,
@@ -503,21 +498,13 @@ def gen_region_search(query_bedtool, mouse=False):
         )
 
     for triplex in triplexes:
-        triplex['transcriptgenesymbol'] = [
-            rna_instance['transcriptgenesymbol']
-            for rna_instance in transcript_gene_symbols
-            if triplex['rnaid'] == rna_instance['rnaid']
-        ][0]
-        triplex['transcriptid'] = [
-            rna_instance['transcriptid']
-            for rna_instance in transcript_gene_symbols
-            if triplex['rnaid'] == rna_instance['rnaid']
-        ][0]
-        triplex['dnagenesymbol'] = [
-            dna_instance['genesymbol']
-            for dna_instance in dna_result
-            if triplex['dnaid'] == dna_instance['dnaid']
-        ][0]
+        mapping_rnaid_tid = {entry['rnaid']: entry['transcriptid'] for entry in transcript_gene_symbols}
+        mapping_rnaid_tsymbol = {entry['rnaid']: entry['transcriptgenesymbol'] for entry in transcript_gene_symbols}
+        mapping_dnaid_gene_symbol = {entry['dnaid']: entry['genesymbol'] for entry in dna_result}
+        
+        triplex['transcriptgenesymbol'] = mapping_rnaid_tid[triplex['rnaid']]
+        triplex['transcriptid'] = mapping_rnaid_tsymbol[triplex['rnaid']]
+        triplex['dnagenesymbol'] = mapping_dnaid_gene_symbol[triplex['dnaid']]
     return triplexes
 
 
@@ -790,10 +777,10 @@ def go_enrichment_results(request):
             )
             gprofiler_table = df['human']
             mouse = False
-        elif mouse == "True":
+        elif mouse == 'True':
             df, filenames = go_enrichment(
                 go_genes={'mouse': list(go_genes)}, 
-                organism="mmusculus",
+                organism='mmusculus',
                 out_tag=filepath
             )
             gprofiler_table = df['mouse']
