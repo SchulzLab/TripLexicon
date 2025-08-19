@@ -1,104 +1,117 @@
 {% extends 'TriplexDB/base.html' %}
 
-    <head>
-        <title>Genomic region search results</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    </head>
+<head>
+	<title>Genomic region search results</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
 
 {% block content %}
 {% if result %}
-   
-    <div class="table-responsive mx-5">
-		{% if chr %}
-			{% if mouse %}
-				<h4>Results for triplexes in the mouse genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
-				<br/>
-				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
-			{% else %}
-				<h4>Results for triplexes in the human genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
-				<br/>
-				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the region of {{ chr }}:{{ start }}-{{ end }}</h5>
-			{% endif %}
-		<br/>
-		{% else %}
-			{% if mouse %}	
-				<h4>Results for triplexes in the mouse genomic regions of the provided bed file</h4>
-				<br/>
-				<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the regions supplied in the given bed file.</h5>
-			{% else %}
-			<h4>Results for triplexes in the human genomic regions of the provided bed file</h4>
-			<br/>
-			<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the regions supplied in the given bed file.</h5>
-			{% endif %}		
-			<br/>
-		{% endif %}
-		<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna" style="text-align: left; width: 100%">
-		  <thead class="table-dark" style="background-color: red;">
-		    <tr>
-		      <th scope="col">RNA</th>
-		      <th scope="col">Transcript ID</th>
-		      <th scope="col">Transcript Triplex Start</th>
-		      <th scope="col">Transcript Triplex End</th>
-		      <th scope="col">Target Gene</th>
-		      <th scope="col">Target Triplex Chr</th>
-		      <th scope="col">Target Triplex Start</th>
-		      <th scope="col">Target Triplex End</th>
-		      <th scope="col">Transcript Length</th>
-		      <th scope="col">Target Element Length</th>
-		      <th scope="col">Score</th>
-		      <th scope="col">Bit Score</th>
-		      <th scope="col">E Value</th>
-		    </tr>
-		  </thead>
-		  <tbody class="table-group-divider">
-		  	{% for triplex in result %}
-				<tr>
-					<td><a href="{% url 'gene_detail' triplex.transcriptgenesymbol %}">{{triplex.transcriptgenesymbol}}</a></td>
-					<td><a href="{% url 'transcript_detail' triplex.transcriptid %}">{{ triplex.transcriptid }}</a></td>
-					<script>
-						var rnatriplexstart={{ triplex.rnatriplexstart }};
-                                                var rtripstart=Math.round(rnatriplexstart);
-                                                document.write("<td>" + rtripstart + "</td>")
-					</script>
-					<script>
-                                                var rnatriplexend={{ triplex.rnatriplexend }};
-                                                var rtripend=Math.round(rnatriplexend);
-                                                document.write("<td>" + rtripend + "</td>")
-                                        </script>
-					<td><strong><i>{{ triplex.dnagenesymbol }}</i></strong></td>
-					<td>{{ triplex.genometriplexchr }}</td>
-					<script>
-                                                var dnatriplexstart={{ triplex.genometriplexstart }};
-                                                var dtripstart=Math.round(dnatriplexstart);
-                                                document.write("<td>" + dtripstart + "</td>")
-                                                var dnatriplexend={{ triplex.genometriplexend }};
-                                                var dtriplexend=Math.round(dnatriplexend);
-                                                document.write("<td>" + dtriplexend + "</td>")
-                                        </script>					
-					<td>{{ triplex.rnalength }}</td>
-					<td>{{ triplex.dnalength }}</td>
-					<td>{{ triplex.triplexalignerscore }}</td>
-					<td>{{ triplex.triplexalignerbitscore }}</td>
-					
-					
-					<script>
-						var evalue={{ triplex.triplexalignere }};
-						var exp=evalue.toExponential(fractionDigits=2);
-						document.write("<td>" + exp + "</td>")
-					</script>
-				</tr>
+
+<div class="table-responsive mx-5">
+	{% if chr %}
+	{% if mouse %}
+	<h4>Results for triplexes in the mouse genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
+	<br />
+	<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the region
+		of {{ chr }}:{{ start }}-{{ end }}</h5>
+	{% else %}
+	<h4>Results for triplexes in the human genomic region {{ chr }}:{{ start }}-{{ end }}</h4>
+	<br />
+	<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the region
+		of {{ chr }}:{{ start }}-{{ end }}</h5>
+	{% endif %}
+	<br />
+	{% else %}
+	{% if mouse %}
+	<h4>Results for triplexes in the mouse genomic regions of the provided bed file</h4>
+	<br />
+	<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with mouse DNA target elements in the regions
+		supplied in the given bed file.</h5>
+	{% else %}
+	<h4>Results for triplexes in the human genomic regions of the provided bed file</h4>
+	<br />
+	<h5>{{ nr_triplexes }} different triplexes are predicted to be formed with human DNA target elements in the regions
+		supplied in the given bed file.</h5>
+	{% endif %}
+	<br />
+	{% endif %}
+	<table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna"
+		style="text-align: left; width: 100%">
+		<thead class="table-dark" style="background-color: red;">
+			<tr>
+				<th scope="col" title="RNA gene invovled in triplex formation.">RNA</th>
+				<th scope="col" title="RNA transcript invovled in triplex formation.">Transcript ID</th>
+				<th scope="col" title="Start position of triplex formation in RNA transcript.">Transcript Triplex Start
+				</th>
+				<th scope="col" title="End position of triplex formation in RNA transcript.">Transcript Triplex End</th>
+				<th scope="col" title="DNA gene invovled in triplex formation.">Target Gene</th>
+				<th scope="col" title="Chromosome of DNA region invovled in triplex formation."> Target Triplex Chr</th>
+				<th scope="col" title="Genomic start position of DNA region invovled in triplex formation.">Target
+					Triplex Start</th>
+				<th scope="col" title="Genomic end position of DNA region invovled in triplex formation.">Target Triplex
+					End</th>
+				<th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
+				<th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
+				<th scope="col">Score</th>
+				<th scope="col">Bit Score</th>
+				<th scope="col">E Value</th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+			{% for triplex in result %}
+			<tr>
+				<td><a href="{% url 'gene_detail' triplex.transcriptgenesymbol %}">{{triplex.transcriptgenesymbol}}</a>
+				</td>
+				<td><a href="{% url 'transcript_detail' triplex.transcriptid %}">{{ triplex.transcriptid }}</a></td>
+				<script>
+					var rnatriplexstart = {{ triplex.rnatriplexstart }};
+					var rtripstart = Math.round(rnatriplexstart);
+					document.write("<td>" + rtripstart + "</td>")
+				</script>
+				<script>
+					var rnatriplexend = {{ triplex.rnatriplexend }};
+					var rtripend = Math.round(rnatriplexend);
+					document.write("<td>" + rtripend + "</td>")
+				</script>
+				<td>
+					<a href="{% url 'search_dna_mouse_link' mouse triplex.dnagenesymbol %}">
+						<strong><i></i>{{ triplex.dnagenesymbol }}</i></strong></a>
+				</td>
+				<td>{{ triplex.genometriplexchr }}</td>
+				<script>
+					var dnatriplexstart = {{ triplex.genometriplexstart }};
+					var dtripstart = Math.round(dnatriplexstart);
+					document.write("<td>" + dtripstart + "</td>")
+					var dnatriplexend = {{ triplex.genometriplexend }};
+					var dtriplexend = Math.round(dnatriplexend);
+					document.write("<td>" + dtriplexend + "</td>")
+				</script>
+				<td>{{ triplex.rnalength }}</td>
+				<td>{{ triplex.dnalength }}</td>
+				<td>{{ triplex.triplexalignerscore }}</td>
+				<td>{{ triplex.triplexalignerbitscore }}</td>
+
+
+				<script>
+					var evalue = {{ triplex.triplexalignere }};
+					var exp = evalue.toExponential(fractionDigits = 2);
+					document.write("<td>" + exp + "</td>")
+				</script>
+			</tr>
 			{% endfor %}
-		    </tbody>
-		</table>
-		</div>
+		</tbody>
+	</table>
+</div>
 
 {% elif to_large %}
-<h3>The defined genomic region is too large, please split the region into smaller parts and submit multiple queries.</h3>	
+<h3>The defined genomic region is too large, please split the region into smaller parts and submit multiple queries.
+</h3>
 
 {% elif incomplete_region %}
- <h3>The defined genomic region is missing information (chr, start, end).</h3>
-    {% else %}
-    <h3>No hits for this genomic region input in TripLexicon!</h3>
-    {% endif %}
+<h3>The defined genomic region is missing information (chr, start, end).</h3>
+{% else %}
+<h3>No hits for this genomic region input in TripLexicon!</h3>
+{% endif %}
 
-{% endblock %}	
+{% endblock %}

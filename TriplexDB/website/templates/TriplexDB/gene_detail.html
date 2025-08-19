@@ -65,7 +65,9 @@
 				<td>{{ rna.transcriptend }}</td>
 				<td>{{ rna.transcriptlength }}</td>
 				<td>{{ rna.transcriptbiotype }}</td>
-				<td>{{ rna.transcripttriplexcount }}</td>
+				<td><a href="{% url 'search_transcript_values_link' rna.transcriptid %}">
+						{{rna.transcripttriplexcount}}
+					</a></td>
 			</tr>
 			{% endfor %}
 		</tbody>

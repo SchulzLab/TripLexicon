@@ -96,16 +96,19 @@
 		style="text-align: left; width: 100%">
 		<thead class="table-dark" style="background-color: red;">
 			<tr>
-				<th scope="col">RNA</th>
-				<th scope="col">Transcript ID</th>
-				<th scope="col">Transcript Triplex Start</th>
-				<th scope="col">Transcript Triplex End</th>
-				<th scope="col">Target Gene</th>
-				<th scope="col">Target Triplex Chr</th>
-				<th scope="col">Target Triplex Start</th>
-				<th scope="col">Target Triplex End</th>
-				<th scope="col">Transcript Length</th>
-				<th scope="col">Target Element Length</th>
+				<th scope="col" title="RNA gene invovled in triplex formation.">RNA</th>
+				<th scope="col" title="RNA transcript invovled in triplex formation.">Transcript ID</th>
+				<th scope="col" title="Start position of triplex formation in RNA transcript.">Transcript Triplex Start
+				</th>
+				<th scope="col" title="End position of triplex formation in RNA transcript.">Transcript Triplex End</th>
+				<th scope="col" title="DNA gene invovled in triplex formation.">Target Gene</th>
+				<th scope="col" title="Chromosome of DNA region invovled in triplex formation."> Target Triplex Chr</th>
+				<th scope="col" title="Genomic start position of DNA region invovled in triplex formation.">Target
+					Triplex Start</th>
+				<th scope="col" title="Genomic end position of DNA region invovled in triplex formation.">Target Triplex
+					End</th>
+				<th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
+				<th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
 				<th scope="col">Score</th>
 				<th scope="col">Bit Score</th>
 				<th scope="col">E Value</th>
@@ -125,7 +128,8 @@
 					var rtripend = Math.round(rnatriplexend);
 					document.write("<td>" + rtripend + "</td>")
 				</script>
-				<td>{{ triplex.dnagenesymbol }}</td>
+				<td><a href="{% url 'search_dna_mouse_link' mouse triplex.dnagenesymbol %}">
+						{{ triplex.dnagenesymbol }}</a></td>
 				<td>{{ triplex.genometriplexchr }}</td>
 				<script>
 					var dnatriplexstart = {{ triplex.genometriplexstart }};
@@ -186,16 +190,19 @@
 		style="text-align: left; width: 100%">
 		<thead class="table-dark" style="background-color: red;">
 			<tr>
-				<th scope="col">RNA</th>
-				<th scope="col">Transcript ID</th>
-				<th scope="col">Transcript Triplex Start</th>
-				<th scope="col">Transcript Triplex End</th>
-				<th scope="col">Target Gene</th>
-				<th scope="col">Target Triplex Chr</th>
-				<th scope="col">Target Triplex Start</th>
-				<th scope="col">Target Triplex End</th>
-				<th scope="col">Transcript Length</th>
-				<th scope="col">Target Element Length</th>
+				<th scope="col" title="RNA gene invovled in triplex formation.">RNA</th>
+				<th scope="col" title="RNA transcript invovled in triplex formation.">Transcript ID</th>
+				<th scope="col" title="Start position of triplex formation in RNA transcript.">Transcript Triplex Start
+				</th>
+				<th scope="col" title="End position of triplex formation in RNA transcript.">Transcript Triplex End</th>
+				<th scope="col" title="DNA gene invovled in triplex formation.">Target Gene</th>
+				<th scope="col" title="Chromosome of DNA region invovled in triplex formation."> Target Triplex Chr</th>
+				<th scope="col" title="Genomic start position of DNA region invovled in triplex formation.">Target
+					Triplex Start</th>
+				<th scope="col" title="Genomic end position of DNA region invovled in triplex formation.">Target Triplex
+					End</th>
+				<th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
+				<th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
 				<th scope="col">Score</th>
 				<th scope="col">Bit Score</th>
 				<th scope="col">E Value</th>
@@ -216,7 +223,8 @@
 					var rtripend = Math.round(rnatriplexend);
 					document.write("<td>" + rtripend + "</td>")
 				</script>
-				<td>{{ triplex.dnagenesymbol }}</td>
+				<td><a href="{% url 'search_dna_mouse_link' mouse triplex.dnagenesymbol %}">
+						{{ triplex.dnagenesymbol }}</a></td>
 				<td>{{ triplex.genometriplexchr }}</td>
 				<script>
 					var dnatriplexstart = {{ triplex.genometriplexstart }};

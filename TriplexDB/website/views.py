@@ -26,15 +26,22 @@ def search_dna_home(request):
     return render(request, 'TriplexDB/search_dna_home_mouse.html', {})
 
 
-def search_dna_mouse(request):
+def search_dna_mouse(request, species = None, dna_symbol = None):
     if request.method == 'GET':
-        species = request.GET.get('species')
-        dna_symbol = request.GET.get('dna_symbol')
+        if species == None and dna_symbol == None:
+            species = request.GET.get('species')
+            dna_symbol = request.GET.get('dna_symbol')
+        else:
+            if species == 'False':
+                species = 'Human'
+            else:
+                species = 'Mouse'
         if not dna_symbol[0].isdigit() and 'Rik' not in dna_symbol:
             dna_symbol = dna_symbol.capitalize()
         if species == 'Human':
             mouse = False
-            dna_symbol = dna_symbol.strip().upper()
+            if not 'rRNA' in dna_symbol:
+                dna_symbol = dna_symbol.strip().upper()
             filter_dna_id = list(
                 dna.objects.filter(
                     (Q(genesymbol__exact=dna_symbol) | Q(geneid__exact=dna_symbol))
@@ -137,8 +144,8 @@ def search_rna_results(request):
 
 def search_transcript_values(transcript, species, request):
     if request.method == 'GET':
-    #     species = request.GET.get('species')
-    #     transcript = request.GET.get('transcript').strip().upper()
+        # species = request.GET.get('species')
+        # transcript = request.GET.get('transcript').strip().upper()
         if species == 'Mouse':
             mouse = True
             rna_result = (
@@ -248,6 +255,15 @@ def search_transcript_values(transcript, species, request):
 
     else:
         return render(request, 'TriplexDB/search_rna_results_values.html', {})
+
+
+def search_transcript_values_link(request, pk):
+    if pk.startswith('ENSMUST'):
+        species = 'Mouse'
+    else:
+        species = 'Human'
+    return search_transcript_values(pk, species, request)
+    
 
 
 def search_rna_symbol_values(request):
@@ -502,8 +518,8 @@ def gen_region_search(query_bedtool, mouse=False):
         mapping_rnaid_tsymbol = {entry['rnaid']: entry['transcriptgenesymbol'] for entry in transcript_gene_symbols}
         mapping_dnaid_gene_symbol = {entry['dnaid']: entry['genesymbol'] for entry in dna_result}
         
-        triplex['transcriptgenesymbol'] = mapping_rnaid_tid[triplex['rnaid']]
-        triplex['transcriptid'] = mapping_rnaid_tsymbol[triplex['rnaid']]
+        triplex['transcriptid'] = mapping_rnaid_tid[triplex['rnaid']]
+        triplex['transcriptgenesymbol'] = mapping_rnaid_tsymbol[triplex['rnaid']]
         triplex['dnagenesymbol'] = mapping_dnaid_gene_symbol[triplex['dnaid']]
     return triplexes
 

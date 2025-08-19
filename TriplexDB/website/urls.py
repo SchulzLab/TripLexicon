@@ -22,8 +22,8 @@ urlpatterns = [
     path('', views.home, name = "home"),
     path('search_rna_symbol', views.search_rna_symbol_values, name="search_rna_symbol"),
     path('search_dna_home', views.search_dna_home, name="search_dna_home"),
-    #path('search_dna', views.search_dna, name="search_dna"),
     path('search_dna_mouse', views.search_dna_mouse, name="search_dna_mouse"),
+    path('search_transcript_values_link/<pk>/', views.search_transcript_values_link, name="search_transcript_values_link"),
     path('search_transcript', views.search_transcript_values, name="search_transcript"),
     path('search_rna_home', views.search_rna_home, name="search_rna_home"),
     path('search_rna_results', views.search_rna_results, name="search_rna_results"),
@@ -35,6 +35,5 @@ urlpatterns = [
     path('delete_temp_plot/', views.delete_temp_plot, name='delete_temp_plot'),
     path('go_enrichment', views.go_enrichment_results, name='go_enrichment_results'),
     path('download/csv/', views.download_csv, name='download_csv'),
-    #path('loading_view', views.loading_view, name='loading_view'),
-    #path('go_calculation', views.go_calculation, name='go_calculation'),
+    path("search_dna_mouse/<str:species>/<str:dna_symbol>/", views.search_dna_mouse, name="search_dna_mouse_link"),
 ]
