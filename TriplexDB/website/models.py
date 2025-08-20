@@ -152,6 +152,8 @@ class Rna(models.Model):
         db_table = 'rna'
 
 class Triplexaligner(models.Model):
+    rnasymbol = models.TextField(db_column='RNASymbol', blank=True, null=True)  # Field name made lowercase.
+    dnasymbol = models.TextField(db_column='DNASymbol', blank=True, null=True) 
     rnaid = models.ForeignKey(Rna, on_delete=models.SET_NULL, db_column='RNAID', blank=True, null=True,\
      related_name = 'triplex_rnaid') 
     dnaid = models.ForeignKey(Dna, on_delete=models.SET_NULL, db_column='DNAID', blank=True, null=True,\
@@ -173,7 +175,10 @@ class Triplexaligner(models.Model):
     genomednastart = models.IntegerField(db_column='GenomeDNAStart', blank=True, null=True)  
     genometriplexstart = models.FloatField(db_column='GenomeTriplexStart', blank=True, null=True)  
     genometriplexend = models.FloatField(db_column='GenomeTriplexEnd', blank=True, null=True)  
-
+    rnaalignedseq = models.TextField(db_column='RNAAlignedSeq', blank=True, null=True)
+    dnaalignedseq = models.TextField(db_column='DNAAlignedSeq', blank=True, null=True)
+    alignedstring = models.TextField(db_column='AlignString', blank=True, null=True)
+    
     class Meta:
         managed = False
         db_table = 'triplexaligner'

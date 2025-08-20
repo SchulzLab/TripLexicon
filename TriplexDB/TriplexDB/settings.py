@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'TriplexDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_updated_biotypes.db',
+	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Hs_updated_biotypes_alignments.db',
 	    'HOST': '192.168.169.94',
         'PORT': '8000',
         'OPTIONS': {
@@ -104,7 +104,7 @@ DATABASES = {
     },
     'mouse' : {
         'ENGINE': 'django.db.backends.sqlite3',
-	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated_enhancers_biotype.db',
+	    'NAME': '/home/triplexicon/triplex/TripLexicon_lncRNAs_Mm_updated_enhancers_biotype_alignment.db',
 	    'HOST': '192.168.169.94',
         'PORT': '8000',
         'OPTIONS': {
