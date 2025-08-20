@@ -170,7 +170,7 @@ class Triplexaligner(models.Model):
     k = models.FloatField(db_column='K', blank=True, null=True)  
     triplexalignerbitscore = models.FloatField(db_column='TriplexAlignerBitScore', blank=True, null=True)  
     triplexalignere = models.FloatField(db_column='TriplexAlignerE', blank=True, null=True)  
-    triplexid = models.TextField(db_column='TriplexID', blank=True, null=True)  
+    triplexid = models.TextField(db_column='TriplexID', blank=True, primary_key=True)  
     genometriplexchr = models.TextField(db_column='GenomeTriplexChr', blank=True, null=True)  
     genomednastart = models.IntegerField(db_column='GenomeDNAStart', blank=True, null=True)  
     genometriplexstart = models.FloatField(db_column='GenomeTriplexStart', blank=True, null=True)  

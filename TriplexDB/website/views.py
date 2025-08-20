@@ -63,6 +63,7 @@ def search_dna_mouse(request, species = None, dna_symbol = None):
                     'triplexalignerscore',
                     'triplexalignerbitscore',
                     'triplexalignere',
+                    'triplexid',
                 )
             )
 
@@ -100,6 +101,7 @@ def search_dna_mouse(request, species = None, dna_symbol = None):
                     'triplexalignerscore',
                     'triplexalignerbitscore',
                     'triplexalignere',
+                    'triplexid',
                 )
             )
 
@@ -182,6 +184,7 @@ def search_transcript_values(transcript, species, request):
                     'triplexalignerscore',
                     'triplexalignerbitscore',
                     'triplexalignere',
+                    'triplexid',
                 )
                 .annotate(
                 dnagenesymbol=Subquery(
@@ -211,6 +214,7 @@ def search_transcript_values(transcript, species, request):
                     'triplexalignerscore',
                     'triplexalignerbitscore',
                     'triplexalignere',
+                    'triplexid'
                 )
                 .annotate(
                 dnagenesymbol=Subquery(
@@ -232,10 +236,7 @@ def search_transcript_values(transcript, species, request):
             protein_coding_triplexes = [triplex for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
             toptriplexes = sorted(protein_coding_triplexes, key=lambda x: x['triplexalignere'])
             top_dnagenesymbols = [triplex['dnagenesymbol'] for triplex in toptriplexes]
-            # dna_genes = [triplex['dnagenesymbol'] for triplex in triplexes if triplex['genebiotype'] == 'protein_coding']
 
-            # if len(dna_genes) > 1000:
-            #     dna_genes = dna_genes[:1000]
 
             return render(
                 request,
@@ -306,6 +307,7 @@ def search_rna_symbol_values(request):
                         'triplexalignerscore',
                         'triplexalignerbitscore',
                         'triplexalignere',
+                        'triplexid',
                     )
                     .annotate(
                     dnagenesymbol=Subquery(
@@ -350,6 +352,7 @@ def search_rna_symbol_values(request):
                         'triplexalignerscore',
                         'triplexalignerbitscore',
                         'triplexalignere',
+                        'triplexid',
                     )
                     .annotate(
                     dnagenesymbol=Subquery(
@@ -783,10 +786,9 @@ def go_enrichment_results(request):
         mouse = request.POST.get('mouse')
         transcript = request.POST.get('transcript')
         go_genes = go_genes.split(',')
-        #if len(go_genes) > 500:
-        #    go_genes = go_genes[:500]
+
         filename = f'{uuid.uuid4()}'
-        filepath = os.path.join('media', 'temp_plots', filename)  #'media',
+        filepath = os.path.join('media', 'temp_plots', filename)
         if mouse == 'False':
             df, filenames = go_enrichment(
                 go_genes={'human': list(go_genes)}, out_tag=filepath
@@ -813,11 +815,11 @@ def go_enrichment_results(request):
         gprofiler_table = gprofiler_table.round(
             {'adj_p_value': 3, 'precision': 3, 'recall': 3}
         )
-        # headers = list(gprofiler_table.keys())
+
         headers = gprofiler_table.columns.to_list()
-        # rows = zip(*gprofiler_table.values())
+
         rows = gprofiler_table.to_dict(orient='records')
-        # table_html = df['human'].to_html(classes='table table-striped', index=False)
+
         if len(filenames) > 0:
             return render(
                 request,
@@ -886,72 +888,92 @@ def download_csv(request):
         return HttpResponse('No data available for download.', status=400)
 
 
-"""def loading_view(request):
-	if request.method == 'POST':
-		go_genes = request.POST['go_genes']
-		rna_symbol = request.POST.get('rna_symbol')
-		if rna_symbol and go_genes:
-            # Save to session
-			request.session['rna_symbol'] = rna_symbol
-			request.session['go_genes'] = go_genes
-            # Redirect to loading view (this will trigger GET request)
-			return render(request, 'TriplexDB/loading.html', {})
-		else:
-            # Return an error if data is missing
-			return render(request,
-			'TriplexDB/go_enrichment.html',
-			{
-				'rna_symbol': 'shitty',
-				#'table_html': table_html,
-				#'MEDIA_URL': '/media/',
-			})
 
-def go_enrichment_results(request):
-	rna_symbol = request.session.get('rna_symbol')
-	filenames = request.session.get('filenames', [])
-	headers = request.session.get('headers', [])
-	rows = request.session.get('rows', [])
-	if len(filenames) > 0:
-		return render(request,
-			'TriplexDB/go_enrichment.html',
-			{
-				'rna_symbol': rna_symbol,
-				'plot_paths': filenames,
-				'headers' : headers,
-				'rows' : rows,
-			})
-	else:
-		return render(request,
-			'TriplexDB/go_enrichment.html',
-			{
-				'rna_symbol': 'no plots',
-			})
 
-def go_calculation(request):
-	rna_symbol = request.session.get('rna_symbol')
-	go_genes = request.session.get('go_genes')
-	if not rna_symbol or not go_genes:
-		return render(request,
-			'TriplexDB/go_enrichment.html',
-			{
-				'rna_symbol': 'no data for calculation',
-			})
+def triplex_alinger_detail(request, triplexid, mouse):
+    if mouse == 'False':
+        triplexes = triplexaligner.objects.filter(Q(triplexid__exact=triplexid)).values(
+            'triplexid',
+            'rnatriplexstart',
+            'rnatriplexend',
+            'genometriplexchr',
+            'genometriplexstart',
+            'genometriplexend',
+            'rnalength',
+            'dnalength',
+            'triplexalignerscore',
+            'triplexalignerbitscore',
+            'triplexalignere',
+            'rnaalignedseq',
+            'dnaalignedseq',
+            'alignedstring',
+            'rnasymbol', 
+            'dnasymbol',
+            'code',
+            'rnaid',
+        )   
+        
+        rna_ids = [triplex['rnaid'] for triplex in triplexes] 
+        
+        transcript = (
+            rna.objects.filter(rnaid__in=rna_ids)
+            .distinct()
+            .values('transcriptid', 'rnaid')
+        )   
+        transcript_id = [trans['transcriptid'] for trans in transcript][0]      
+    
+    else:
+        triplexes = triplexaligner.objects.using('mouse').filter(Q(triplexid__exact=triplexid)).values(
+            'triplexid',
+            'rnatriplexstart',
+            'rnatriplexend',
+            'genometriplexchr',
+            'genometriplexstart',
+            'genometriplexend',
+            'rnalength',
+            'dnalength',
+            'triplexalignerscore',
+            'triplexalignerbitscore',
+            'triplexalignere',
+            'rnaalignedseq',
+            'dnaalignedseq',
+            'alignedstring',
+            'rnasymbol', 
+            'dnasymbol',
+            'code',
+            'rnaid',
+        )        
+        rna_ids = [triplex['rnaid'] for triplex in triplexes] 
+        
+        transcript = (
+            rna.objects.using('mouse').filter(rnaid__in=rna_ids)
+            .distinct()
+            .values('transcriptid', 'rnaid')
+        ) 
+        transcript_id = [trans['transcriptid'] for trans in transcript][0]
 
-	go_genes = go_genes.split(',')
-	filename = f'{uuid.uuid4()}'
-	filepath = os.path.join('media','temp_plots', filename)#'media',
-	df, filenames = go_enrichment(go_genes = {'human': list(go_genes)}, out_tag=filepath)
-	gprofiler_table = df['human']
-	request.session['gprofiler_df'] = gprofiler_table.to_json()
-	gprofiler_table = gprofiler_table.drop(['Gene fraction', 'intersections', 'evidences', 'significant', 
-										'description',  'query'], axis = 1)
-	#headers = list(gprofiler_table.keys())
-	headers = gprofiler_table.columns.to_list()
-	#rows = zip(*gprofiler_table.values())
-	rows = gprofiler_table.to_dict(orient='records')  
-	#table_html = df['human'].to_html(classes='table table-striped', index=False)
-	request.session['filenames'] = filenames
-	request.session['headers'] = headers
-	request.session['rows'] = rows
-	request.session['rna_symbol'] = rna_symbol
-	return JsonResponse({'status': 'completed'})"""
+    triplex = triplexes.first()
+    triplex['transcriptid'] = transcript_id
+    
+    rnaalignedseq = triplex['rnaalignedseq']
+    dnaalignedseq = triplex['dnaalignedseq']
+    alignedstring = triplex['alignedstring']
+    
+    seqs = [dnaalignedseq, alignedstring, rnaalignedseq]
+    seqs = [[seq[i:i+60] for i in range(0, len(seq), 60)] for seq in seqs]
+    seq_tuples = list(zip(*seqs))
+    
+    code = triplex['code']
+    code = code[-1]
+    code_svg_path = f'alignment_code_plots/TriplexAligner_LogOdds_Code_{code}.svg'
+    
+    return render(
+    request,
+    'TriplexDB/triplex_alinger_detail.html',
+    {
+        'triplex': triplex,
+        'mouse': mouse,
+        'seq_tuples': seq_tuples,
+        'code_svg_path': code_svg_path,
+    },
+    )

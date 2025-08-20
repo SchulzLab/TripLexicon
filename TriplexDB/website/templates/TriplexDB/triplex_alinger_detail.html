@@ -1,0 +1,128 @@
+{% extends 'TriplexDB/base.html' %}
+{% load static %}
+
+<head>
+    <title>Transcript detail view</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<style>
+    .container {
+        text-align: center;
+        width: 100%;
+    }
+
+    .container img {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+{% block content %}
+{% if triplex %}
+<div class="table-responsive mx-5">
+    {% if mouse %}
+    <h4>Details and alginement of predicted mouse triplex formation between RNA transcript {{ triplex.transcriptid }}
+        and DNA gene
+        {{ triplex.dnasymbol }}</h4>
+    {% else %}
+    <h4></h4>Details and alginement of predicted triplex formation between RNA transcript {{ triplex.transcriptid }} and
+    DNA gene
+    {{ triplex.dnasymbol }}</h4>
+    {% endif %}
+    <br />
+    <table class="table table-bordered table-hover table-lg display table-striped" id="results_table_rna"
+        style="text-align: left; width: 100%">
+        <thead class="table-dark" style="background-color: red;">
+            <tr>
+                <th scope="col" title="DNA gene invovled in triplex formation.">Target Gene</th>
+                <th scope="col" title="Chromosome of DNA region invovled in triplex formation."> Target Triplex Chr</th>
+                <th scope="col" title="Genomic start position of DNA region invovled in triplex formation.">Target
+                    Triplex Start</th>
+                <th scope="col" title="Genomic end position of DNA region invovled in triplex formation.">Target Triplex
+                    End</th>
+                <th scope="col" title="RNA gene invovled in triplex formation.">RNA</th>
+                <th scope="col" title="RNA transcript invovled in triplex formation.">Transcript ID</th>
+                <th scope="col" title="Start position of triplex formation in RNA transcript.">Transcript Triplex Start
+                </th>
+                <th scope="col" title="End position of triplex formation in RNA transcript.">Transcript Triplex End</th>
+                <th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
+                <th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
+                <th scope="col" title="Local alignment score calculated by TriplexAligner">Score</th>
+                <th scope="col" title="Local alignment bit score">Bit Score</th>
+                <th scope="col"
+                    title="E value for alignment as calculated by Karlin-Altschul statistics (lower is more significant)">
+                    E Value</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr>
+                <td><a href="{% url 'search_dna_mouse_link' mouse triplex.dnasymbol %}">{{ triplex.dnasymbol }}</a></td>
+                <td>{{ triplex.genometriplexchr }}</td>
+                <script>
+                    var dnatriplexstart = {{ triplex.genometriplexstart }};
+                    var dtripstart = Math.round(dnatriplexstart);
+                    document.write("<td>" + dtripstart + "</td>")
+                    var dnatriplexend = {{ triplex.genometriplexend }};
+                    var dtripend = Math.round(dnatriplexend);
+                    document.write("<td>" + dtripend + "</td>")
+                </script>
+                <td><a href="{% url 'gene_detail' triplex.rnasymbol %}">{{ triplex.rnasymbol }}</a></td>
+                <td><a href="{% url 'transcript_detail' triplex.transcriptid %}">{{ triplex.transcriptid }}</a></td>
+                <script>
+                    var rnatriplexstart = {{ triplex.rnatriplexstart }};
+                    var rtripstart = Math.round(rnatriplexstart);
+                    document.write("<td>" + rtripstart + "</td>")
+                    var rnatriplexend = {{ triplex.rnatriplexend }};
+                    var rtripend = Math.round(rnatriplexend);
+                    document.write("<td>" + rtripend + "</td>")
+                </script>
+                <td>{{ triplex.rnalength }}</td>
+                <td>{{ triplex.dnalength }}</td>
+                <td>{{ triplex.triplexalignerscore }}</td>
+                <td>{{ triplex.triplexalignerbitscore }}</td>
+
+                <script>
+                    var evalue = {{ triplex.triplexalignere }};
+                    var exp = evalue.toExponential(fractionDigits = 2);
+                    document.write("<td>" + exp + "</td>")
+                </script>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container" style="display: flex; align-items: flex-start; gap: 10px;">
+    <!-- Left: sequences -->
+    <div style="flex: 0 0 auto;">
+        <pre style="font-family: monospace; margin: 0; margin-right: 150px;">
+{% for seq1, seq2, seq3 in seq_tuples %}
+{{ seq1 }}
+{{ seq2 }}
+{{ seq3 }}
+
+{% endfor %}
+        </pre>
+    </div>
+
+    <!-- Right: image -->
+    <div style="flex-shrink: 0;">
+        <figure>
+            <img src="{% static code_svg_path %}" alt="Alignment Code" style="width: 200%; height: auto;">
+            <figcaption>Alignment Code used. </figcaption>
+        </figure>
+    </div>
+</div>
+
+
+
+
+{% else %}
+<h3>No hits for this transcript in Triplexicon!</h3>
+{% endif %}
+
+{% endblock %}
+<footer>
+    {% block footer %}
+    {% include 'TriplexDB/footer.html' %}
+    {% endblock %}
+</footer>

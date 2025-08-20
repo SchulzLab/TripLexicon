@@ -109,9 +109,14 @@
 					End</th>
 				<th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
 				<th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
-				<th scope="col">Score</th>
-				<th scope="col">Bit Score</th>
-				<th scope="col">E Value</th>
+				<th scope="col" title="Local alignment score calculated by TriplexAligner">Score</th>
+				<th scope="col" title="Local alignment bit score">Bit Score</th>
+				<th scope="col"
+					title="E value for alignment as calculated by Karlin-Altschul statistics (lower is more significant)">
+					E Value</th>
+				<th scope="col"
+					title="Click on the link to see the alignment of the DNA and RNA regions involved in triplex formation.">
+					View Alignment</th>
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
@@ -148,6 +153,7 @@
 					var exp = evalue.toExponential(fractionDigits = 2);
 					document.write("<td>" + exp + "</td>")
 				</script>
+				<td><a href="{% url 'triplex_alinger_detail' triplex.triplexid mouse %}">View Alignment</a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -203,9 +209,14 @@
 					End</th>
 				<th scope="col" title="Length of transcript involved in triplex formation.">Transcript Length</th>
 				<th scope="col" title="Length of DNA region in triplex formation.">Target Element Length</th>
-				<th scope="col">Score</th>
-				<th scope="col">Bit Score</th>
-				<th scope="col">E Value</th>
+				<th scope="col" title="Local alignment score calculated by TriplexAligner">Score</th>
+				<th scope="col" title="Local alignment bit score">Bit Score</th>
+				<th scope="col"
+					title="E value for alignment as calculated by Karlin-Altschul statistics (lower is more significant)">
+					E Value</th>
+				<th scope="col"
+					title="Click on the link to see the alignment of the DNA and RNA regions involved in triplex formation.">
+					View Alignment</th>
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
@@ -243,6 +254,7 @@
 					var exp = evalue.toExponential(fractionDigits = 2);
 					document.write("<td>" + exp + "</td>")
 				</script>
+				<td><a href="{% url 'triplex_alinger_detail' triplex.triplexid mouse %}">View Alignment</a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
