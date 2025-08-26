@@ -1,0 +1,15 @@
+hub	TripLexicon_hg38
+shortLabel	TripLexicon hg38
+longLabel	TripLexicon target sites hosted on Galaxy
+useOneFile	on
+email	warwick@vrc.uni-frankfurt.de
+	
+genome	hg38
+	
+track	MEG3
+shortLabel	MEG3
+longLabel	MEG3
+type	bigBed
+visibility	dense
+bigDataUrl	https://github.com/SchulzLab/TripLexicon/blob/main/UCSC/hg38/MEG3_TripLexicon_sites.bb
+	
