@@ -41,7 +41,7 @@ The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages
 The  :kbd:`Transcripttriplexcount` column indicates how many triplexes the respective transcript is predicted to form. Upon clicking on it the user is redirected to the same results page as searching for the respective transcript ID with the **Extended query by RNA transcript ID** explained in a section below.
 
 The last column :kbd:`Binding sites in UCSC` holds links to the UCSC genome browser. 
-.. image:: ../click_ucsc.png
+.. image:: ../click_UCSC.png
   :alt: Click on Binding sites in UCS to be redirected to UCSC to see DNA bindign sites of the RNA gene of interest.
 
 When clicking on it, the user is redirected to UCSC with a track of the DNA regions predicted to be bound by the RNA gene of interest to form triplexes.
