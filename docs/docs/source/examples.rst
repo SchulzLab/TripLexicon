@@ -38,6 +38,8 @@ The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages
 .. image:: ../transcript_detail.png
   :alt: Transcript detail example for ENST00000556407
 
+The  :kbd:`Transcripttriplexcount` column indicates how many triplexes the respective transcript is predicted to form. Upon clicking on it the user is redirected to the same results page as searching for the respective transcript ID with the **Extended query by RNA transcript ID** explained in a section below.
+
 The last column :kbd:`Binding sites in UCSC` holds links to the UCSC genome browser. 
 .. image:: ../click_ucsc.png
   :alt: Click on Binding sites in UCS to be redirected to UCSC to see DNA bindign sites of the RNA gene of interest.
@@ -47,6 +49,8 @@ When clicking on it, the user is redirected to UCSC with a track of the DNA regi
   :alt: UCSC genome browser view of predicted DNA interaction sites for RNA gene MEG3.
 
 If the interactions of several RNA genes are of interest, they can be displayed in UCSC as different tracks in the same view. For this the user can just click on several links and the previous tracks will be shown as well, see below.
+.. image:: ../UCSC_several_tracks.png
+  :alt: UCSC genome browser view of several tracks of RNA gene interaction sites.
 
 If several tracks want to be seen but in separate sessions of the UCSC genome browser, we recommend to use the incognito/private mode of the internet browser.
 
@@ -54,7 +58,7 @@ Extended query by RNA gene symbol
 ---------------------------
 The query by RNA gene symbol reflects a similar scenario to the one for the summary query by RNA gene symbol decsribed above. The user has an RNA of interest, but might not have in mind which specific transcript of the RNA gene is of interest. Instead of querying the database such that the predicted triplexes per transcript are summarized, each single predicted triplex is listed and can be investigated in more detail. In this case, they can query TripLexicon by the RNA gene symbol in the detailed mode, and the results will include statistically significant predicted triplexes for all of the annotated transcripts for that RNA gene.
 
-Keeping the known triplex-forming lncRNA *MEG3* as our example, the user again needs to navigate to the :kbd:`RNA query` tab. To query TripLexicon for triplexes that are predicted to be formed between any transcript of *MEG3* and genome-wide promoters/REMs, they can provide ´MEG3´ to the second search field, **Search for predicted triplexes by RNA gene symbol**. Submitting the query by clicking :kbd:`Search`, will initiate the search. Once the query has successfully run, the results table should load automatically. At the top of the page, a summary statement should state how many predicted triplexes there are for the RNA gene which was used for the query. In the case of *MEG3*, this reads 1605, as of the current version of TripLexicon.
+Keeping the known triplex-forming lncRNA *MEG3* as our example, the user again needs to navigate to the :kbd:`RNA query` tab. To query TripLexicon for triplexes that are predicted to be formed between any transcript of *MEG3* and genome-wide promoters/REMs, they can provide ´MEG3´ to the second search field, **Search for predicted triplexes by RNA gene symbol, gene ID or transcript ID (results will list all interactions line by line)**. Submitting the query by clicking :kbd:`Search`, will initiate the search. Once the query has successfully run, the results table should load automatically. At the top of the page, a summary statement should state how many predicted triplexes there are for the RNA gene which was used for the query. In the case of *MEG3*, this reads 1605, as of the current version of TripLexicon.
 
 .. image:: ../RNA_gene_sym_query.png
   :alt: Query by RNA gene MEG3
@@ -81,11 +85,11 @@ A table containing the information g:Profiler used to calculate the GO enrichmen
   :alt: GO doenload results as CSV
 
 
-Querying by RNA transcript ID
+Extended query by RNA transcript ID
 -----------------------------
 This example reflects a scenario where the user has an RNA of interest, and is interested in the predicted triplex formation of a specific transcript of that RNA (e.g. that which is dominantly expressed in their cell type of interest, or a specific splice variant). In this case, they can query TripLexicon by the RNA transcript ID (in Ensembl format), and the results will include statistically significant predicted triplexes for only the specified transcript for that RNA gene.
 
-Sticking to the example of *MEG3*, but this time the user is only interested in the canonical Ensembl transcript, which has the ID *ENST00000556407*. In this case, the user would again navigate to the :kbd:`RNA query` tab of the TripLexicon web interface, and this time would enter *ENST00000556407* into the third search field on the card with the title **Search for predicted triplexes by RNA transcript ID**. 
+Sticking to the example of *MEG3*, but this time the user is only interested in the canonical Ensembl transcript, which has the ID *ENST00000556407*. In this case, the user would again navigate to the :kbd:`RNA query` tab of the TripLexicon web interface, and this time would enter *ENST00000556407* into the same seach field as for the previous query **Search for predicted triplexes by RNA gene symbol, gene ID or transcript ID (results will list all interactions line by line)**. 
 
 .. image:: ../transcript_search.png
   :alt: Query by transcript ENST00000556407
