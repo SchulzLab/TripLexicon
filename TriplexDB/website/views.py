@@ -651,6 +651,10 @@ def gene_detail(request, pk):
             high_triplex_rna = rna_result[0]['transcriptid']
             plot_path = 'transcript_plots_mouse/' + high_triplex_rna + '.png'
             circos_path = 'ggCircos_mm39/' + high_triplex_rna + '.png'
+            gene_name = [rna['transcriptgenesymbol'] for rna in rna_result][0]
+            ucsc_link = f'https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm39&hgct_customText=browser%20position%20chr1:20000000-30000000%0Atrack%20type=bigBed%20bigDataUrl=https://github.com/TMWarwick/TripLexicon_UCSC/raw/refs/heads/main/UCSC/mm39/{gene_name}_TripLexicon_sites.bb%20name={gene_name}%20description={gene_name}_TripLexicon_sites'
+
+            
         else:
             mouse = False
             rna_result = (
@@ -665,6 +669,8 @@ def gene_detail(request, pk):
             high_triplex_rna = rna_result[0]['transcriptid']
             plot_path = 'transcript_plots/' + high_triplex_rna + '.png'
             circos_path = 'ggCircos_hg38/' + high_triplex_rna + '.png'
+            gene_name = [rna['transcriptgenesymbol'] for rna in rna_result][0]
+            ucsc_link = f'https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=browser%20position%20chr1:20000000-30000000%0Atrack%20type=bigBed%20bigDataUrl=https://github.com/TMWarwick/TripLexicon_UCSC/raw/refs/heads/main/UCSC/hg38/{gene_name}_TripLexicon_sites.bb%20name={gene_name}%20description={gene_name}_TripLexicon_sites'
         return render(
             request,
             'TriplexDB/gene_detail.html',
@@ -676,6 +682,7 @@ def gene_detail(request, pk):
                 'mouse': mouse,
                 'circos_path': circos_path,
                 'transcript': high_triplex_rna,
+                'ucsc_link': ucsc_link,
             },
         )
     except:
@@ -703,6 +710,8 @@ def gene_detail_search(request):
                     .values()[::-1]
                 )
                 mouse = True
+                gene_name = [rna['transcriptgenesymbol'] for rna in rna_result][0]
+                ucsc_link = f'https://genome.ucsc.edu/cgi-bin/hgTracks?db=mm39&hgct_customText=browser%20position%20chr1:20000000-30000000%0Atrack%20type=bigBed%20bigDataUrl=https://github.com/TMWarwick/TripLexicon_UCSC/raw/refs/heads/main/UCSC/mm39/{gene_name}_TripLexicon_sites.bb%20name={gene_name}%20description={gene_name}_TripLexicon_sites'
             else:
                 gene_symbol = gene_symbol.upper()
                 rna_result = (
@@ -715,6 +724,8 @@ def gene_detail_search(request):
                     .values()[::-1]
                 )
                 mouse = False
+                gene_name = [rna['transcriptgenesymbol'] for rna in rna_result][0]
+                ucsc_link = f'https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&hgct_customText=browser%20position%20chr1:20000000-30000000%0Atrack%20type=bigBed%20bigDataUrl=https://github.com/TMWarwick/TripLexicon_UCSC/raw/refs/heads/main/UCSC/hg38/{gene_name}_TripLexicon_sites.bb%20name={gene_name}%20description={gene_name}_TripLexicon_sites'
             nr_triplexes = [rna['transcripttriplexcount'] for rna in rna_result]
             nr_triplexes = sum(nr_triplexes)
             if len(rna_result) > 0:
@@ -736,6 +747,7 @@ def gene_detail_search(request):
                         'mouse': mouse,
                         'circos_path': circos_path,
                         'transcript': high_triplex_rna,
+                        'ucsc_link': ucsc_link,
                     },
                 )
             else:
@@ -958,6 +970,10 @@ def triplex_alinger_detail(request, triplexid, mouse):
     rnaalignedseq = triplex['rnaalignedseq']
     dnaalignedseq = triplex['dnaalignedseq']
     alignedstring = triplex['alignedstring']
+    
+    rnaalignedseq = 'RNA ' + rnaalignedseq
+    dnaalignedseq = 'DNA ' + dnaalignedseq
+    alignedstring = '    ' + alignedstring
     
     seqs = [dnaalignedseq, alignedstring, rnaalignedseq]
     seqs = [[seq[i:i+60] for i in range(0, len(seq), 60)] for seq in seqs]

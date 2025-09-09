@@ -96,10 +96,9 @@
     <div style="flex: 0 0 auto;">
         <pre style="font-family: monospace; margin: 0; margin-right: 150px;">
 {% for seq1, seq2, seq3 in seq_tuples %}
-{{ seq1 }}
-{{ seq2 }}
-{{ seq3 }}
-
+    {{ seq1 }}
+    {{ seq2 }}
+    {{ seq3 }}
 {% endfor %}
         </pre>
     </div>
@@ -107,8 +106,10 @@
     <!-- Right: image -->
     <div style="flex-shrink: 0;">
         <figure>
-            <img src="{% static code_svg_path %}" alt="Alignment Code" style="width: 200%; height: auto;">
-            <figcaption>Alignment Code used. </figcaption>
+            <img src="{% static code_svg_path %}" alt="Alignment Code" style="width: 400px; height: auto;">
+            <figcaption style="width: 400px; text-align: left;">TriplexAligner scoring scheme used for alignment of
+                predicted triplex between RNA transcript
+                {{ triplex.transcriptid }} and DNA gene {{ triplex.dnasymbol }}.</figcaption>
         </figure>
     </div>
 </div>

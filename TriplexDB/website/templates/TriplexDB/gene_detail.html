@@ -52,6 +52,7 @@
 				<th scope="col">Transcript Length</th>
 				<th scope="col">Transcript Biotype</th>
 				<th scope="col">Transcript Triplexcount</th>
+				<th scope="col">Binding sites in UCSC</th>
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
@@ -68,6 +69,7 @@
 				<td><a href="{% url 'search_transcript_values_link' rna.transcriptid %}">
 						{{rna.transcripttriplexcount}}
 					</a></td>
+				<td><a href="{{ ucsc_link }}" target="_blank" rel="noopener noreferrer">Binding sites in UCSC</a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
