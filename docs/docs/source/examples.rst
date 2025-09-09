@@ -38,7 +38,19 @@ The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages
 .. image:: ../transcript_detail.png
   :alt: Transcript detail example for ENST00000556407
 
-Querying by RNA gene symbol
+The last column :kbd:`Binding sites in UCSC` holds links to the UCSC genome browser. 
+.. image:: ../click_ucsc.png
+  :alt: Click on Binding sites in UCS to be redirected to UCSC to see DNA bindign sites of the RNA gene of interest.
+
+When clicking on it, the user is redirected to UCSC with a track of the DNA regions predicted to be bound by the RNA gene of interest to form triplexes.
+.. image:: ../UCSC_MEG3_view.png
+  :alt: UCSC genome browser view of predicted DNA interaction sites for RNA gene MEG3.
+
+If the interactions of several RNA genes are of interest, they can be displayed in UCSC as different tracks in the same view. For this the user can just click on several links and the previous tracks will be shown as well, see below.
+
+If several tracks want to be seen but in separate sessions of the UCSC genome browser, we recommend to use the incognito/private mode of the internet browser.
+
+Extended query by RNA gene symbol
 ---------------------------
 The query by RNA gene symbol reflects a similar scenario to the one for the summary query by RNA gene symbol decsribed above. The user has an RNA of interest, but might not have in mind which specific transcript of the RNA gene is of interest. Instead of querying the database such that the predicted triplexes per transcript are summarized, each single predicted triplex is listed and can be investigated in more detail. In this case, they can query TripLexicon by the RNA gene symbol in the detailed mode, and the results will include statistically significant predicted triplexes for all of the annotated transcripts for that RNA gene.
 
