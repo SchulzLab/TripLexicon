@@ -41,14 +41,17 @@ The transcript IDs in the :kbd:`Transcript ID` column are linked to detail pages
 The  :kbd:`Transcripttriplexcount` column indicates how many triplexes the respective transcript is predicted to form. Upon clicking on it the user is redirected to the same results page as searching for the respective transcript ID with the **Extended query by RNA transcript ID** explained in a section below.
 
 The last column :kbd:`Binding sites in UCSC` holds links to the UCSC genome browser. 
+
 .. image:: ../click_UCSC.png
   :alt: Click on Binding sites in UCS to be redirected to UCSC to see DNA bindign sites of the RNA gene of interest.
 
 When clicking on it, the user is redirected to UCSC with a track of the DNA regions predicted to be bound by the RNA gene of interest to form triplexes.
+
 .. image:: ../UCSC_MEG3_view.png
   :alt: UCSC genome browser view of predicted DNA interaction sites for RNA gene MEG3.
 
 If the interactions of several RNA genes are of interest, they can be displayed in UCSC as different tracks in the same view. For this the user can just click on several links and the previous tracks will be shown as well, see below.
+
 .. image:: ../UCSC_several_tracks.png
   :alt: UCSC genome browser view of several tracks of RNA gene interaction sites.
 
