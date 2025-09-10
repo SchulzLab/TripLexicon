@@ -85,7 +85,19 @@ In order to perform the GO analysis on the DNA gene set with which the RNA gene 
 A table containing the information g:Profiler used to calculate the GO enrichments can be downloaded when clicking on the :kbd:`Download full results table as CSV` button.
 
 .. image:: ../GO_download.png
-  :alt: GO doenload results as CSV
+  :alt: GO download results as CSV
+
+The :kbd:`Target Gene` column is linked to the query results page of the respective target gene which is identical to performing **Querying by predicted target gene** explained in a section below.
+
+The :kbd:`View Alignment` column links the user to an alignment detail page with details about the alignment of the respective transcript with the target gene forming the triplex of interest.
+
+.. image:: ../click_view_alignment.png
+  :alt: Clicking on :kbd:`View Alignment`.
+
+The alignment detail page exists for each triplex. It contains a table with information about the RNA and DNA elements involved in the triplex formation as well as the statistical scores of the triplex. The alignment of RNA with the DNA element is visualized below the table together with the scoring scheme applied for the alignment.
+
+.. image:: ../view_alignment.png
+  :alt: Alignment detail page for the triplex of interest.
 
 
 Extended query by RNA transcript ID
